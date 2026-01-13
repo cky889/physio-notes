@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>CMS Clinical V23</title>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#2c3e50">
+    <link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIiBzdHlsZT0iYmFja2dyb3VuZC1jb2xvcjojMmMzZTUwIj48cmVjdCB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiIgZmlsbD0iIzJjM2U1MCIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBkb21pbmFudC1iYXNlbGluZT0ibWlkZGxlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSIxODAiIGZpbGw9IndoaXRlIiBmb250LXdlaWdodD0iYm9sZCI+VjIzPC90ZXh0Pjwvc3ZnPg==">
+    <style>
+        :root { --main: #2c3e50; --acc: #2980b9; --bg: #f3f4f6; }
+        body { font-family: -apple-system, sans-serif; background: var(--bg); margin: 0; padding-bottom: 120px; color: #1f2937; -webkit-tap-highlight-color: transparent; }
+        
+        #auth-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--main); z-index: 3000; display: flex; flex-direction: column; align-items: center; justify-content: center; color: white; transition: opacity 0.3s; }
+        .auth-card { background: white; color: #333; width: 85%; max-width: 320px; padding: 25px; border-radius: 16px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.3); }
+        .auth-input { width: 100%; padding: 12px; margin: 8px 0; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 1.1rem; text-align: center; }
+        .auth-btn { width: 100%; padding: 14px; background: var(--acc); color: white; border: none; border-radius: 8px; font-weight: bold; font-size: 1rem; margin-top: 15px; cursor: pointer; }
+        .auth-link { margin-top: 15px; font-size: 0.85rem; color: var(--acc); text-decoration: underline; cursor: pointer; }
+        .hidden { display: none !important; }
+
+        header { background: var(--main); color: white; padding: 12px; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .top-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; font-size: 0.9rem; }
+        .user-badge { background: rgba(255,255,255,0.2); padding: 4px 10px; border-radius: 12px; font-weight: bold; }
+        .tab-bar { display: flex; overflow-x: auto; gap: 8px; padding-bottom: 4px; }
+        .tab-btn { padding: 8px 16px; background: rgba(255,255,255,0.15); border-radius: 20px; color: #ddd; font-size: 0.9rem; white-space: nowrap; cursor: pointer; }
+        .tab-btn.active { background: white; color: var(--main); font-weight: 800; transform: scale(1.05); }
+        .tab-btn.add { background: var(--acc); color: white; font-weight: bold; }
+
+        .container { max-width: 700px; margin: 0 auto; padding: 12px; }
+        .patient-view { display: none; }
+        .patient-view.active { display: block; }
+        .card { background: white; border-radius: 12px; padding: 16px; margin-bottom: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        .head-sec { font-size: 0.8rem; font-weight: 800; color: #9ca3af; text-transform: uppercase; margin-bottom: 10px; border-bottom: 1px solid #f3f4f6; padding-bottom: 5px; }
+        input, select, textarea { width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 16px; box-sizing: border-box; background: #fff; margin-bottom: 12px; -webkit-appearance: none; }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+        .accordion { border: 1px solid #e5e7eb; border-radius: 8px; margin-bottom: 8px; overflow: hidden; }
+        .accordion-head { padding: 12px 15px; background: #f9fafb; font-weight: 600; cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
+        .accordion-body { display: none; padding: 15px; background: white; border-top: 1px solid #e5e7eb; }
+        .accordion-body.show { display: block; }
+        
+        .rom-row { margin-bottom: 15px; border-bottom: 1px solid #f3f4f6; padding-bottom: 8px; }
+        .rom-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; }
+        .rom-title { font-size: 0.9rem; font-weight: 800; color: #333; }
+        .manual-input { width: 80px; padding: 6px; margin-bottom: 0; font-size: 0.85rem; height: 32px; text-align: right; border: 1px solid #ccc; }
+        .btn-grid { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 8px; }
+        .rom-btn { padding: 8px 12px; font-size: 0.8rem; border: 1px solid #e5e7eb; border-radius: 6px; background: #f9fafb; color: #555; cursor: pointer; }
+        .rom-btn.range.selected { background: #e0f2fe; color: #0284c7; border-color: #0284c7; font-weight: 700; }
+        .rom-btn.quality.selected { background: #fef2f2; color: #dc2626; border-color: #dc2626; font-weight: 700; }
+        
+        .chk-list { display: flex; flex-direction: column; gap: 8px; }
+        .chk-item { display: flex; align-items: center; gap: 12px; padding: 12px; background: #f9fafb; border-radius: 8px; border: 1px solid #e5e7eb; cursor: pointer; }
+        .chk-item.active { background: #eff6ff; border-color: var(--acc); }
+        .chk-item input { width: 20px; height: 20px; margin: 0; flex-shrink: 0; }
+
+        .fab { position: fixed; bottom: 30px; left: 20px; right: 20px; background: var(--acc); color: white; padding: 16px; border-radius: 50px; font-size: 1.1rem; font-weight: 700; border: none; box-shadow: 0 4px 15px rgba(41,128,185,0.4); z-index: 1000; cursor: pointer; display:flex; justify-content:center; align-items:center; gap:10px; }
+    </style>
+</head>
+<body>
+
+<div id="auth-screen">
+    <div id="view-login" class="auth-card">
+        <h3>CMS Clinical V23</h3>
+        <select id="user-select" class="auth-input"></select>
+        <input type="tel" id="user-pin" class="auth-input" placeholder="PIN" maxlength="6" style="-webkit-text-security:disc;">
+        <button class="auth-btn" onclick="attemptLogin()">Unlock</button>
+        <div class="auth-link" onclick="toggleAuth('register')">New User?</div>
+    </div>
+    <div id="view-register" class="auth-card hidden">
+        <h3>Create Profile</h3>
+        <input type="text" id="reg-name" class="auth-input" placeholder="Your Name">
+        <input type="tel" id="reg-pin" class="auth-input" placeholder="Create PIN" maxlength="6">
+        <button class="auth-btn" style="background:#10b981;" onclick="registerUser()">Start</button>
+        <div class="auth-link" onclick="toggleAuth('login')">Cancel</div>
+    </div>
+</div>
+
+<div id="app-ui" style="display:none;">
+    <header>
+        <div class="top-row">
+            <div class="user-badge" id="display-name">Guest</div>
+            <div style="color:#fca5a5; cursor:pointer;" onclick="logout()">Lock 🔒</div>
+        </div>
+        <div class="tab-bar" id="tab-bar">
+            <div class="tab-btn add" onclick="addPatient()">+ Pt</div>
+        </div>
+    </header>
+
+    <div class="container" id="patients-container"></div>
+    <button class="fab" onclick="generateNote()">COPY CMS NOTE</button>
+</div>
+<textarea id="copy_target" style="opacity:0; height:1px; position:absolute; bottom:0;"></textarea>
+
+<template id="patient-template">
+    <div class="patient-view">
+        <div class="card" style="border:2px solid #2980b9; background:#f0f9ff;">
+            <div class="head-sec" style="color:#2980b9;">Admin Data</div>
+            <input type="text" class="pt-id" placeholder="Bed / Ref" onkeyup="saveWork(); updateTabName(this)" style="font-weight:bold; font-size:1.1rem; margin-bottom:0;">
+            <div class="grid-2">
+                <input class="dx" placeholder="Diagnosis" onkeyup="saveWork()">
+                <input class="ref" placeholder="Reason for Referral" onkeyup="saveWork()">
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="head-sec">History</div>
+            <textarea class="hpi" style="height:60px" placeholder="HPI" onkeyup="saveWork()"></textarea>
+            <textarea class="pmh" style="height:50px" placeholder="PMH" onkeyup="saveWork()"></textarea>
+            <textarea class="meds" style="height:50px" placeholder="Medication" onkeyup="saveWork()"></textarea>
+            <input class="fall" placeholder="Fall History & Reason" onkeyup="saveWork()">
+            <input class="ment" placeholder="Mental Status" onkeyup="saveWork()">
+            <input class="prev_pt" placeholder="Prev PT (Default: NIL)" value="NIL" onkeyup="saveWork()">
+        </div>
+
+        <div class="card">
+            <div class="head-sec">Social / Env</div>
+            <div class="grid-2">
+                <select class="soc_live" onchange="saveWork()">
+                    <option value="">Lives with...</option>
+                    <option value="Spouse">Spouse</option>
+                    <option value="Maid">Maid</option>
+                    <option value="Daughter">Daughter</option>
+                    <option value="Son">Son</option>
+                    <option value="Alone">Alone</option>
+                </select>
+                <select class="soc_carer" onchange="saveWork()">
+                    <option value="">Carer...</option>
+                    <option value="Spouse">Spouse</option>
+                    <option value="Maid">Maid</option>
+                    <option value="Daughter">Daughter</option>
+                    <option value="Son">Son</option>
+                    <option value="Self">Self</option>
+                </select>
+            </div>
+            
+            <div class="grid-2">
+                <input class="soc_pre" placeholder="Premorbid" onkeyup="saveWork()">
+                <select class="env_type" onchange="saveWork()"><option value="Public housing">Public Housing</option><option value="Private housing">Private Housing</option><option value="Village house">Village House</option></select>
+            </div>
+            
+            <!-- ACCESS: Stairs Logic -->
+            <div class="grid-2">
+                <select class="env_acc" onchange="toggleStairs(this); saveWork()">
+                    <option value="Lift-landing">Lift-landing</option>
+                    <option value="Stairs">Stairs</option>
+                </select>
+                <input class="env_stairs_txt hidden" placeholder="No. of Steps (e.g. 5)" onkeyup="saveWork()">
+            </div>
+            
+            <!-- TOILET / BATH -->
+            <div class="grid-2">
+                <select class="env_wc" onchange="saveWork()">
+                    <option value="Sitting">WC: Sitting</option>
+                    <option value="Squatting">WC: Squatting</option>
+                    <option value="Commode">WC: Commode</option>
+                </select>
+                <select class="env_bath" onchange="saveWork()">
+                    <option value="Sitting">Bath: Sitting</option>
+                    <option value="Shower cubicle">Bath: Shower</option>
+                    <option value="Bath tub">Bath: Tub</option>
+                </select>
+            </div>
+            
+            <!-- EXTRAS -->
+            <div style="margin-top:10px; font-size:0.9rem;">
+                <label class="chk-item" style="padding:8px;"><input type="checkbox" class="env_rails" onchange="saveWork()"> Handrails available</label>
+            </div>
+            <input class="env_note" placeholder="Env Note (Default: Spaceous...)" value="Spaceous and tidy" onkeyup="saveWork()" style="margin-top:8px;">
+        </div>
+
+        <div class="card">
+            <div class="head-sec">Objective</div>
+            <input class="subj" placeholder="Subjective (Compliant)" value="Compliant" onkeyup="saveWork()">
+            <input class="func" placeholder="Func Limit (e.g. Prolonged walk)" onkeyup="saveWork()">
+            <input class="ass_with" placeholder="Assessed with (e.g. Maid)" onkeyup="saveWork()">
+            <div class="grid-2">
+                <input class="bp" placeholder="BP" onkeyup="saveWork()">
+                <input class="hr" placeholder="HR" onkeyup="saveWork()">
+            </div>
+            <input class="obs" placeholder="Observation" value="Thin body build" onkeyup="saveWork()">
+            
+            <div class="body-container"></div>
+            
+            <div style="margin-top:20px; font-weight:700; color:#555;">Power (Right / Left)</div>
+            <div style="background:#f9f9f9; padding:10px; border-radius:8px;">
+                <div class="grid-2">
+                    <input class="pwr_ul" placeholder="UL (e.g. 5 / 5)" onkeyup="saveWork()">
+                    <input class="pwr_ll" placeholder="LL (e.g. 4 / 4)" onkeyup="saveWork()">
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="head-sec">Plan</div>
+            <div class="grid-2">
+                <input class="bed" placeholder="Bed Mob" onkeyup="saveWork()">
+                <input class="tf" placeholder="Transfer" onkeyup="saveWork()">
+            </div>
+            <input class="gait" placeholder="Gait" onkeyup="saveWork()">
+            
+            <input class="prob" placeholder="Problem" onkeyup="saveWork()">
+            <div class="grid-2">
+                <input class="stg" placeholder="STG" onkeyup="saveWork()">
+                <input class="ltg" placeholder="LTG" onkeyup="saveWork()">
+            </div>
+            
+            <div style="margin-top:10px; font-weight:bold; color:#2980b9;">Exercises Taught:</div>
+            <div class="chk-list ex-list"></div>
+        </div>
+    </div>
+</template>
+
+<script>
+    const USERS_KEY = 'physio_users_v1';
+    let currentUser = null;
+    let currentPatients = [];
+    let currentTab = 0;
+
+    const bodyParts = [
+        {name:"Neck (Cervical)", id:"cx", mov:["Flex","Ext","Rot(L)","Rot(R)","Side(L)","Side(R)"], tests:["Spurling","Distraction"], palp:["Trapezius","Levator"]},
+        {name:"Back (Lumbar)", id:"lx", mov:["Flex","Ext","Rot(L)","Rot(R)","Side(L)","Side(R)"], tests:["SLR","Slump"], palp:["Paraspinals","PSIS"]},
+        {name:"Shoulder(R)", id:"sr", mov:["Flex","Abd","ExtRot","IntRot","HBB"], tests:["Neer","Hawkins","Empty Can"], palp:["ACJ","Supraspinatus"]},
+        {name:"Shoulder(L)", id:"sl", mov:["Flex","Abd","ExtRot","IntRot","HBB"], tests:["Neer","Hawkins","Empty Can"], palp:["ACJ","Supraspinatus"]},
+        {name:"Knee(R)", id:"kr", mov:["Flex","Ext"], tests:["McMurray","Lachman","Varus/Valgus"], palp:["Joint Line","Patella"]},
+        {name:"Knee(L)", id:"kl", mov:["Flex","Ext"], tests:["McMurray","Lachman","Varus/Valgus"], palp:["Joint Line","Patella"]},
+        {name:"Ankle(R)", id:"ar", mov:["DF","PF","Inv","Eve"], tests:["Talar Tilt","Drawer"], palp:["ATFL","Med Mall"]},
+        {name:"Ankle(L)", id:"al", mov:["DF","PF","Inv","Eve"], tests:["Talar Tilt","Drawer"], palp:["ATFL","Med Mall"]}
+    ];
+
+    const exercises = [
+        "resisted Biceps flexion exercise in sitting",
+        "resisted Knee extension exercise in sitting",
+        "resisted Hip abduction exercise in sitting",
+        "LL elevation",
+        "active ankle and toes exercise",
+        "self-stretching over right hamstrings muscles",
+        "active knee mobilization in sitting",
+        "Walking exercise with stick",
+        "Gait correction",
+        "Sit to stand training",
+        "Fall prevention reinforced",
+        "Exercise precautions reinforced",
+        "OA knee care reinforced",
+        "carer skills reinforced",
+        "Suggested to have bathing in sitting position for fall prevention",
+        "Encouraged to increase the frequency of walking exercise in the corridor",
+        "Encouraged patient's wife to tidy up home and remove obstacles"
+    ];
+
+    window.onload = loadUsersDropdown;
+
+    function loadUsersDropdown() {
+        const users = JSON.parse(localStorage.getItem(USERS_KEY) || '{}');
+        const sel = document.getElementById('user-select');
+        sel.innerHTML = '<option value="" disabled selected>Select User</option>';
+        Object.keys(users).forEach(u => sel.innerHTML += `<option value="${u}">${u}</option>`);
+    }
+
+    function toggleAuth(m) {
+        document.getElementById('view-login').classList.toggle('hidden', m !== 'login');
+        document.getElementById('view-register').classList.toggle('hidden', m !== 'register');
+    }
+
+    function registerUser() {
+        const n = document.getElementById('reg-name').value.trim();
+        const p = document.getElementById('reg-pin').value.trim();
+        if(!n || p.length < 4) return alert("Invalid Input");
+        const users = JSON.parse(localStorage.getItem(USERS_KEY) || '{}');
+        users[n] = p;
+        localStorage.setItem(USERS_KEY, JSON.stringify(users));
+        loadUsersDropdown(); toggleAuth('login');
+    }
+
+    function attemptLogin() {
+        const n = document.getElementById('user-select').value;
+        const p = document.getElementById('user-pin').value;
+        const users = JSON.parse(localStorage.getItem(USERS_KEY) || '{}');
+        if(users[n] == p) {
+            currentUser = n;
+            document.getElementById('display-name').innerText = n;
+            document.getElementById('auth-screen').style.display = 'none';
+            document.getElementById('app-ui').style.display = 'block';
+            loadWorkspace();
+        } else alert("Invalid PIN");
+    }
+
+    function logout() { location.reload(); }
+
+    function loadWorkspace() {
+        const raw = localStorage.getItem(`physio_data_${currentUser}`);
+        currentPatients = raw ? JSON.parse(raw) : [];
+        if(currentPatients.length === 0) createPatientData();
+        renderAll();
+    }
+
+    function saveWork() {
+        const view = document.getElementById(`view-${currentTab}`);
+        if(!view) return;
+        const pt = currentPatients[currentTab];
+        
+        p
