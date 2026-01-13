@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>CMS Clinical V23.3</title>
+    <title>CMS Clinical V23.8</title>
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="theme-color" content="#2c3e50">
@@ -12,22 +12,18 @@
         :root { --main: #2c3e50; --acc: #2980b9; --bg: #f3f4f6; }
         body { font-family: -apple-system, sans-serif; background: var(--bg); margin: 0; padding-bottom: 120px; color: #1f2937; -webkit-tap-highlight-color: transparent; }
         
-        /* AUTH SCREEN - UPDATED */
         #auth-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--main); z-index: 3000; display: flex; flex-direction: column; align-items: center; justify-content: center; color: white; transition: opacity 0.3s; }
         .auth-card { background: white; color: #333; width: 85%; max-width: 320px; padding: 25px; border-radius: 16px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.3); }
         .auth-input { width: 100%; padding: 14px; margin: 8px 0; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 1.1rem; text-align: center; background: #fff; appearance: none; -webkit-appearance: none; }
-        
-        /* BIG BUTTONS FOR AUTH */
         .auth-btn { width: 100%; padding: 16px; background: var(--acc); color: white; border: none; border-radius: 10px; font-weight: bold; font-size: 1.1rem; margin-top: 10px; cursor: pointer; -webkit-tap-highlight-color: transparent; }
         .auth-btn.sec { background: white; color: var(--acc); border: 2px solid var(--acc); margin-top: 12px; }
-        
         .hidden { display: none !important; }
 
         header { background: var(--main); color: white; padding: 12px; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
         .top-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; font-size: 0.9rem; }
         .user-badge { background: rgba(255,255,255,0.2); padding: 4px 10px; border-radius: 12px; font-weight: bold; }
         .tab-bar { display: flex; overflow-x: auto; gap: 8px; padding-bottom: 4px; }
-        .tab-btn { padding: 8px 16px; background: rgba(255,255,255,0.15); border-radius: 20px; color: #ddd; font-size: 0.9rem; white-space: nowrap; cursor: pointer; }
+        .tab-btn { padding: 8px 16px; background: rgba(255,255,255,0.15); border-radius: 20px; color: #ddd; font-size: 0.9rem; white-space: nowrap; cursor: pointer; user-select: none; -webkit-user-select: none; }
         .tab-btn.active { background: white; color: var(--main); font-weight: 800; transform: scale(1.05); }
         .tab-btn.add { background: var(--acc); color: white; font-weight: bold; }
 
@@ -36,7 +32,20 @@
         .patient-view.active { display: block; }
         .card { background: white; border-radius: 12px; padding: 16px; margin-bottom: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
         .head-sec { font-size: 0.8rem; font-weight: 800; color: #9ca3af; text-transform: uppercase; margin-bottom: 10px; border-bottom: 1px solid #f3f4f6; padding-bottom: 5px; }
-        input, select, textarea { width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 16px; box-sizing: border-box; background: #fff; margin-bottom: 12px; -webkit-appearance: none; }
+        
+        input, textarea { width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 16px; box-sizing: border-box; background: #fff; margin-bottom: 12px; -webkit-appearance: none; }
+        
+        select {
+            width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 16px; box-sizing: border-box; margin-bottom: 12px;
+            background-color: #fff; color: #1f2937;
+            appearance: none; -webkit-appearance: none;
+            background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%232980b9%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px top 50%;
+            background-size: 10px auto;
+            padding-right: 30px;
+        }
+
         .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 
         .accordion { border: 1px solid #e5e7eb; border-radius: 8px; margin-bottom: 8px; overflow: hidden; }
@@ -53,11 +62,25 @@
         .rom-btn.range.selected { background: #e0f2fe; color: #0284c7; border-color: #0284c7; font-weight: 700; }
         .rom-btn.quality.selected { background: #fef2f2; color: #dc2626; border-color: #dc2626; font-weight: 700; }
         
-        .chk-list { display: flex; flex-direction: column; gap: 8px; }
-        .chk-item { display: flex; align-items: center; gap: 12px; padding: 14px; background: #f9fafb; border-radius: 8px; border: 1px solid #e5e7eb; cursor: pointer; transition: background 0.2s; -webkit-tap-highlight-color: transparent; }
-        .chk-item:active { background: #e5e7eb; }
-        .chk-item.active { background: #eff6ff; border-color: var(--acc); font-weight:600; color:#1e3a8a; }
-        .chk-item input { width: 24px; height: 24px; margin: 0; flex-shrink: 0; pointer-events: none; }
+        .chk-list { display: flex; flex-direction: column; gap: 8px; margin-top: 5px;}
+        .chk-item { 
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 14px 16px; background: #fff; border: 1px solid #d1d5db; border-radius: 8px;
+            cursor: pointer; transition: all 0.2s; -webkit-tap-highlight-color: transparent;
+            font-size: 1rem; color: #374151;
+        }
+        .chk-item input { display: none; } 
+        .chk-item.active { background: #eff6ff; border-color: var(--acc); color: var(--acc); font-weight: 600; }
+        .chk-item::after {
+            content: '✓'; font-weight: 900; color: var(--acc);
+            opacity: 0; transform: scale(0.5); transition: all 0.2s;
+        }
+        .chk-item.active::after { opacity: 1; transform: scale(1.2); }
+
+        .special-row { display: grid; grid-template-columns: 1fr 100px; gap: 10px; align-items: center; margin-bottom: 10px; border-bottom: 1px dashed #e5e7eb; padding-bottom: 8px; }
+        .special-row input { margin-bottom: 0; font-size: 0.9rem; }
+        .special-row select { margin-bottom: 0; padding: 8px; font-weight: bold; }
+        .special-label { font-size: 0.9rem; font-weight: 600; color: #444; margin-bottom: 4px; display: block; }
 
         .fab { position: fixed; bottom: 30px; left: 20px; right: 20px; background: var(--acc); color: white; padding: 16px; border-radius: 50px; font-size: 1.1rem; font-weight: 700; border: none; box-shadow: 0 4px 15px rgba(41,128,185,0.4); z-index: 1000; cursor: pointer; display:flex; justify-content:center; align-items:center; gap:10px; }
     </style>
@@ -66,21 +89,16 @@
 
 <div id="auth-screen">
     <div id="view-login" class="auth-card">
-        <h3>CMS Clinical V23.3</h3>
+        <h3>CMS Clinical V23.8</h3>
         <select id="user-select" class="auth-input"></select>
         <input type="tel" id="user-pin" class="auth-input" placeholder="PIN" maxlength="6" style="-webkit-text-security:disc;">
-        
-        <!-- BIGGER BUTTONS -->
         <button class="auth-btn" onclick="attemptLogin()">Unlock App</button>
         <button class="auth-btn sec" onclick="toggleAuth('register')">Create New Profile</button>
     </div>
-    
     <div id="view-register" class="auth-card hidden">
         <h3>Create Profile</h3>
         <input type="text" id="reg-name" class="auth-input" placeholder="Your Name">
         <input type="tel" id="reg-pin" class="auth-input" placeholder="Create PIN (4 digits)" maxlength="6">
-        
-        <!-- BIGGER BUTTONS -->
         <button class="auth-btn" style="background:#10b981;" onclick="registerUser()">Start Using App</button>
         <button class="auth-btn sec" style="color:#666; border-color:#ccc;" onclick="toggleAuth('login')">Back</button>
     </div>
@@ -112,6 +130,7 @@
                 <input class="ref" placeholder="Reason for Referral" onkeyup="saveWork()">
             </div>
         </div>
+        
         <div class="card">
             <div class="head-sec">History</div>
             <textarea class="hpi" style="height:60px" placeholder="HPI" onkeyup="saveWork()"></textarea>
@@ -121,6 +140,7 @@
             <input class="ment" placeholder="Mental Status" onkeyup="saveWork()">
             <input class="prev_pt" placeholder="Prev PT (Default: NIL)" value="NIL" onkeyup="saveWork()">
         </div>
+
         <div class="card">
             <div class="head-sec">Social / Env</div>
             <div class="grid-2">
@@ -129,19 +149,45 @@
             </div>
             <div class="grid-2">
                 <input class="soc_pre" placeholder="Premorbid" onkeyup="saveWork()">
-                <select class="env_type" onchange="saveWork()"><option value="Public housing">Public Housing</option><option value="Private housing">Private Housing</option><option value="Village house">Village House</option></select>
+                <select class="env_type" onchange="saveWork()">
+                    <option value="" disabled selected>Housing Type</option>
+                    <option value="Public housing">Public Housing</option>
+                    <option value="Private housing">Private Housing</option>
+                    <option value="Village house">Village House</option>
+                </select>
             </div>
             <div class="grid-2">
-                <select class="env_acc" onchange="toggleStairs(this); saveWork()"><option value="Lift-landing">Lift-landing</option><option value="Stairs">Stairs</option></select>
+                <select class="env_acc" onchange="toggleStairs(this); saveWork()">
+                    <option value="Lift-landing">Lift-landing</option>
+                    <option value="Stairs">Stairs</option>
+                </select>
                 <input class="env_stairs_txt hidden" placeholder="No. of Steps (e.g. 5)" onkeyup="saveWork()">
             </div>
             <div class="grid-2">
-                <select class="env_wc" onchange="saveWork()"><option value="Sitting">WC: Sitting</option><option value="Squatting">WC: Squatting</option><option value="Commode">WC: Commode</option></select>
-                <select class="env_bath" onchange="saveWork()"><option value="Sitting">Bath: Sitting</option><option value="Shower cubicle">Bath: Shower</option><option value="Bath tub">Bath: Tub</option></select>
+                <select class="env_wc" onchange="saveWork()">
+                    <option value="" disabled selected>Toilet Type</option>
+                    <option value="Sitting">WC: Sitting</option>
+                    <option value="Squatting">WC: Squatting</option>
+                    <option value="Commode">WC: Commode</option>
+                </select>
+                <select class="env_bath" onchange="saveWork()">
+                    <option value="" disabled selected>Bath Type</option>
+                    <option value="Sitting">Bath: Sitting</option>
+                    <option value="Shower cubicle">Bath: Shower</option>
+                    <option value="Bath tub">Bath: Tub</option>
+                </select>
             </div>
-            <div style="margin-top:10px; font-size:0.9rem;"><label class="chk-item" style="padding:8px;"><input type="checkbox" class="env_rails" onchange="saveWork()"> Handrails available</label></div>
-            <input class="env_note" placeholder="Env Note (Default: Spaceous...)" value="Spaceous and tidy" onkeyup="saveWork()" style="margin-top:8px;">
+            
+            <div style="margin-top:10px;">
+                <div class="chk-item env_rails_row" onclick="toggleChk(this)">
+                    <input type="checkbox" class="env_rails">
+                    <span>Handrails available</span>
+                </div>
+            </div>
+            
+            <input class="env_note" placeholder="Env Note (Default: Spaceous...)" value="Spaceous and tidy" onkeyup="saveWork()" style="margin-top:12px;">
         </div>
+        
         <div class="card">
             <div class="head-sec">Objective</div>
             <input class="subj" placeholder="Subjective (Compliant)" value="Compliant" onkeyup="saveWork()">
@@ -175,6 +221,8 @@
             </div>
             <div style="margin-top:10px; font-weight:bold; color:#2980b9;">Exercises Taught:</div>
             <div class="chk-list ex-list"></div>
+            <!-- NEW FREE TEXT EXERCISE BOX -->
+            <textarea class="ex-free" placeholder="Other exercises / specific parameters..." style="height:60px; margin-top:12px;" onkeyup="saveWork()"></textarea>
         </div>
     </div>
 </template>
@@ -184,17 +232,28 @@
     let currentUser = null;
     let currentPatients = [];
     let currentTab = 0;
-
+    
+    // FULL NOTE TITLES ADDED
     const bodyParts = [
-        {name:"Neck (Cervical)", id:"cx", mov:["Flex","Ext","Rot(L)","Rot(R)","Side(L)","Side(R)"], tests:["Spurling","Distraction"], palp:["Trapezius","Levator"]},
-        {name:"Back (Lumbar)", id:"lx", mov:["Flex","Ext","Rot(L)","Rot(R)","Side(L)","Side(R)"], tests:["SLR","Slump"], palp:["Paraspinals","PSIS"]},
-        {name:"Shoulder(R)", id:"sr", mov:["Flex","Abd","ExtRot","IntRot","HBB"], tests:["Neer","Hawkins","Empty Can"], palp:["ACJ","Supraspinatus"]},
-        {name:"Shoulder(L)", id:"sl", mov:["Flex","Abd","ExtRot","IntRot","HBB"], tests:["Neer","Hawkins","Empty Can"], palp:["ACJ","Supraspinatus"]},
-        {name:"Knee(R)", id:"kr", mov:["Flex","Ext"], tests:["McMurray","Lachman","Varus/Valgus"], palp:["Joint Line","Patella"]},
-        {name:"Knee(L)", id:"kl", mov:["Flex","Ext"], tests:["McMurray","Lachman","Varus/Valgus"], palp:["Joint Line","Patella"]},
-        {name:"Ankle(R)", id:"ar", mov:["DF","PF","Inv","Eve"], tests:["Talar Tilt","Drawer"], palp:["ATFL","Med Mall"]},
-        {name:"Ankle(L)", id:"al", mov:["DF","PF","Inv","Eve"], tests:["Talar Tilt","Drawer"], palp:["ATFL","Med Mall"]}
+        {name:"Neck (Cervical)", noteTitle: "Active range of movement of neck", id:"cx", mov:["Flex","Ext","Rot(L)","Rot(R)","Side(L)","Side(R)"], tests:["Spurling","Distraction"], palp:["Trapezius","Levator"]},
+        {name:"Back (Lumbar)", noteTitle: "Active range of movement of back", id:"lx", mov:["Flex","Ext","Rot(L)","Rot(R)","Side(L)","Side(R)"], tests:["SLR","Slump"], palp:["Paraspinals","PSIS"]},
+        {name:"Shoulder(R)", noteTitle: "Active range of movement of right shoulder", id:"sr", mov:["Flex","Abd","ExtRot","IntRot","HBB"], tests:["Neer","Hawkins","Empty Can"], palp:["ACJ","Supraspinatus"]},
+        {name:"Shoulder(L)", noteTitle: "Active range of movement of left shoulder", id:"sl", mov:["Flex","Abd","ExtRot","IntRot","HBB"], tests:["Neer","Hawkins","Empty Can"], palp:["ACJ","Supraspinatus"]},
+        {name:"Knee(R)", noteTitle: "Active range of movement of right knee", id:"kr", mov:["Flex","Ext"], tests:["McMurray","Lachman","Varus/Valgus"], palp:["Joint Line","Patella"]},
+        {name:"Knee(L)", noteTitle: "Active range of movement of left knee", id:"kl", mov:["Flex","Ext"], tests:["McMurray","Lachman","Varus/Valgus"], palp:["Joint Line","Patella"]},
+        {name:"Ankle(R)", noteTitle: "Active range of movement of right ankle", id:"ar", mov:["DF","PF","Inv","Eve"], tests:["Talar Tilt","Drawer"], palp:["ATFL","Med Mall"]},
+        {name:"Ankle(L)", noteTitle: "Active range of movement of left ankle", id:"al", mov:["DF","PF","Inv","Eve"], tests:["Talar Tilt","Drawer"], palp:["ATFL","Med Mall"]}
     ];
+    
+    // ABBREVIATION MAPPING
+    const movMap = {
+        "Flex": "flexion", "Ext": "extension", 
+        "Rot(L)": "left rotation", "Rot(R)": "right rotation",
+        "Side(L)": "left side flexion", "Side(R)": "right side flexion",
+        "Abd": "abduction", "ExtRot": "external rotation", "IntRot": "internal rotation", "HBB": "hand behind back",
+        "DF": "dorsiflexion", "PF": "plantarflexion", "Inv": "inversion", "Eve": "eversion"
+    };
+
     const exercises = [
         "resisted Biceps flexion exercise in sitting",
         "resisted Knee extension exercise in sitting",
@@ -219,15 +278,11 @@
 
     function loadUsersDropdown() {
         let users = JSON.parse(localStorage.getItem(USERS_KEY) || '{}');
-        
-        // AUTO-CLEANUP: If data is corrupt or empty keys, fix it
         let validKeys = Object.keys(users).filter(k => k && k.trim() !== "");
-        
         const sel = document.getElementById('user-select');
-        
         if (validKeys.length === 0) {
             sel.innerHTML = '<option value="" disabled selected>No users found</option>';
-            toggleAuth('register'); // Auto-switch to register
+            toggleAuth('register');
         } else {
             sel.innerHTML = '<option value="" disabled selected>Select User</option>';
             validKeys.forEach(u => sel.innerHTML += `<option value="${u}">${u}</option>`);
@@ -242,17 +297,10 @@
     function registerUser() {
         const n = document.getElementById('reg-name').value.trim();
         const p = document.getElementById('reg-pin').value.trim();
-        
-        if(!n || p.length < 4) {
-            alert("Please enter a Name and a 4-digit PIN");
-            return;
-        }
-        
+        if(!n || p.length < 4) return alert("Enter Name & 4-digit PIN");
         const users = JSON.parse(localStorage.getItem(USERS_KEY) || '{}');
         users[n] = p;
         localStorage.setItem(USERS_KEY, JSON.stringify(users));
-        
-        // Instant Login
         currentUser = n;
         document.getElementById('display-name').innerText = n;
         document.getElementById('auth-screen').style.display = 'none';
@@ -263,8 +311,7 @@
     function attemptLogin() {
         const n = document.getElementById('user-select').value;
         const p = document.getElementById('user-pin').value;
-        if(!n || n === "") return alert("Please select a user first.");
-        
+        if(!n) return alert("Select user");
         const users = JSON.parse(localStorage.getItem(USERS_KEY) || '{}');
         if(users[n] == p) {
             currentUser = n;
@@ -335,12 +382,17 @@
             const man = r.querySelector('.manual-input')?.value;
             const ran = r.querySelector('.range.selected')?.innerText;
             const qua = Array.from(r.querySelectorAll('.quality.selected')).map(b=>b.innerText).join(',');
-            const chk = r.querySelector('.chk-input')?.checked ? "Positive" : "";
+            const splTxt = r.querySelector('.special-txt')?.value;
+            const splSel = r.querySelector('.special-sel')?.value;
             
             if(man !== undefined) pt.roms[uid] = {m:man, r:ran||"", q:qua};
-            else if(chk) pt.roms[uid] = {chk: "Positive"}; 
+            else if(splSel) pt.roms[uid] = {txt: splTxt, res: splSel}; 
         });
         pt.ex = Array.from(view.querySelectorAll('.ex-list input:checked')).map(c=>c.value);
+        
+        // SAVE FREE TEXT
+        pt.ex_free = view.querySelector('.ex-free').value;
+        
         localStorage.setItem(`physio_data_${currentUser}`, JSON.stringify(currentPatients));
     }
 
@@ -350,6 +402,17 @@
     }
     
     function addPatient() { saveWork(); createPatientData(); }
+    
+    // NEW: Delete Patient Function
+    function deletePatient(idx) {
+        if(currentPatients.length <= 1) return alert("Cannot delete the last patient.");
+        if(confirm("Delete this patient? This cannot be undone.")) {
+            currentPatients.splice(idx, 1);
+            localStorage.setItem(`physio_data_${currentUser}`, JSON.stringify(currentPatients));
+            currentTab = Math.max(0, idx - 1); // Move to previous tab
+            renderAll();
+        }
+    }
 
     function renderAll() {
         const cont = document.getElementById('patients-container');
@@ -361,7 +424,16 @@
             const btn = document.createElement('div');
             btn.className = `tab-btn ${idx === currentTab ? 'active' : ''}`;
             btn.innerText = pt.id || `Pt ${idx+1}`;
+            
+            // TAP to switch
             btn.onclick = () => switchTab(idx);
+            
+            // LONG PRESS to delete
+            let timer;
+            btn.addEventListener('touchstart', () => { timer = setTimeout(() => deletePatient(idx), 800); });
+            btn.addEventListener('touchend', () => clearTimeout(timer));
+            btn.addEventListener('touchmove', () => clearTimeout(timer));
+
             bar.insertBefore(btn, bar.lastElementChild);
             
             const clone = document.getElementById('patient-template').content.cloneNode(true);
@@ -383,16 +455,19 @@
                 view.querySelector('.soc_live').value = pt.soc.live || "";
                 view.querySelector('.soc_carer').value = pt.soc.carer || "";
                 view.querySelector('.soc_pre').value = pt.soc.pre || "";
-                view.querySelector('.env_acc').value = pt.soc.acc || "";
+                view.querySelector('.env_acc').value = pt.soc.acc || "Lift-landing";
                 view.querySelector('.env_stairs_txt').value = pt.soc.stairs || "";
                 view.querySelector('.env_wc').value = pt.soc.wc || "";
                 view.querySelector('.env_type').value = pt.soc.type || "";
                 view.querySelector('.env_bath').value = pt.soc.bath || "";
-                view.querySelector('.env_rails').checked = pt.soc.rails || false;
                 view.querySelector('.env_note').value = pt.soc.note || "Spaceous and tidy";
                 
-                const accSel = view.querySelector('.env_acc');
-                toggleStairs(accSel);
+                const railsChk = view.querySelector('.env_rails');
+                const railsRow = view.querySelector('.env_rails_row');
+                railsChk.checked = pt.soc.rails || false;
+                if(railsChk.checked) railsRow.classList.add('active');
+                
+                toggleStairs(view.querySelector('.env_acc'));
             }
             if(pt.assess) {
                 view.querySelector('.subj').value = pt.assess.subj || "Compliant";
@@ -429,39 +504,67 @@
                     </div>`;
                 });
                 
-                if(bp.tests) {
-                    html += `<div style="font-weight:bold; margin-top:10px; font-size:0.85rem; color:#acc;">Special Tests</div>`;
-                    bp.tests.forEach(t => {
-                        const uid = `${bp.id}_test_${t}`;
-                        const chk = pt.roms[uid]?.chk ? "checked" : "";
-                        html += `<div class="rom-row" data-uid="${uid}" style="display:flex; justify-content:space-between; align-items:center;">
-                            <span style="font-size:0.9rem;">${t}</span>
-                            <label><input type="checkbox" class="chk-input" ${chk} onchange="saveWork()"> +ve</label>
-                        </div>`;
-                    });
+                // MAPPING TO FULL TEXT
+                const fullMov = movMap[m] || m;
+                
+                if(val.trim()) {
+                    if(!hasHeader) { pText += `${bp.noteTitle}\n`; hasHeader = true; }
+                    pText += `${fullMov}: ${val || '-'}\n`;
                 }
-
-                if(bp.palp) {
-                    html += `<div style="font-weight:bold; margin-top:10px; font-size:0.85rem; color:#acc;">Palpation (Tenderness)</div>`;
-                    bp.palp.forEach(p => {
-                        const uid = `${bp.id}_palp_${p}`;
-                        const chk = pt.roms[uid]?.chk ? "checked" : "";
-                        html += `<div class="rom-row" data-uid="${uid}" style="display:flex; justify-content:space-between; align-items:center;">
-                            <span style="font-size:0.9rem;">${p}</span>
-                            <label><input type="checkbox" class="chk-input" ${chk} onchange="saveWork()"> +ve</label>
-                        </div>`;
-                    });
-                }
-
-                html += `</div></div>`;
-                bc.insertAdjacentHTML('beforeend', html);
             });
+
+            if(bp.tests) {
+                bp.tests.forEach(test => {
+                    const uid = `${bp.id}_test_${test}`;
+                    const d = pt.roms[uid] || {txt:"", res:"-ve"};
+                    html += `<div class="rom-row special-row" data-uid="${uid}">
+                            <div>
+                                <span class="special-label">${test}</span>
+                                <input class="special-txt" placeholder="Note (optional)" value="${d.txt}" onkeyup="saveWork()">
+                            </div>
+                            <select class="special-sel" onchange="saveWork()" style="color:${d.res==='+ve'?'red':'green'}">
+                                <option value="-ve" ${d.res==='-ve'?'selected':''}>-ve</option>
+                                <option value="+ve" ${d.res==='+ve'?'selected':''}>+ve</option>
+                            </select>
+                        </div>`;
+                });
+            }
+
+            if(bp.palp) {
+                bp.palp.forEach(palp => {
+                    const uid = `${bp.id}_palp_${palp}`;
+                    const d = pt.roms[uid] || {txt:"", res:"-ve"};
+                    html += `<div class="rom-row special-row" data-uid="${uid}">
+                            <div>
+                                <span class="special-label">${palp}</span>
+                                <input class="special-txt" placeholder="Note (optional)" value="${d.txt}" onkeyup="saveWork()">
+                            </div>
+                            <select class="special-sel" onchange="saveWork()" style="color:${d.res==='+ve'?'red':'green'}">
+                                <option value="-ve" ${d.res==='-ve'?'selected':''}>-ve</option>
+                                <option value="+ve" ${d.res==='+ve'?'selected':''}>+ve</option>
+                            </select>
+                        </div>`;
+                });
+            }
+
+            html += `</div></div>`;
+            bc.insertAdjacentHTML('beforeend', html);
             
             const el = view.querySelector('.ex-list');
             exercises.forEach(e => {
                 const chk = pt.ex.includes(e) ? 'checked' : '';
-                el.insertAdjacentHTML('beforeend', `<label class="chk-item" onclick="toggleChk(this)"><input type="checkbox" value="${e}" ${chk}><span>${e}</span></label>`);
+                const activeClass = pt.ex.includes(e) ? 'active' : '';
+                el.insertAdjacentHTML('beforeend', 
+                    `<div class="chk-item ${activeClass}" onclick="toggleChk(this)">
+                        <input type="checkbox" value="${e}" ${chk}>
+                        <span>${e}</span>
+                    </div>`
+                );
             });
+            
+            // LOAD FREE TEXT
+            view.querySelector('.ex-free').value = pt.ex_free || "";
+            
             cont.appendChild(view);
         });
     }
@@ -469,10 +572,11 @@
     function switchTab(i) { saveWork(); currentTab = i; renderAll(); }
     function updateTabName(i) { document.querySelectorAll('.tab-btn')[currentTab].innerText = i.value.substr(0,8) || `Pt ${currentTab+1}`; }
     function toggleStairs(sel) { sel.nextElementSibling.classList.toggle('hidden', sel.value !== 'Stairs'); }
-    function toggleChk(el) { 
-        const chk = el.querySelector('input'); 
+    
+    function toggleChk(div) { 
+        const chk = div.querySelector('input'); 
         chk.checked = !chk.checked; 
-        el.classList.toggle('active', chk.checked);
+        div.classList.toggle('active', chk.checked);
         saveWork();
     }
     
@@ -523,18 +627,25 @@
                     if(d.q) val += "with " + d.q + " ";
                     if(d.m) val += "(" + d.m + ")";
                 }
+                
+                // MAPPING TO FULL TEXT
+                const fullMov = movMap[m] || m;
+                
                 if(val.trim()) {
-                    if(!hasHeader) { pText += `[${bp.name}]\n`; hasHeader = true; }
-                    pText += `${m}: ${val || '-'}\n`;
+                    if(!hasHeader) { pText += `${bp.noteTitle}\n`; hasHeader = true; }
+                    pText += `${fullMov}: ${val || '-'}\n`;
                 }
             });
 
             if(bp.tests) {
                 bp.tests.forEach(test => {
                     const uid = `${bp.id}_test_${test}`;
-                    if(pt.roms[uid]?.chk) {
-                         if(!hasHeader) { pText += `[${bp.name}]\n`; hasHeader = true; }
-                         pText += `${test}: Positive\n`;
+                    const d = pt.roms[uid];
+                    if(d && (d.res === '+ve' || (d.txt && d.txt.trim().length > 0))) {
+                         if(!hasHeader) { pText += `${bp.noteTitle}\n`; hasHeader = true; }
+                         let line = `${test}: ${d.res}`;
+                         if(d.txt) line += ` (${d.txt})`;
+                         pText += line + "\n";
                     }
                 });
             }
@@ -542,9 +653,12 @@
             if(bp.palp) {
                 bp.palp.forEach(palp => {
                     const uid = `${bp.id}_palp_${palp}`;
-                    if(pt.roms[uid]?.chk) {
-                         if(!hasHeader) { pText += `[${bp.name}]\n`; hasHeader = true; }
-                         pText += `Tenderness: ${palp}\n`;
+                    const d = pt.roms[uid];
+                    if(d && (d.res === '+ve' || (d.txt && d.txt.trim().length > 0))) {
+                         if(!hasHeader) { pText += `${bp.noteTitle}\n`; hasHeader = true; }
+                         let line = `Tenderness (${palp}): ${d.res}`;
+                         if(d.txt) line += ` (${d.txt})`;
+                         pText += line + "\n";
                     }
                 });
             }
@@ -560,6 +674,12 @@
         t += `Home exercise taught with exercise leaflet and red theraband given (5-10 repetitions/set, 2-3 sets/day):\n`;
         pt.ex.forEach(e => t += `-${e}\n`);
         
+        // ADD EX FREE TEXT
+        if(pt.ex_free) {
+            let lines = pt.ex_free.split('\n');
+            lines.forEach(l => { if(l.trim()) t += `-${l.trim()}\n`; });
+        }
+        
         t += `Machine Test Done\nWarning / Instructional given and contraindication checked\nPost treatment uneventful`;
 
         document.getElementById('copy_target').value = t;
@@ -574,6 +694,7 @@
 </script>
 </body>
 </html>
+
 
 
 
