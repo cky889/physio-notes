@@ -1,11 +1,9 @@
-cd ~/Desktop/physio-app
-cat <<EOF > index.html
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>CMS Clinical V23.2</title>
+    <title>CMS Clinical V23.3</title>
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="theme-color" content="#2c3e50">
@@ -13,12 +11,18 @@ cat <<EOF > index.html
     <style>
         :root { --main: #2c3e50; --acc: #2980b9; --bg: #f3f4f6; }
         body { font-family: -apple-system, sans-serif; background: var(--bg); margin: 0; padding-bottom: 120px; color: #1f2937; -webkit-tap-highlight-color: transparent; }
+        
+        /* AUTH SCREEN - UPDATED */
         #auth-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--main); z-index: 3000; display: flex; flex-direction: column; align-items: center; justify-content: center; color: white; transition: opacity 0.3s; }
         .auth-card { background: white; color: #333; width: 85%; max-width: 320px; padding: 25px; border-radius: 16px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.3); }
-        .auth-input { width: 100%; padding: 12px; margin: 8px 0; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 1.1rem; text-align: center; }
-        .auth-btn { width: 100%; padding: 14px; background: var(--acc); color: white; border: none; border-radius: 8px; font-weight: bold; font-size: 1rem; margin-top: 15px; cursor: pointer; }
-        .auth-link { margin-top: 15px; font-size: 0.9rem; color: var(--acc); text-decoration: underline; cursor: pointer; padding: 10px; }
+        .auth-input { width: 100%; padding: 14px; margin: 8px 0; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 1.1rem; text-align: center; background: #fff; appearance: none; -webkit-appearance: none; }
+        
+        /* BIG BUTTONS FOR AUTH */
+        .auth-btn { width: 100%; padding: 16px; background: var(--acc); color: white; border: none; border-radius: 10px; font-weight: bold; font-size: 1.1rem; margin-top: 10px; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+        .auth-btn.sec { background: white; color: var(--acc); border: 2px solid var(--acc); margin-top: 12px; }
+        
         .hidden { display: none !important; }
+
         header { background: var(--main); color: white; padding: 12px; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
         .top-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; font-size: 0.9rem; }
         .user-badge { background: rgba(255,255,255,0.2); padding: 4px 10px; border-radius: 12px; font-weight: bold; }
@@ -26,6 +30,7 @@ cat <<EOF > index.html
         .tab-btn { padding: 8px 16px; background: rgba(255,255,255,0.15); border-radius: 20px; color: #ddd; font-size: 0.9rem; white-space: nowrap; cursor: pointer; }
         .tab-btn.active { background: white; color: var(--main); font-weight: 800; transform: scale(1.05); }
         .tab-btn.add { background: var(--acc); color: white; font-weight: bold; }
+
         .container { max-width: 700px; margin: 0 auto; padding: 12px; }
         .patient-view { display: none; }
         .patient-view.active { display: block; }
@@ -33,10 +38,12 @@ cat <<EOF > index.html
         .head-sec { font-size: 0.8rem; font-weight: 800; color: #9ca3af; text-transform: uppercase; margin-bottom: 10px; border-bottom: 1px solid #f3f4f6; padding-bottom: 5px; }
         input, select, textarea { width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 16px; box-sizing: border-box; background: #fff; margin-bottom: 12px; -webkit-appearance: none; }
         .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
         .accordion { border: 1px solid #e5e7eb; border-radius: 8px; margin-bottom: 8px; overflow: hidden; }
         .accordion-head { padding: 12px 15px; background: #f9fafb; font-weight: 600; cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
         .accordion-body { display: none; padding: 15px; background: white; border-top: 1px solid #e5e7eb; }
         .accordion-body.show { display: block; }
+        
         .rom-row { margin-bottom: 15px; border-bottom: 1px solid #f3f4f6; padding-bottom: 8px; }
         .rom-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; }
         .rom-title { font-size: 0.9rem; font-weight: 800; color: #333; }
@@ -45,31 +52,40 @@ cat <<EOF > index.html
         .rom-btn { padding: 8px 12px; font-size: 0.8rem; border: 1px solid #e5e7eb; border-radius: 6px; background: #f9fafb; color: #555; cursor: pointer; }
         .rom-btn.range.selected { background: #e0f2fe; color: #0284c7; border-color: #0284c7; font-weight: 700; }
         .rom-btn.quality.selected { background: #fef2f2; color: #dc2626; border-color: #dc2626; font-weight: 700; }
+        
         .chk-list { display: flex; flex-direction: column; gap: 8px; }
         .chk-item { display: flex; align-items: center; gap: 12px; padding: 14px; background: #f9fafb; border-radius: 8px; border: 1px solid #e5e7eb; cursor: pointer; transition: background 0.2s; -webkit-tap-highlight-color: transparent; }
         .chk-item:active { background: #e5e7eb; }
         .chk-item.active { background: #eff6ff; border-color: var(--acc); font-weight:600; color:#1e3a8a; }
         .chk-item input { width: 24px; height: 24px; margin: 0; flex-shrink: 0; pointer-events: none; }
+
         .fab { position: fixed; bottom: 30px; left: 20px; right: 20px; background: var(--acc); color: white; padding: 16px; border-radius: 50px; font-size: 1.1rem; font-weight: 700; border: none; box-shadow: 0 4px 15px rgba(41,128,185,0.4); z-index: 1000; cursor: pointer; display:flex; justify-content:center; align-items:center; gap:10px; }
     </style>
 </head>
 <body>
+
 <div id="auth-screen">
     <div id="view-login" class="auth-card">
-        <h3>CMS Clinical V23.2</h3>
+        <h3>CMS Clinical V23.3</h3>
         <select id="user-select" class="auth-input"></select>
         <input type="tel" id="user-pin" class="auth-input" placeholder="PIN" maxlength="6" style="-webkit-text-security:disc;">
-        <button class="auth-btn" onclick="attemptLogin()">Unlock</button>
-        <div class="auth-link" onclick="toggleAuth('register')">New User?</div>
+        
+        <!-- BIGGER BUTTONS -->
+        <button class="auth-btn" onclick="attemptLogin()">Unlock App</button>
+        <button class="auth-btn sec" onclick="toggleAuth('register')">Create New Profile</button>
     </div>
+    
     <div id="view-register" class="auth-card hidden">
         <h3>Create Profile</h3>
         <input type="text" id="reg-name" class="auth-input" placeholder="Your Name">
-        <input type="tel" id="reg-pin" class="auth-input" placeholder="Create PIN" maxlength="6">
-        <button class="auth-btn" style="background:#10b981;" onclick="registerUser()">Start</button>
-        <div class="auth-link" onclick="toggleAuth('login')">Cancel</div>
+        <input type="tel" id="reg-pin" class="auth-input" placeholder="Create PIN (4 digits)" maxlength="6">
+        
+        <!-- BIGGER BUTTONS -->
+        <button class="auth-btn" style="background:#10b981;" onclick="registerUser()">Start Using App</button>
+        <button class="auth-btn sec" style="color:#666; border-color:#ccc;" onclick="toggleAuth('login')">Back</button>
     </div>
 </div>
+
 <div id="app-ui" style="display:none;">
     <header>
         <div class="top-row">
@@ -80,10 +96,12 @@ cat <<EOF > index.html
             <div class="tab-btn add" onclick="addPatient()">+ Pt</div>
         </div>
     </header>
+
     <div class="container" id="patients-container"></div>
     <button class="fab" onclick="generateNote()">COPY CMS NOTE</button>
 </div>
 <textarea id="copy_target" style="opacity:0; height:1px; position:absolute; bottom:0;"></textarea>
+
 <template id="patient-template">
     <div class="patient-view">
         <div class="card" style="border:2px solid #2980b9; background:#f0f9ff;">
@@ -160,11 +178,13 @@ cat <<EOF > index.html
         </div>
     </div>
 </template>
+
 <script>
     const USERS_KEY = 'physio_users_v1';
     let currentUser = null;
     let currentPatients = [];
     let currentTab = 0;
+
     const bodyParts = [
         {name:"Neck (Cervical)", id:"cx", mov:["Flex","Ext","Rot(L)","Rot(R)","Side(L)","Side(R)"], tests:["Spurling","Distraction"], palp:["Trapezius","Levator"]},
         {name:"Back (Lumbar)", id:"lx", mov:["Flex","Ext","Rot(L)","Rot(R)","Side(L)","Side(R)"], tests:["SLR","Slump"], palp:["Paraspinals","PSIS"]},
@@ -194,40 +214,57 @@ cat <<EOF > index.html
         "Encouraged to increase the frequency of walking exercise in the corridor",
         "Encouraged patient's wife to tidy up home and remove obstacles"
     ];
+
     window.onload = loadUsersDropdown;
+
     function loadUsersDropdown() {
-        const users = JSON.parse(localStorage.getItem(USERS_KEY) || '{}');
+        let users = JSON.parse(localStorage.getItem(USERS_KEY) || '{}');
+        
+        // AUTO-CLEANUP: If data is corrupt or empty keys, fix it
+        let validKeys = Object.keys(users).filter(k => k && k.trim() !== "");
+        
         const sel = document.getElementById('user-select');
-        const count = Object.keys(users).length;
-        if(count === 0) {
+        
+        if (validKeys.length === 0) {
             sel.innerHTML = '<option value="" disabled selected>No users found</option>';
-            toggleAuth('register'); // Auto-switch to register if empty
+            toggleAuth('register'); // Auto-switch to register
         } else {
             sel.innerHTML = '<option value="" disabled selected>Select User</option>';
-            Object.keys(users).forEach(u => sel.innerHTML += \`<option value="\${u}">\${u}</option>\`);
+            validKeys.forEach(u => sel.innerHTML += `<option value="${u}">${u}</option>`);
         }
     }
+
     function toggleAuth(m) {
         document.getElementById('view-login').classList.toggle('hidden', m !== 'login');
         document.getElementById('view-register').classList.toggle('hidden', m !== 'register');
     }
+
     function registerUser() {
         const n = document.getElementById('reg-name').value.trim();
         const p = document.getElementById('reg-pin').value.trim();
-        if(!n || p.length < 4) return alert("Enter Name & 4-digit PIN");
+        
+        if(!n || p.length < 4) {
+            alert("Please enter a Name and a 4-digit PIN");
+            return;
+        }
+        
         const users = JSON.parse(localStorage.getItem(USERS_KEY) || '{}');
         users[n] = p;
         localStorage.setItem(USERS_KEY, JSON.stringify(users));
-        loadUsersDropdown(); toggleAuth('login');
-        // Auto-select and login
-        document.getElementById('user-select').value = n;
-        document.getElementById('user-pin').value = p;
-        attemptLogin();
+        
+        // Instant Login
+        currentUser = n;
+        document.getElementById('display-name').innerText = n;
+        document.getElementById('auth-screen').style.display = 'none';
+        document.getElementById('app-ui').style.display = 'block';
+        loadWorkspace();
     }
+
     function attemptLogin() {
         const n = document.getElementById('user-select').value;
         const p = document.getElementById('user-pin').value;
-        if(!n) return alert("Please select a user");
+        if(!n || n === "") return alert("Please select a user first.");
+        
         const users = JSON.parse(localStorage.getItem(USERS_KEY) || '{}');
         if(users[n] == p) {
             currentUser = n;
@@ -237,15 +274,18 @@ cat <<EOF > index.html
             loadWorkspace();
         } else alert("Invalid PIN");
     }
+
     function logout() { location.reload(); }
+
     function loadWorkspace() {
-        const raw = localStorage.getItem(\`physio_data_\${currentUser}\`);
+        const raw = localStorage.getItem(`physio_data_${currentUser}`);
         currentPatients = raw ? JSON.parse(raw) : [];
         if(currentPatients.length === 0) createPatientData();
         renderAll();
     }
+
     function saveWork() {
-        const view = document.getElementById(\`view-\${currentTab}\`);
+        const view = document.getElementById(`view-${currentTab}`);
         if(!view) return;
         const pt = currentPatients[currentTab];
         pt.id = view.querySelector('.pt-id').value;
@@ -257,6 +297,7 @@ cat <<EOF > index.html
         pt.fall = view.querySelector('.fall').value;
         pt.ment = view.querySelector('.ment').value;
         pt.prev = view.querySelector('.prev_pt').value;
+        
         pt.soc = {
             live: view.querySelector('.soc_live').value,
             carer: view.querySelector('.soc_carer').value,
@@ -287,6 +328,7 @@ cat <<EOF > index.html
             stg: view.querySelector('.stg').value,
             ltg: view.querySelector('.ltg').value
         };
+        
         pt.roms = {};
         view.querySelectorAll('.rom-row').forEach(r => {
             const uid = r.dataset.uid;
@@ -294,32 +336,39 @@ cat <<EOF > index.html
             const ran = r.querySelector('.range.selected')?.innerText;
             const qua = Array.from(r.querySelectorAll('.quality.selected')).map(b=>b.innerText).join(',');
             const chk = r.querySelector('.chk-input')?.checked ? "Positive" : "";
+            
             if(man !== undefined) pt.roms[uid] = {m:man, r:ran||"", q:qua};
             else if(chk) pt.roms[uid] = {chk: "Positive"}; 
         });
         pt.ex = Array.from(view.querySelectorAll('.ex-list input:checked')).map(c=>c.value);
-        localStorage.setItem(\`physio_data_\${currentUser}\`, JSON.stringify(currentPatients));
+        localStorage.setItem(`physio_data_${currentUser}`, JSON.stringify(currentPatients));
     }
+
     function createPatientData() {
         currentPatients.push({ id:"", hpi:"", soc:{}, assess:{}, plan:{}, roms:{}, ex:[] });
         renderAll(); switchTab(currentPatients.length - 1);
     }
+    
     function addPatient() { saveWork(); createPatientData(); }
+
     function renderAll() {
         const cont = document.getElementById('patients-container');
         const bar = document.getElementById('tab-bar');
         cont.innerHTML = '';
         Array.from(bar.children).forEach(c => { if(!c.classList.contains('add')) c.remove(); });
+        
         currentPatients.forEach((pt, idx) => {
             const btn = document.createElement('div');
-            btn.className = \`tab-btn \${idx === currentTab ? 'active' : ''}\`;
-            btn.innerText = pt.id || \`Pt \${idx+1}\`;
+            btn.className = `tab-btn ${idx === currentTab ? 'active' : ''}`;
+            btn.innerText = pt.id || `Pt ${idx+1}`;
             btn.onclick = () => switchTab(idx);
             bar.insertBefore(btn, bar.lastElementChild);
+            
             const clone = document.getElementById('patient-template').content.cloneNode(true);
             const view = clone.querySelector('.patient-view');
-            view.id = \`view-\${idx}\`;
+            view.id = `view-${idx}`;
             if(idx === currentTab) view.classList.add('active');
+            
             view.querySelector('.pt-id').value = pt.id || "";
             view.querySelector('.dx').value = pt.dx || "";
             view.querySelector('.ref').value = pt.ref || "";
@@ -329,6 +378,7 @@ cat <<EOF > index.html
             view.querySelector('.fall').value = pt.fall || "";
             view.querySelector('.ment').value = pt.ment || "";
             view.querySelector('.prev_pt').value = pt.prev || "NIL";
+            
             if(pt.soc) {
                 view.querySelector('.soc_live').value = pt.soc.live || "";
                 view.querySelector('.soc_carer').value = pt.soc.carer || "";
@@ -340,6 +390,7 @@ cat <<EOF > index.html
                 view.querySelector('.env_bath').value = pt.soc.bath || "";
                 view.querySelector('.env_rails').checked = pt.soc.rails || false;
                 view.querySelector('.env_note').value = pt.soc.note || "Spaceous and tidy";
+                
                 const accSel = view.querySelector('.env_acc');
                 toggleStairs(accSel);
             }
@@ -361,55 +412,62 @@ cat <<EOF > index.html
                 view.querySelector('.stg').value = pt.plan.stg || "";
                 view.querySelector('.ltg').value = pt.plan.ltg || "";
             }
+            
             const bc = view.querySelector('.body-container');
             bodyParts.forEach(bp => {
-                let html = \`<div class="accordion"><div class="accordion-head" onclick="toggleAc(this)">\${bp.name} <span>+</span></div><div class="accordion-body">\`;
+                let html = `<div class="accordion"><div class="accordion-head" onclick="toggleAc(this)">${bp.name} <span>+</span></div><div class="accordion-body">`;
+                
                 bp.mov.forEach(m => {
-                    const uid = \`\${bp.id}_\${m}\`;
+                    const uid = `${bp.id}_${m}`;
                     const d = pt.roms[uid] || {m:"",r:"",q:""};
                     const rs = (t) => d.r===t ? 'selected' : '';
                     const qs = (t) => d.q.includes(t) ? 'selected' : '';
-                    html += \`<div class="rom-row" data-uid="\${uid}">
-                        <div class="rom-header"><div class="rom-title">\${m}</div><input class="manual-input" value="\${d.m}" onkeyup="saveWork()"></div>
-                        <div class="btn-grid"><div class="rom-btn range \${rs('Full')}" onclick="sel(this);saveWork()">Full</div><div class="rom-btn range \${rs('limited')}" onclick="sel(this);saveWork()">limited</div></div>
-                        <div class="btn-grid"><div class="rom-btn quality \${qs('Pain')}" onclick="tog(this);saveWork()">Pain</div></div>
-                    </div>\`;
+                    html += `<div class="rom-row" data-uid="${uid}">
+                        <div class="rom-header"><div class="rom-title">${m}</div><input class="manual-input" value="${d.m}" onkeyup="saveWork()"></div>
+                        <div class="btn-grid"><div class="rom-btn range ${rs('Full')}" onclick="sel(this);saveWork()">Full</div><div class="rom-btn range ${rs('limited')}" onclick="sel(this);saveWork()">limited</div></div>
+                        <div class="btn-grid"><div class="rom-btn quality ${qs('Pain')}" onclick="tog(this);saveWork()">Pain</div></div>
+                    </div>`;
                 });
+                
                 if(bp.tests) {
-                    html += \`<div style="font-weight:bold; margin-top:10px; font-size:0.85rem; color:#acc;">Special Tests</div>\`;
+                    html += `<div style="font-weight:bold; margin-top:10px; font-size:0.85rem; color:#acc;">Special Tests</div>`;
                     bp.tests.forEach(t => {
-                        const uid = \`\${bp.id}_test_\${t}\`;
+                        const uid = `${bp.id}_test_${t}`;
                         const chk = pt.roms[uid]?.chk ? "checked" : "";
-                        html += \`<div class="rom-row" data-uid="\${uid}" style="display:flex; justify-content:space-between; align-items:center;">
-                            <span style="font-size:0.9rem;">\${t}</span>
-                            <label><input type="checkbox" class="chk-input" \${chk} onchange="saveWork()"> +ve</label>
-                        </div>\`;
+                        html += `<div class="rom-row" data-uid="${uid}" style="display:flex; justify-content:space-between; align-items:center;">
+                            <span style="font-size:0.9rem;">${t}</span>
+                            <label><input type="checkbox" class="chk-input" ${chk} onchange="saveWork()"> +ve</label>
+                        </div>`;
                     });
                 }
+
                 if(bp.palp) {
-                    html += \`<div style="font-weight:bold; margin-top:10px; font-size:0.85rem; color:#acc;">Palpation (Tenderness)</div>\`;
+                    html += `<div style="font-weight:bold; margin-top:10px; font-size:0.85rem; color:#acc;">Palpation (Tenderness)</div>`;
                     bp.palp.forEach(p => {
-                        const uid = \`\${bp.id}_palp_\${p}\`;
+                        const uid = `${bp.id}_palp_${p}`;
                         const chk = pt.roms[uid]?.chk ? "checked" : "";
-                        html += \`<div class="rom-row" data-uid="\${uid}" style="display:flex; justify-content:space-between; align-items:center;">
-                            <span style="font-size:0.9rem;">\${p}</span>
-                            <label><input type="checkbox" class="chk-input" \${chk} onchange="saveWork()"> +ve</label>
-                        </div>\`;
+                        html += `<div class="rom-row" data-uid="${uid}" style="display:flex; justify-content:space-between; align-items:center;">
+                            <span style="font-size:0.9rem;">${p}</span>
+                            <label><input type="checkbox" class="chk-input" ${chk} onchange="saveWork()"> +ve</label>
+                        </div>`;
                     });
                 }
-                html += \`</div></div>\`;
+
+                html += `</div></div>`;
                 bc.insertAdjacentHTML('beforeend', html);
             });
+            
             const el = view.querySelector('.ex-list');
             exercises.forEach(e => {
                 const chk = pt.ex.includes(e) ? 'checked' : '';
-                el.insertAdjacentHTML('beforeend', \`<label class="chk-item" onclick="toggleChk(this)"><input type="checkbox" value="\${e}" \${chk}><span>\${e}</span></label>\`);
+                el.insertAdjacentHTML('beforeend', `<label class="chk-item" onclick="toggleChk(this)"><input type="checkbox" value="${e}" ${chk}><span>${e}</span></label>`);
             });
             cont.appendChild(view);
         });
     }
+
     function switchTab(i) { saveWork(); currentTab = i; renderAll(); }
-    function updateTabName(i) { document.querySelectorAll('.tab-btn')[currentTab].innerText = i.value.substr(0,8) || \`Pt \${currentTab+1}\`; }
+    function updateTabName(i) { document.querySelectorAll('.tab-btn')[currentTab].innerText = i.value.substr(0,8) || `Pt ${currentTab+1}`; }
     function toggleStairs(sel) { sel.nextElementSibling.classList.toggle('hidden', sel.value !== 'Stairs'); }
     function toggleChk(el) { 
         const chk = el.querySelector('input'); 
@@ -417,37 +475,47 @@ cat <<EOF > index.html
         el.classList.toggle('active', chk.checked);
         saveWork();
     }
+    
     function generateNote() {
         saveWork();
         const pt = currentPatients[currentTab];
         const line = "======================================================";
-        let t = \`Diagnosis: \${pt.dx || ''}\\nReason for referral: \${pt.ref || ''}\\n\`;
-        t += \`Physiotherapy Home Visit\\n\${line}\\n\`;
-        t += \`History of Present Illness:\\n\${pt.hpi || ''}\\n\`;
-        t += \`Past Medical History:\\n\${pt.pmh || ''}\\n\`;
-        t += \`Medication:\\n\${pt.meds || ''}\\n\`;
-        t += \`Social History:\\nLives with \${pt.soc.live || ''}\\nTake cared by \${pt.soc.carer || ''}\\nADL-I\\n\`;
-        t += \`Premorbid: \${pt.soc.pre || ''}\\n\`;
-        let envText = \`\${pt.soc.note || ''}\\n\${pt.soc.type || ''}\\n\`;
-        if(pt.soc.acc === 'Stairs') envText += \`Stairs: \${pt.soc.stairs || '?'} steps\\n\`;
-        else envText += \`\${pt.soc.acc || ''}\\nNo stairs\\n\`;
-        t += \`Home Environment:\\n\${envText}\`;
-        let toiletText = \`Toilet: \${pt.soc.wc || ''}\`;
-        let bathText = \`Bath: \${pt.soc.bath || ''}\`;
+        let t = `Diagnosis: ${pt.dx || ''}\nReason for referral: ${pt.ref || ''}\n`;
+        t += `Physiotherapy Home Visit\n${line}\n`;
+        
+        t += `History of Present Illness:\n${pt.hpi || ''}\n`;
+        t += `Past Medical History:\n${pt.pmh || ''}\n`;
+        t += `Medication:\n${pt.meds || ''}\n`;
+        
+        t += `Social History:\nLives with ${pt.soc.live || ''}\nTake cared by ${pt.soc.carer || ''}\nADL-I\n`;
+        t += `Premorbid: ${pt.soc.pre || ''}\n`;
+        
+        let envText = `${pt.soc.note || ''}\n${pt.soc.type || ''}\n`;
+        if(pt.soc.acc === 'Stairs') envText += `Stairs: ${pt.soc.stairs || '?'} steps\n`;
+        else envText += `${pt.soc.acc || ''}\nNo stairs\n`;
+        t += `Home Environment:\n${envText}`;
+        
+        let toiletText = `Toilet: ${pt.soc.wc || ''}`;
+        let bathText = `Bath: ${pt.soc.bath || ''}`;
         if(pt.soc.rails) { toiletText += " (Handrails available)"; bathText += " (Handrails available)"; }
-        t += \`\${toiletText}\\n\${bathText}\\n\`;
-        t += \`Fall History and Reason: \${pt.fall || ''}\\n\`;
-        t += \`Mental Status: \${pt.ment || ''}\\n\`;
-        t += \`Previous physiotherapy treatment received and its effects:\\n\${pt.prev || 'NIL'}\\n\`;
-        t += \`Subjective examination:\\nCompliant: \${pt.assess.subj || ''}\\nFunctional limitation: \${pt.assess.func || ''}\\n\`;
-        t += \`Objective examination:\\nPatient assessed with \${pt.assess.ass_with || ''}\\nGeneral condition stable\\n\`;
-        t += \`Blood Pressure \${pt.assess.bp || ''} mmHg ;Pulse \${pt.assess.hr || ''} bpm\\nTOCC-ve\\nBody temperature: afebrile\\n\`;
-        t += \`Observation:\\n\${pt.assess.obs || ''}\\n\`;
+        t += `${toiletText}\n${bathText}\n`;
+        
+        t += `Fall History and Reason: ${pt.fall || ''}\n`;
+        t += `Mental Status: ${pt.ment || ''}\n`;
+        t += `Previous physiotherapy treatment received and its effects:\n${pt.prev || 'NIL'}\n`;
+        
+        t += `Subjective examination:\nCompliant: ${pt.assess.subj || ''}\nFunctional limitation: ${pt.assess.func || ''}\n`;
+        
+        t += `Objective examination:\nPatient assessed with ${pt.assess.ass_with || ''}\nGeneral condition stable\n`;
+        t += `Blood Pressure ${pt.assess.bp || ''} mmHg ;Pulse ${pt.assess.hr || ''} bpm\nTOCC-ve\nBody temperature: afebrile\n`;
+        t += `Observation:\n${pt.assess.obs || ''}\n`;
+        
         bodyParts.forEach(bp => {
             let pText = "";
             let hasHeader = false;
+            
             bp.mov.forEach(m => {
-                const uid = \`\${bp.id}_\${m}\`;
+                const uid = `${bp.id}_${m}`;
                 const d = pt.roms[uid];
                 let val = "";
                 if(d) {
@@ -456,48 +524,56 @@ cat <<EOF > index.html
                     if(d.m) val += "(" + d.m + ")";
                 }
                 if(val.trim()) {
-                    if(!hasHeader) { pText += \`[\${bp.name}]\\n\`; hasHeader = true; }
-                    pText += \`\${m}: \${val || '-'}\\n\`;
+                    if(!hasHeader) { pText += `[${bp.name}]\n`; hasHeader = true; }
+                    pText += `${m}: ${val || '-'}\n`;
                 }
             });
+
             if(bp.tests) {
                 bp.tests.forEach(test => {
-                    const uid = \`\${bp.id}_test_\${test}\`;
+                    const uid = `${bp.id}_test_${test}`;
                     if(pt.roms[uid]?.chk) {
-                         if(!hasHeader) { pText += \`[\${bp.name}]\\n\`; hasHeader = true; }
-                         pText += \`\${test}: Positive\\n\`;
+                         if(!hasHeader) { pText += `[${bp.name}]\n`; hasHeader = true; }
+                         pText += `${test}: Positive\n`;
                     }
                 });
             }
+
             if(bp.palp) {
                 bp.palp.forEach(palp => {
-                    const uid = \`\${bp.id}_palp_\${palp}\`;
+                    const uid = `${bp.id}_palp_${palp}`;
                     if(pt.roms[uid]?.chk) {
-                         if(!hasHeader) { pText += \`[\${bp.name}]\\n\`; hasHeader = true; }
-                         pText += \`Tenderness: \${palp}\\n\`;
+                         if(!hasHeader) { pText += `[${bp.name}]\n`; hasHeader = true; }
+                         pText += `Tenderness: ${palp}\n`;
                     }
                 });
             }
             t += pText;
         });
-        t += \`Power\\nUpper limb: right / left\\n                   \${pt.assess.pul || ''}\\n\`;
-        t += \`Lower limb: right / left\\n                   \${pt.assess.pll || ''}\\n\`;
-        t += \`Bed mobility: \${pt.plan.bed || ''}\\nTransfer: \${pt.plan.tf || ''}\\nGait: \${pt.plan.gait || ''}\\n\`;
-        t += \`Problem: \${pt.plan.prob || ''}\\nShort term goal: \${pt.plan.stg || ''}\\nLong term goal: \${pt.plan.ltg || ''}\\n\`;
-        t += \`Home exercise taught with exercise leaflet and red theraband given (5-10 repetitions/set, 2-3 sets/day):\\n\`;
-        pt.ex.forEach(e => t += \`-\${e}\\n\`);
-        t += \`Machine Test Done\\nWarning / Instructional given and contraindication checked\\nPost treatment uneventful\`;
+        
+        t += `Power\nUpper limb: right / left\n                   ${pt.assess.pul || ''}\n`;
+        t += `Lower limb: right / left\n                   ${pt.assess.pll || ''}\n`;
+        
+        t += `Bed mobility: ${pt.plan.bed || ''}\nTransfer: ${pt.plan.tf || ''}\nGait: ${pt.plan.gait || ''}\n`;
+        t += `Problem: ${pt.plan.prob || ''}\nShort term goal: ${pt.plan.stg || ''}\nLong term goal: ${pt.plan.ltg || ''}\n`;
+        
+        t += `Home exercise taught with exercise leaflet and red theraband given (5-10 repetitions/set, 2-3 sets/day):\n`;
+        pt.ex.forEach(e => t += `-${e}\n`);
+        
+        t += `Machine Test Done\nWarning / Instructional given and contraindication checked\nPost treatment uneventful`;
+
         document.getElementById('copy_target').value = t;
         document.getElementById('copy_target').select();
         document.execCommand('copy');
         alert("CMS Note Copied!");
     }
+
     window.toggleAc = (el) => { el.classList.toggle('active'); el.nextElementSibling.classList.toggle('show'); };
     window.sel = (el) => { el.parentElement.querySelectorAll('.range').forEach(b=>b.classList.remove('selected')); el.classList.add('selected'); };
     window.tog = (el) => { el.classList.toggle('selected'); };
 </script>
 </body>
 </html>
-EOF
+
 
 
