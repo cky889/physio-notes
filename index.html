@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>CMS Clinical V24.0</title>
+    <title>CMS Clinical V24.1</title>
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="theme-color" content="#2c3e50">
@@ -101,7 +101,7 @@
 
 <div id="auth-screen">
     <div id="view-login" class="auth-card">
-        <h3>CMS Clinical V24.0</h3>
+        <h3>CMS Clinical V24.1</h3>
         <select id="user-select" class="auth-input"></select>
         <input type="tel" id="user-pin" class="auth-input" placeholder="PIN" maxlength="6" style="-webkit-text-security:disc;">
         <button class="auth-btn" onclick="attemptLogin()">Unlock App</button>
@@ -586,52 +586,44 @@
                         <div class="btn-grid"><div class="rom-btn quality ${qs('Pain')}" onclick="tog(this);saveWork()">Pain</div></div>
                     </div>`;
                 });
-                
-                // MAPPING TO FULL TEXT
-                const fullMov = movMap[m] || m;
-                
-                if(val.trim()) {
-                    if(!hasHeader) { pText += `${bp.noteTitle}\n`; hasHeader = true; }
-                    pText += `${fullMov}: ${val || '-'}\n`;
+
+                if(bp.tests) {
+                    bp.tests.forEach(test => {
+                        const uid = `${bp.id}_test_${test}`;
+                        const d = pt.roms[uid] || {txt:"", res:"-ve"};
+                        html += `<div class="rom-row special-row" data-uid="${uid}">
+                                <div>
+                                    <span class="special-label">${test}</span>
+                                    <input class="special-txt" placeholder="Note (optional)" value="${d.txt}" onkeyup="saveWork()">
+                                </div>
+                                <select class="special-sel" onchange="saveWork()" style="color:${d.res==='+ve'?'red':'green'}">
+                                    <option value="-ve" ${d.res==='-ve'?'selected':''}>-ve</option>
+                                    <option value="+ve" ${d.res==='+ve'?'selected':''}>+ve</option>
+                                </select>
+                            </div>`;
+                    });
                 }
+
+                if(bp.palp) {
+                    bp.palp.forEach(palp => {
+                        const uid = `${bp.id}_palp_${palp}`;
+                        const d = pt.roms[uid] || {txt:"", res:"-ve"};
+                        html += `<div class="rom-row special-row" data-uid="${uid}">
+                                <div>
+                                    <span class="special-label">${palp}</span>
+                                    <input class="special-txt" placeholder="Note (optional)" value="${d.txt}" onkeyup="saveWork()">
+                                </div>
+                                <select class="special-sel" onchange="saveWork()" style="color:${d.res==='+ve'?'red':'green'}">
+                                    <option value="-ve" ${d.res==='-ve'?'selected':''}>-ve</option>
+                                    <option value="+ve" ${d.res==='+ve'?'selected':''}>+ve</option>
+                                </select>
+                            </div>`;
+                    });
+                }
+
+                html += `</div></div>`;
+                bc.insertAdjacentHTML('beforeend', html);
             });
-
-            if(bp.tests) {
-                bp.tests.forEach(test => {
-                    const uid = `${bp.id}_test_${test}`;
-                    const d = pt.roms[uid] || {txt:"", res:"-ve"};
-                    html += `<div class="rom-row special-row" data-uid="${uid}">
-                            <div>
-                                <span class="special-label">${test}</span>
-                                <input class="special-txt" placeholder="Note (optional)" value="${d.txt}" onkeyup="saveWork()">
-                            </div>
-                            <select class="special-sel" onchange="saveWork()" style="color:${d.res==='+ve'?'red':'green'}">
-                                <option value="-ve" ${d.res==='-ve'?'selected':''}>-ve</option>
-                                <option value="+ve" ${d.res==='+ve'?'selected':''}>+ve</option>
-                            </select>
-                        </div>`;
-                });
-            }
-
-            if(bp.palp) {
-                bp.palp.forEach(palp => {
-                    const uid = `${bp.id}_palp_${palp}`;
-                    const d = pt.roms[uid] || {txt:"", res:"-ve"};
-                    html += `<div class="rom-row special-row" data-uid="${uid}">
-                            <div>
-                                <span class="special-label">${palp}</span>
-                                <input class="special-txt" placeholder="Note (optional)" value="${d.txt}" onkeyup="saveWork()">
-                            </div>
-                            <select class="special-sel" onchange="saveWork()" style="color:${d.res==='+ve'?'red':'green'}">
-                                <option value="-ve" ${d.res==='-ve'?'selected':''}>-ve</option>
-                                <option value="+ve" ${d.res==='+ve'?'selected':''}>+ve</option>
-                            </select>
-                        </div>`;
-                });
-            }
-
-            html += `</div></div>`;
-            bc.insertAdjacentHTML('beforeend', html);
             
             const el = view.querySelector('.ex-list');
             exercises.forEach(e => {
@@ -774,8 +766,3 @@
 </script>
 </body>
 </html>
-
-
-
-
-
