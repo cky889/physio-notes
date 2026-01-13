@@ -1,0 +1,604 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="Content-Style-Type" content="text/css">
+  <title></title>
+  <meta name="Generator" content="Cocoa HTML Writer">
+  <meta name="CocoaVersion" content="2113.6">
+  <style type="text/css">
+    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica}
+    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; min-height: 14.0px}
+    span.s1 {font: 12.0px 'Apple Color Emoji'}
+  </style>
+</head>
+<body>
+<p class="p1">&lt;!DOCTYPE html&gt;</p>
+<p class="p1">&lt;html lang="en"&gt;</p>
+<p class="p1">&lt;head&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;meta charset="UTF-8"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;title&gt;CMS Clinical V23&lt;/title&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;meta name="apple-mobile-web-app-capable" content="yes"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;meta name="theme-color" content="#2c3e50"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIiBzdHlsZT0iYmFja2dyb3VuZC1jb2xvcjojMmMzZTUwIj48cmVjdCB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiIgZmlsbD0iIzJjM2U1MCIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBkb21pbmFudC1iYXNlbGluZT0ibWlkZGxlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSIxODAiIGZpbGw9IndoaXRlIiBmb250LXdlaWdodD0iYm9sZCI+VjIzPC90ZXh0Pjwvc3ZnPg=="&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;style&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>:root { --main: #2c3e50; --acc: #2980b9; --bg: #f3f4f6; }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>body { font-family: -apple-system, sans-serif; background: var(--bg); margin: 0; padding-bottom: 120px; color: #1f2937; -webkit-tap-highlight-color: transparent; }</p>
+<p class="p2"><span class="Apple-converted-space">        </span></p>
+<p class="p1"><span class="Apple-converted-space">        </span>#auth-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--main); z-index: 3000; display: flex; flex-direction: column; align-items: center; justify-content: center; color: white; transition: opacity 0.3s; }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.auth-card { background: white; color: #333; width: 85%; max-width: 320px; padding: 25px; border-radius: 16px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.3); }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.auth-input { width: 100%; padding: 12px; margin: 8px 0; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 1.1rem; text-align: center; }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.auth-btn { width: 100%; padding: 14px; background: var(--acc); color: white; border: none; border-radius: 8px; font-weight: bold; font-size: 1rem; margin-top: 15px; cursor: pointer; }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.auth-link { margin-top: 15px; font-size: 0.85rem; color: var(--acc); text-decoration: underline; cursor: pointer; }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.hidden { display: none !important; }</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>header { background: var(--main); color: white; padding: 12px; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.top-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; font-size: 0.9rem; }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.user-badge { background: rgba(255,255,255,0.2); padding: 4px 10px; border-radius: 12px; font-weight: bold; }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.tab-bar { display: flex; overflow-x: auto; gap: 8px; padding-bottom: 4px; }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.tab-btn { padding: 8px 16px; background: rgba(255,255,255,0.15); border-radius: 20px; color: #ddd; font-size: 0.9rem; white-space: nowrap; cursor: pointer; }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.tab-btn.active { background: white; color: var(--main); font-weight: 800; transform: scale(1.05); }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.tab-btn.add { background: var(--acc); color: white; font-weight: bold; }</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.container { max-width: 700px; margin: 0 auto; padding: 12px; }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.patient-view { display: none; }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.patient-view.active { display: block; }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.card { background: white; border-radius: 12px; padding: 16px; margin-bottom: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.head-sec { font-size: 0.8rem; font-weight: 800; color: #9ca3af; text-transform: uppercase; margin-bottom: 10px; border-bottom: 1px solid #f3f4f6; padding-bottom: 5px; }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>input, select, textarea { width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 16px; box-sizing: border-box; background: #fff; margin-bottom: 12px; -webkit-appearance: none; }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.accordion { border: 1px solid #e5e7eb; border-radius: 8px; margin-bottom: 8px; overflow: hidden; }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.accordion-head { padding: 12px 15px; background: #f9fafb; font-weight: 600; cursor: pointer; display: flex; justify-content: space-between; align-items: center; }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.accordion-body { display: none; padding: 15px; background: white; border-top: 1px solid #e5e7eb; }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.accordion-body.show { display: block; }</p>
+<p class="p2"><span class="Apple-converted-space">        </span></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.rom-row { margin-bottom: 15px; border-bottom: 1px solid #f3f4f6; padding-bottom: 8px; }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.rom-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.rom-title { font-size: 0.9rem; font-weight: 800; color: #333; }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.manual-input { width: 80px; padding: 6px; margin-bottom: 0; font-size: 0.85rem; height: 32px; text-align: right; border: 1px solid #ccc; }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.btn-grid { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 8px; }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.rom-btn { padding: 8px 12px; font-size: 0.8rem; border: 1px solid #e5e7eb; border-radius: 6px; background: #f9fafb; color: #555; cursor: pointer; }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.rom-btn.range.selected { background: #e0f2fe; color: #0284c7; border-color: #0284c7; font-weight: 700; }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.rom-btn.quality.selected { background: #fef2f2; color: #dc2626; border-color: #dc2626; font-weight: 700; }</p>
+<p class="p2"><span class="Apple-converted-space">        </span></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.chk-list { display: flex; flex-direction: column; gap: 8px; }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.chk-item { display: flex; align-items: center; gap: 12px; padding: 12px; background: #f9fafb; border-radius: 8px; border: 1px solid #e5e7eb; cursor: pointer; }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.chk-item.active { background: #eff6ff; border-color: var(--acc); }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.chk-item input { width: 20px; height: 20px; margin: 0; flex-shrink: 0; }</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>.fab { position: fixed; bottom: 30px; left: 20px; right: 20px; background: var(--acc); color: white; padding: 16px; border-radius: 50px; font-size: 1.1rem; font-weight: 700; border: none; box-shadow: 0 4px 15px rgba(41,128,185,0.4); z-index: 1000; cursor: pointer; display:flex; justify-content:center; align-items:center; gap:10px; }</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/style&gt;</p>
+<p class="p1">&lt;/head&gt;</p>
+<p class="p1">&lt;body&gt;</p>
+<p class="p2"><br></p>
+<p class="p1">&lt;div id="auth-screen"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div id="view-login" class="auth-card"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;h3&gt;CMS Clinical V23&lt;/h3&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;select id="user-select" class="auth-input"&gt;&lt;/select&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;input type="tel" id="user-pin" class="auth-input" placeholder="PIN" maxlength="6" style="-webkit-text-security:disc;"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;button class="auth-btn" onclick="attemptLogin()"&gt;Unlock&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="auth-link" onclick="toggleAuth('register')"&gt;New User?&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div id="view-register" class="auth-card hidden"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;h3&gt;Create Profile&lt;/h3&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;input type="text" id="reg-name" class="auth-input" placeholder="Your Name"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;input type="tel" id="reg-pin" class="auth-input" placeholder="Create PIN" maxlength="6"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;button class="auth-btn" style="background:#10b981;" onclick="registerUser()"&gt;Start&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="auth-link" onclick="toggleAuth('login')"&gt;Cancel&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p1">&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1">&lt;div id="app-ui" style="display:none;"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;header&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="top-row"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="user-badge" id="display-name"&gt;Guest&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;div style="color:#fca5a5; cursor:pointer;" onclick="logout()"&gt;Lock <span class="s1">🔒</span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="tab-bar" id="tab-bar"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="tab-btn add" onclick="addPatient()"&gt;+ Pt&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/header&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="container" id="patients-container"&gt;&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;button class="fab" onclick="generateNote()"&gt;COPY CMS NOTE&lt;/button&gt;</p>
+<p class="p1">&lt;/div&gt;</p>
+<p class="p1">&lt;textarea id="copy_target" style="opacity:0; height:1px; position:absolute; bottom:0;"&gt;&lt;/textarea&gt;</p>
+<p class="p2"><br></p>
+<p class="p1">&lt;template id="patient-template"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="patient-view"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="card" style="border:2px solid #2980b9; background:#f0f9ff;"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="head-sec" style="color:#2980b9;"&gt;Admin Data&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;input type="text" class="pt-id" placeholder="Bed / Ref" onkeyup="saveWork(); updateTabName(this)" style="font-weight:bold; font-size:1.1rem; margin-bottom:0;"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="grid-2"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;input class="dx" placeholder="Diagnosis" onkeyup="saveWork()"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;input class="ref" placeholder="Reason for Referral" onkeyup="saveWork()"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="card"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="head-sec"&gt;History&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;textarea class="hpi" style="height:60px" placeholder="HPI" onkeyup="saveWork()"&gt;&lt;/textarea&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;textarea class="pmh" style="height:50px" placeholder="PMH" onkeyup="saveWork()"&gt;&lt;/textarea&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;textarea class="meds" style="height:50px" placeholder="Medication" onkeyup="saveWork()"&gt;&lt;/textarea&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;input class="fall" placeholder="Fall History &amp; Reason" onkeyup="saveWork()"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;input class="ment" placeholder="Mental Status" onkeyup="saveWork()"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;input class="prev_pt" placeholder="Prev PT (Default: NIL)" value="NIL" onkeyup="saveWork()"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="card"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="head-sec"&gt;Social / Env&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="grid-2"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;select class="soc_live" onchange="saveWork()"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;option value=""&gt;Lives with...&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;option value="Spouse"&gt;Spouse&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;option value="Maid"&gt;Maid&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;option value="Daughter"&gt;Daughter&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;option value="Son"&gt;Son&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;option value="Alone"&gt;Alone&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;/select&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;select class="soc_carer" onchange="saveWork()"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;option value=""&gt;Carer...&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;option value="Spouse"&gt;Spouse&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;option value="Maid"&gt;Maid&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;option value="Daughter"&gt;Daughter&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;option value="Son"&gt;Son&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;option value="Self"&gt;Self&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;/select&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
+<p class="p2"><span class="Apple-converted-space">            </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="grid-2"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;input class="soc_pre" placeholder="Premorbid" onkeyup="saveWork()"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;select class="env_type" onchange="saveWork()"&gt;&lt;option value="Public housing"&gt;Public Housing&lt;/option&gt;&lt;option value="Private housing"&gt;Private Housing&lt;/option&gt;&lt;option value="Village house"&gt;Village House&lt;/option&gt;&lt;/select&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
+<p class="p2"><span class="Apple-converted-space">            </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;!-- ACCESS: Stairs Logic --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="grid-2"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;select class="env_acc" onchange="toggleStairs(this); saveWork()"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;option value="Lift-landing"&gt;Lift-landing&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;option value="Stairs"&gt;Stairs&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;/select&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;input class="env_stairs_txt hidden" placeholder="No. of Steps (e.g. 5)" onkeyup="saveWork()"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
+<p class="p2"><span class="Apple-converted-space">            </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;!-- TOILET / BATH --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="grid-2"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;select class="env_wc" onchange="saveWork()"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;option value="Sitting"&gt;WC: Sitting&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;option value="Squatting"&gt;WC: Squatting&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;option value="Commode"&gt;WC: Commode&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;/select&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;select class="env_bath" onchange="saveWork()"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;option value="Sitting"&gt;Bath: Sitting&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;option value="Shower cubicle"&gt;Bath: Shower&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;option value="Bath tub"&gt;Bath: Tub&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;/select&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
+<p class="p2"><span class="Apple-converted-space">            </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;!-- EXTRAS --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;div style="margin-top:10px; font-size:0.9rem;"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;label class="chk-item" style="padding:8px;"&gt;&lt;input type="checkbox" class="env_rails" onchange="saveWork()"&gt; Handrails available&lt;/label&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;input class="env_note" placeholder="Env Note (Default: Spaceous...)" value="Spaceous and tidy" onkeyup="saveWork()" style="margin-top:8px;"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="card"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="head-sec"&gt;Objective&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;input class="subj" placeholder="Subjective (Compliant)" value="Compliant" onkeyup="saveWork()"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;input class="func" placeholder="Func Limit (e.g. Prolonged walk)" onkeyup="saveWork()"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;input class="ass_with" placeholder="Assessed with (e.g. Maid)" onkeyup="saveWork()"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="grid-2"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;input class="bp" placeholder="BP" onkeyup="saveWork()"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;input class="hr" placeholder="HR" onkeyup="saveWork()"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;input class="obs" placeholder="Observation" value="Thin body build" onkeyup="saveWork()"&gt;</p>
+<p class="p2"><span class="Apple-converted-space">            </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="body-container"&gt;&lt;/div&gt;</p>
+<p class="p2"><span class="Apple-converted-space">            </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;div style="margin-top:20px; font-weight:700; color:#555;"&gt;Power (Right / Left)&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;div style="background:#f9f9f9; padding:10px; border-radius:8px;"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;div class="grid-2"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;input class="pwr_ul" placeholder="UL (e.g. 5 / 5)" onkeyup="saveWork()"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;input class="pwr_ll" placeholder="LL (e.g. 4 / 4)" onkeyup="saveWork()"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="card"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="head-sec"&gt;Plan&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="grid-2"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;input class="bed" placeholder="Bed Mob" onkeyup="saveWork()"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;input class="tf" placeholder="Transfer" onkeyup="saveWork()"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;input class="gait" placeholder="Gait" onkeyup="saveWork()"&gt;</p>
+<p class="p2"><span class="Apple-converted-space">            </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;input class="prob" placeholder="Problem" onkeyup="saveWork()"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="grid-2"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;input class="stg" placeholder="STG" onkeyup="saveWork()"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;input class="ltg" placeholder="LTG" onkeyup="saveWork()"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
+<p class="p2"><span class="Apple-converted-space">            </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;div style="margin-top:10px; font-weight:bold; color:#2980b9;"&gt;Exercises Taught:&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="chk-list ex-list"&gt;&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p1">&lt;/template&gt;</p>
+<p class="p2"><br></p>
+<p class="p1">&lt;script&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>const USERS_KEY = 'physio_users_v1';</p>
+<p class="p1"><span class="Apple-converted-space">    </span>let currentUser = null;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>let currentPatients = [];</p>
+<p class="p1"><span class="Apple-converted-space">    </span>let currentTab = 0;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>const bodyParts = [</p>
+<p class="p1"><span class="Apple-converted-space">        </span>{name:"Neck (Cervical)", id:"cx", mov:["Flex","Ext","Rot(L)","Rot(R)","Side(L)","Side(R)"], tests:["Spurling","Distraction"], palp:["Trapezius","Levator"]},</p>
+<p class="p1"><span class="Apple-converted-space">        </span>{name:"Back (Lumbar)", id:"lx", mov:["Flex","Ext","Rot(L)","Rot(R)","Side(L)","Side(R)"], tests:["SLR","Slump"], palp:["Paraspinals","PSIS"]},</p>
+<p class="p1"><span class="Apple-converted-space">        </span>{name:"Shoulder(R)", id:"sr", mov:["Flex","Abd","ExtRot","IntRot","HBB"], tests:["Neer","Hawkins","Empty Can"], palp:["ACJ","Supraspinatus"]},</p>
+<p class="p1"><span class="Apple-converted-space">        </span>{name:"Shoulder(L)", id:"sl", mov:["Flex","Abd","ExtRot","IntRot","HBB"], tests:["Neer","Hawkins","Empty Can"], palp:["ACJ","Supraspinatus"]},</p>
+<p class="p1"><span class="Apple-converted-space">        </span>{name:"Knee(R)", id:"kr", mov:["Flex","Ext"], tests:["McMurray","Lachman","Varus/Valgus"], palp:["Joint Line","Patella"]},</p>
+<p class="p1"><span class="Apple-converted-space">        </span>{name:"Knee(L)", id:"kl", mov:["Flex","Ext"], tests:["McMurray","Lachman","Varus/Valgus"], palp:["Joint Line","Patella"]},</p>
+<p class="p1"><span class="Apple-converted-space">        </span>{name:"Ankle(R)", id:"ar", mov:["DF","PF","Inv","Eve"], tests:["Talar Tilt","Drawer"], palp:["ATFL","Med Mall"]},</p>
+<p class="p1"><span class="Apple-converted-space">        </span>{name:"Ankle(L)", id:"al", mov:["DF","PF","Inv","Eve"], tests:["Talar Tilt","Drawer"], palp:["ATFL","Med Mall"]}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>];</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>const exercises = [</p>
+<p class="p1"><span class="Apple-converted-space">        </span>"resisted Biceps flexion exercise in sitting",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>"resisted Knee extension exercise in sitting",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>"resisted Hip abduction exercise in sitting",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>"LL elevation",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>"active ankle and toes exercise",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>"self-stretching over right hamstrings muscles",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>"active knee mobilization in sitting",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>"Walking exercise with stick",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>"Gait correction",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>"Sit to stand training",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>"Fall prevention reinforced",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>"Exercise precautions reinforced",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>"OA knee care reinforced",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>"carer skills reinforced",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>"Suggested to have bathing in sitting position for fall prevention",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>"Encouraged to increase the frequency of walking exercise in the corridor",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>"Encouraged patient's wife to tidy up home and remove obstacles"</p>
+<p class="p1"><span class="Apple-converted-space">    </span>];</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>window.onload = loadUsersDropdown;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>function loadUsersDropdown() {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const users = JSON.parse(localStorage.getItem(USERS_KEY) || '{}');</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const sel = document.getElementById('user-select');</p>
+<p class="p1"><span class="Apple-converted-space">        </span>sel.innerHTML = '&lt;option value="" disabled selected&gt;Select User&lt;/option&gt;';</p>
+<p class="p1"><span class="Apple-converted-space">        </span>Object.keys(users).forEach(u =&gt; sel.innerHTML += `&lt;option value="${u}"&gt;${u}&lt;/option&gt;`);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>function toggleAuth(m) {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>document.getElementById('view-login').classList.toggle('hidden', m !== 'login');</p>
+<p class="p1"><span class="Apple-converted-space">        </span>document.getElementById('view-register').classList.toggle('hidden', m !== 'register');</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>function registerUser() {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const n = document.getElementById('reg-name').value.trim();</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const p = document.getElementById('reg-pin').value.trim();</p>
+<p class="p1"><span class="Apple-converted-space">        </span>if(!n || p.length &lt; 4) return alert("Invalid Input");</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const users = JSON.parse(localStorage.getItem(USERS_KEY) || '{}');</p>
+<p class="p1"><span class="Apple-converted-space">        </span>users[n] = p;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>localStorage.setItem(USERS_KEY, JSON.stringify(users));</p>
+<p class="p1"><span class="Apple-converted-space">        </span>loadUsersDropdown(); toggleAuth('login');</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>function attemptLogin() {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const n = document.getElementById('user-select').value;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const p = document.getElementById('user-pin').value;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const users = JSON.parse(localStorage.getItem(USERS_KEY) || '{}');</p>
+<p class="p1"><span class="Apple-converted-space">        </span>if(users[n] == p) {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>currentUser = n;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>document.getElementById('display-name').innerText = n;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>document.getElementById('auth-screen').style.display = 'none';</p>
+<p class="p1"><span class="Apple-converted-space">            </span>document.getElementById('app-ui').style.display = 'block';</p>
+<p class="p1"><span class="Apple-converted-space">            </span>loadWorkspace();</p>
+<p class="p1"><span class="Apple-converted-space">        </span>} else alert("Invalid PIN");</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>function logout() { location.reload(); }</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>function loadWorkspace() {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const raw = localStorage.getItem(`physio_data_${currentUser}`);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>currentPatients = raw ? JSON.parse(raw) : [];</p>
+<p class="p1"><span class="Apple-converted-space">        </span>if(currentPatients.length === 0) createPatientData();</p>
+<p class="p1"><span class="Apple-converted-space">        </span>renderAll();</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>function saveWork() {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const view = document.getElementById(`view-${currentTab}`);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>if(!view) return;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const pt = currentPatients[currentTab];</p>
+<p class="p2"><span class="Apple-converted-space">        </span></p>
+<p class="p1"><span class="Apple-converted-space">        </span>pt.id = view.querySelector('.pt-id').value;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>pt.dx = view.querySelector('.dx').value;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>pt.ref = view.querySelector('.ref').value;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>pt.hpi = view.querySelector('.hpi').value;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>pt.pmh = view.querySelector('.pmh').value;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>pt.meds = view.querySelector('.meds').value;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>pt.fall = view.querySelector('.fall').value;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>pt.ment = view.querySelector('.ment').value;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>pt.prev = view.querySelector('.prev_pt').value;</p>
+<p class="p2"><span class="Apple-converted-space">        </span></p>
+<p class="p1"><span class="Apple-converted-space">        </span>pt.soc = {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>live: view.querySelector('.soc_live').value,</p>
+<p class="p1"><span class="Apple-converted-space">            </span>carer: view.querySelector('.soc_carer').value,</p>
+<p class="p1"><span class="Apple-converted-space">            </span>pre: view.querySelector('.soc_pre').value,</p>
+<p class="p1"><span class="Apple-converted-space">            </span>acc: view.querySelector('.env_acc').value,</p>
+<p class="p1"><span class="Apple-converted-space">            </span>stairs: view.querySelector('.env_stairs_txt').value,</p>
+<p class="p1"><span class="Apple-converted-space">            </span>wc: view.querySelector('.env_wc').value,</p>
+<p class="p1"><span class="Apple-converted-space">            </span>type: view.querySelector('.env_type').value,</p>
+<p class="p1"><span class="Apple-converted-space">            </span>bath: view.querySelector('.env_bath').value,</p>
+<p class="p1"><span class="Apple-converted-space">            </span>rails: view.querySelector('.env_rails').checked,</p>
+<p class="p1"><span class="Apple-converted-space">            </span>note: view.querySelector('.env_note').value</p>
+<p class="p1"><span class="Apple-converted-space">        </span>};</p>
+<p class="p1"><span class="Apple-converted-space">        </span>pt.assess = {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>subj: view.querySelector('.subj').value,</p>
+<p class="p1"><span class="Apple-converted-space">            </span>func: view.querySelector('.func').value,</p>
+<p class="p1"><span class="Apple-converted-space">            </span>ass_with: view.querySelector('.ass_with').value,</p>
+<p class="p1"><span class="Apple-converted-space">            </span>bp: view.querySelector('.bp').value,</p>
+<p class="p1"><span class="Apple-converted-space">            </span>hr: view.querySelector('.hr').value,</p>
+<p class="p1"><span class="Apple-converted-space">            </span>obs: view.querySelector('.obs').value,</p>
+<p class="p1"><span class="Apple-converted-space">            </span>pul: view.querySelector('.pwr_ul').value,</p>
+<p class="p1"><span class="Apple-converted-space">            </span>pll: view.querySelector('.pwr_ll').value</p>
+<p class="p1"><span class="Apple-converted-space">        </span>};</p>
+<p class="p1"><span class="Apple-converted-space">        </span>pt.plan = {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>bed: view.querySelector('.bed').value,</p>
+<p class="p1"><span class="Apple-converted-space">            </span>tf: view.querySelector('.tf').value,</p>
+<p class="p1"><span class="Apple-converted-space">            </span>gait: view.querySelector('.gait').value,</p>
+<p class="p1"><span class="Apple-converted-space">            </span>prob: view.querySelector('.prob').value,</p>
+<p class="p1"><span class="Apple-converted-space">            </span>stg: view.querySelector('.stg').value,</p>
+<p class="p1"><span class="Apple-converted-space">            </span>ltg: view.querySelector('.ltg').value</p>
+<p class="p1"><span class="Apple-converted-space">        </span>};</p>
+<p class="p2"><span class="Apple-converted-space">        </span></p>
+<p class="p1"><span class="Apple-converted-space">        </span>pt.roms = {};</p>
+<p class="p1"><span class="Apple-converted-space">        </span>view.querySelectorAll('.rom-row').forEach(r =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const uid = r.dataset.uid;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const man = r.querySelector('.manual-input')?.value;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const ran = r.querySelector('.range.selected')?.innerText;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const qua = Array.from(r.querySelectorAll('.quality.selected')).map(b=&gt;b.innerText).join(',');</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const chk = r.querySelector('.chk-input')?.checked ? "Positive" : "";</p>
+<p class="p2"><span class="Apple-converted-space">            </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>if(man !== undefined) pt.roms[uid] = {m:man, r:ran||"", q:qua};</p>
+<p class="p1"><span class="Apple-converted-space">            </span>else if(chk) pt.roms[uid] = {chk: "Positive"};<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">        </span>});</p>
+<p class="p2"><span class="Apple-converted-space">        </span></p>
+<p class="p1"><span class="Apple-converted-space">        </span>pt.ex = Array.from(view.querySelectorAll('.ex-list input:checked')).map(c=&gt;c.value);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>localStorage.setItem(`physio_data_${currentUser}`, JSON.stringify(currentPatients));</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>function createPatientData() {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>currentPatients.push({ id:"", hpi:"", soc:{}, assess:{}, plan:{}, roms:{}, ex:[] });</p>
+<p class="p1"><span class="Apple-converted-space">        </span>renderAll(); switchTab(currentPatients.length - 1);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><span class="Apple-converted-space">    </span></p>
+<p class="p1"><span class="Apple-converted-space">    </span>function addPatient() { saveWork(); createPatientData(); }</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>function renderAll() {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const cont = document.getElementById('patients-container');</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const bar = document.getElementById('tab-bar');</p>
+<p class="p1"><span class="Apple-converted-space">        </span>cont.innerHTML = '';</p>
+<p class="p1"><span class="Apple-converted-space">        </span>Array.from(bar.children).forEach(c =&gt; { if(!c.classList.contains('add')) c.remove(); });</p>
+<p class="p2"><span class="Apple-converted-space">        </span></p>
+<p class="p1"><span class="Apple-converted-space">        </span>currentPatients.forEach((pt, idx) =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const btn = document.createElement('div');</p>
+<p class="p1"><span class="Apple-converted-space">            </span>btn.className = `tab-btn ${idx === currentTab ? 'active' : ''}`;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>btn.innerText = pt.id || `Pt ${idx+1}`;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>btn.onclick = () =&gt; switchTab(idx);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>bar.insertBefore(btn, bar.lastElementChild);</p>
+<p class="p2"><span class="Apple-converted-space">            </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>const clone = document.getElementById('patient-template').content.cloneNode(true);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const view = clone.querySelector('.patient-view');</p>
+<p class="p1"><span class="Apple-converted-space">            </span>view.id = `view-${idx}`;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>if(idx === currentTab) view.classList.add('active');</p>
+<p class="p2"><span class="Apple-converted-space">            </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>view.querySelector('.pt-id').value = pt.id || "";</p>
+<p class="p1"><span class="Apple-converted-space">            </span>view.querySelector('.dx').value = pt.dx || "";</p>
+<p class="p1"><span class="Apple-converted-space">            </span>view.querySelector('.ref').value = pt.ref || "";</p>
+<p class="p1"><span class="Apple-converted-space">            </span>view.querySelector('.hpi').value = pt.hpi || "";</p>
+<p class="p1"><span class="Apple-converted-space">            </span>view.querySelector('.pmh').value = pt.pmh || "";</p>
+<p class="p1"><span class="Apple-converted-space">            </span>view.querySelector('.meds').value = pt.meds || "";</p>
+<p class="p1"><span class="Apple-converted-space">            </span>view.querySelector('.fall').value = pt.fall || "";</p>
+<p class="p1"><span class="Apple-converted-space">            </span>view.querySelector('.ment').value = pt.ment || "";</p>
+<p class="p1"><span class="Apple-converted-space">            </span>view.querySelector('.prev_pt').value = pt.prev || "NIL";</p>
+<p class="p2"><span class="Apple-converted-space">            </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>if(pt.soc) {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>view.querySelector('.soc_live').value = pt.soc.live || "";</p>
+<p class="p1"><span class="Apple-converted-space">                </span>view.querySelector('.soc_carer').value = pt.soc.carer || "";</p>
+<p class="p1"><span class="Apple-converted-space">                </span>view.querySelector('.soc_pre').value = pt.soc.pre || "";</p>
+<p class="p1"><span class="Apple-converted-space">                </span>view.querySelector('.env_acc').value = pt.soc.acc || "";</p>
+<p class="p1"><span class="Apple-converted-space">                </span>view.querySelector('.env_stairs_txt').value = pt.soc.stairs || "";</p>
+<p class="p1"><span class="Apple-converted-space">                </span>view.querySelector('.env_wc').value = pt.soc.wc || "";</p>
+<p class="p1"><span class="Apple-converted-space">                </span>view.querySelector('.env_type').value = pt.soc.type || "";</p>
+<p class="p1"><span class="Apple-converted-space">                </span>view.querySelector('.env_bath').value = pt.soc.bath || "";</p>
+<p class="p1"><span class="Apple-converted-space">                </span>view.querySelector('.env_rails').checked = pt.soc.rails || false;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>view.querySelector('.env_note').value = pt.soc.note || "Spaceous and tidy";</p>
+<p class="p2"><span class="Apple-converted-space">                </span></p>
+<p class="p1"><span class="Apple-converted-space">                </span>// Trigger visibility of stairs box</p>
+<p class="p1"><span class="Apple-converted-space">                </span>const accSel = view.querySelector('.env_acc');</p>
+<p class="p1"><span class="Apple-converted-space">                </span>toggleStairs(accSel);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>}</p>
+<p class="p1"><span class="Apple-converted-space">            </span>if(pt.assess) {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>view.querySelector('.subj').value = pt.assess.subj || "Compliant";</p>
+<p class="p1"><span class="Apple-converted-space">                </span>view.querySelector('.func').value = pt.assess.func || "";</p>
+<p class="p1"><span class="Apple-converted-space">                </span>view.querySelector('.ass_with').value = pt.assess.ass_with || "";</p>
+<p class="p1"><span class="Apple-converted-space">                </span>view.querySelector('.bp').value = pt.assess.bp || "";</p>
+<p class="p1"><span class="Apple-converted-space">                </span>view.querySelector('.hr').value = pt.assess.hr || "";</p>
+<p class="p1"><span class="Apple-converted-space">                </span>view.querySelector('.obs').value = pt.assess.obs || "Thin body build";</p>
+<p class="p1"><span class="Apple-converted-space">                </span>view.querySelector('.pwr_ul').value = pt.assess.pul || "";</p>
+<p class="p1"><span class="Apple-converted-space">                </span>view.querySelector('.pwr_ll').value = pt.assess.pll || "";</p>
+<p class="p1"><span class="Apple-converted-space">            </span>}</p>
+<p class="p1"><span class="Apple-converted-space">            </span>if(pt.plan) {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>view.querySelector('.bed').value = pt.plan.bed || "";</p>
+<p class="p1"><span class="Apple-converted-space">                </span>view.querySelector('.tf').value = pt.plan.tf || "";</p>
+<p class="p1"><span class="Apple-converted-space">                </span>view.querySelector('.gait').value = pt.plan.gait || "";</p>
+<p class="p1"><span class="Apple-converted-space">                </span>view.querySelector('.prob').value = pt.plan.prob || "";</p>
+<p class="p1"><span class="Apple-converted-space">                </span>view.querySelector('.stg').value = pt.plan.stg || "";</p>
+<p class="p1"><span class="Apple-converted-space">                </span>view.querySelector('.ltg').value = pt.plan.ltg || "";</p>
+<p class="p1"><span class="Apple-converted-space">            </span>}</p>
+<p class="p2"><span class="Apple-converted-space">            </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>const bc = view.querySelector('.body-container');</p>
+<p class="p1"><span class="Apple-converted-space">            </span>bodyParts.forEach(bp =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>let html = `&lt;div class="accordion"&gt;&lt;div class="accordion-head" onclick="toggleAc(this)"&gt;${bp.name} &lt;span&gt;+&lt;/span&gt;&lt;/div&gt;&lt;div class="accordion-body"&gt;`;</p>
+<p class="p2"><span class="Apple-converted-space">                </span></p>
+<p class="p1"><span class="Apple-converted-space">                </span>// ROMs</p>
+<p class="p1"><span class="Apple-converted-space">                </span>bp.mov.forEach(m =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>const uid = `${bp.id}_${m}`;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>const d = pt.roms[uid] || {m:"",r:"",q:""};</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>const rs = (t) =&gt; d.r===t ? 'selected' : '';</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>const qs = (t) =&gt; d.q.includes(t) ? 'selected' : '';</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>html += `&lt;div class="rom-row" data-uid="${uid}"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;div class="rom-header"&gt;&lt;div class="rom-title"&gt;${m}&lt;/div&gt;&lt;input class="manual-input" value="${d.m}" onkeyup="saveWork()"&gt;&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;div class="btn-grid"&gt;&lt;div class="rom-btn range ${rs('Full')}" onclick="sel(this);saveWork()"&gt;Full&lt;/div&gt;&lt;div class="rom-btn range ${rs('limited')}" onclick="sel(this);saveWork()"&gt;limited&lt;/div&gt;&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;div class="btn-grid"&gt;&lt;div class="rom-btn quality ${qs('Pain')}" onclick="tog(this);saveWork()"&gt;Pain&lt;/div&gt;&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;/div&gt;`;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>});</p>
+<p class="p2"><span class="Apple-converted-space">                </span></p>
+<p class="p1"><span class="Apple-converted-space">                </span>// Special</p>
+<p class="p1"><span class="Apple-converted-space">                </span>if(bp.tests) {</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>html += `&lt;div style="font-weight:bold; margin-top:10px; font-size:0.85rem; color:#acc;"&gt;Special Tests&lt;/div&gt;`;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>bp.tests.forEach(t =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>const uid = `${bp.id}_test_${t}`;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>const chk = pt.roms[uid]?.chk ? "checked" : "";</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>html += `&lt;div class="rom-row" data-uid="${uid}" style="display:flex; justify-content:space-between; align-items:center;"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;span style="font-size:0.9rem;"&gt;${t}&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;label&gt;&lt;input type="checkbox" class="chk-input" ${chk} onchange="saveWork()"&gt; +ve&lt;/label&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;/div&gt;`;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>});</p>
+<p class="p1"><span class="Apple-converted-space">                </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">                </span>// Palp</p>
+<p class="p1"><span class="Apple-converted-space">                </span>if(bp.palp) {</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>html += `&lt;div style="font-weight:bold; margin-top:10px; font-size:0.85rem; color:#acc;"&gt;Palpation (Tenderness)&lt;/div&gt;`;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>bp.palp.forEach(p =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>const uid = `${bp.id}_palp_${p}`;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>const chk = pt.roms[uid]?.chk ? "checked" : "";</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>html += `&lt;div class="rom-row" data-uid="${uid}" style="display:flex; justify-content:space-between; align-items:center;"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;span style="font-size:0.9rem;"&gt;${p}&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>&lt;label&gt;&lt;input type="checkbox" class="chk-input" ${chk} onchange="saveWork()"&gt; +ve&lt;/label&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;/div&gt;`;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>});</p>
+<p class="p1"><span class="Apple-converted-space">                </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">                </span>html += `&lt;/div&gt;&lt;/div&gt;`;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>bc.insertAdjacentHTML('beforeend', html);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>});</p>
+<p class="p2"><span class="Apple-converted-space">            </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>const el = view.querySelector('.ex-list');</p>
+<p class="p1"><span class="Apple-converted-space">            </span>exercises.forEach(e =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>const chk = pt.ex.includes(e) ? 'checked' : '';</p>
+<p class="p1"><span class="Apple-converted-space">                </span>el.insertAdjacentHTML('beforeend', `&lt;label class="chk-item"&gt;&lt;input type="checkbox" value="${e}" ${chk} onchange="saveWork()"&gt;&lt;span&gt;${e}&lt;/span&gt;&lt;/label&gt;`);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>});</p>
+<p class="p1"><span class="Apple-converted-space">            </span>cont.appendChild(view);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>});</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>function switchTab(i) { saveWork(); currentTab = i; renderAll(); }</p>
+<p class="p1"><span class="Apple-converted-space">    </span>function updateTabName(i) { document.querySelectorAll('.tab-btn')[currentTab].innerText = i.value.substr(0,8) || `Pt ${currentTab+1}`; }</p>
+<p class="p1"><span class="Apple-converted-space">    </span>function toggleStairs(sel) { sel.nextElementSibling.classList.toggle('hidden', sel.value !== 'Stairs'); }</p>
+<p class="p2"><span class="Apple-converted-space">    </span></p>
+<p class="p1"><span class="Apple-converted-space">    </span>function generateNote() {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>saveWork();</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const pt = currentPatients[currentTab];</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const line = "======================================================";</p>
+<p class="p1"><span class="Apple-converted-space">        </span>let t = `Diagnosis: ${pt.dx || ''}\nReason for referral: ${pt.ref || ''}\n`;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>t += `Physiotherapy Home Visit\n${line}\n`;</p>
+<p class="p2"><span class="Apple-converted-space">        </span></p>
+<p class="p1"><span class="Apple-converted-space">        </span>t += `History of Present Illness:\n${pt.hpi || ''}\n`;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>t += `Past Medical History:\n${pt.pmh || ''}\n`;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>t += `Medication:\n${pt.meds || ''}\n`;</p>
+<p class="p2"><span class="Apple-converted-space">        </span></p>
+<p class="p1"><span class="Apple-converted-space">        </span>t += `Social History:\nLives with ${pt.soc.live || ''}\nTake cared by ${pt.soc.carer || ''}\nADL-I\n`;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>t += `Premorbid: ${pt.soc.pre || ''}\n`;</p>
+<p class="p2"><span class="Apple-converted-space">        </span></p>
+<p class="p1"><span class="Apple-converted-space">        </span>// ENV BUILDER</p>
+<p class="p1"><span class="Apple-converted-space">        </span>let envText = `${pt.soc.note || ''}\n${pt.soc.type || ''}\n`;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>if(pt.soc.acc === 'Stairs') envText += `Stairs: ${pt.soc.stairs || '?'} steps\n`;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>else envText += `${pt.soc.acc || ''}\nNo stairs\n`;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>t += `Home Environment:\n${envText}`;</p>
+<p class="p2"><span class="Apple-converted-space">        </span></p>
+<p class="p1"><span class="Apple-converted-space">        </span>let toiletText = `Toilet: ${pt.soc.wc || ''}`;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>let bathText = `Bath: ${pt.soc.bath || ''}`;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>if(pt.soc.rails) { toiletText += " (Handrails available)"; bathText += " (Handrails available)"; }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>t += `${toiletText}\n${bathText}\n`;</p>
+<p class="p2"><span class="Apple-converted-space">        </span></p>
+<p class="p1"><span class="Apple-converted-space">        </span>t += `Fall History and Reason: ${pt.fall || ''}\n`;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>t += `Mental Status: ${pt.ment || ''}\n`;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>t += `Previous physiotherapy treatment received and its effects:\n${pt.prev || 'NIL'}\n`;</p>
+<p class="p2"><span class="Apple-converted-space">        </span></p>
+<p class="p1"><span class="Apple-converted-space">        </span>t += `Subjective examination:\nCompliant: ${pt.assess.subj || ''}\nFunctional limitation: ${pt.assess.func || ''}\n`;</p>
+<p class="p2"><span class="Apple-converted-space">        </span></p>
+<p class="p1"><span class="Apple-converted-space">        </span>t += `Objective examination:\nPatient assessed with ${pt.assess.ass_with || ''}\nGeneral condition stable\n`;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>t += `Blood Pressure ${pt.assess.bp || ''} mmHg ;Pulse ${pt.assess.hr || ''} bpm\nTOCC-ve\nBody temperature: afebrile\n`;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>t += `Observation:\n${pt.assess.obs || ''}\n`;</p>
+<p class="p2"><span class="Apple-converted-space">        </span></p>
+<p class="p1"><span class="Apple-converted-space">        </span>bodyParts.forEach(bp =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>let pText = "";</p>
+<p class="p1"><span class="Apple-converted-space">            </span>let hasHeader = false;</p>
+<p class="p2"><span class="Apple-converted-space">            </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>bp.mov.forEach(m =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>const uid = `${bp.id}_${m}`;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>const d = pt.roms[uid];</p>
+<p class="p1"><span class="Apple-converted-space">                </span>let val = "";</p>
+<p class="p1"><span class="Apple-converted-space">                </span>if(d) {</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>if(d.r) val += d.r + " ";</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>if(d.q) val += "with " + d.q + " ";</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>if(d.m) val += "(" + d.m + ")";</p>
+<p class="p1"><span class="Apple-converted-space">                </span>}</p>
+<p class="p1"><span class="Apple-converted-space">                </span>if(val.trim()) {</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>if(!hasHeader) { pText += `[${bp.name}]\n`; hasHeader = true; }</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>pText += `${m}: ${val || '-'}\n`;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>}</p>
+<p class="p1"><span class="Apple-converted-space">            </span>});</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>if(bp.tests) {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>bp.tests.forEach(test =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>const uid = `${bp.id}_test_${test}`;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>if(pt.roms[uid]?.chk) {</p>
+<p class="p1"><span class="Apple-converted-space">                         </span>if(!hasHeader) { pText += `[${bp.name}]\n`; hasHeader = true; }</p>
+<p class="p1"><span class="Apple-converted-space">                         </span>pText += `${test}: Positive\n`;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>}</p>
+<p class="p1"><span class="Apple-converted-space">                </span>});</p>
+<p class="p1"><span class="Apple-converted-space">            </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>if(bp.palp) {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>bp.palp.forEach(palp =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>const uid = `${bp.id}_palp_${palp}`;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>if(pt.roms[uid]?.chk) {</p>
+<p class="p1"><span class="Apple-converted-space">                         </span>if(!hasHeader) { pText += `[${bp.name}]\n`; hasHeader = true; }</p>
+<p class="p1"><span class="Apple-converted-space">                         </span>pText += `Tenderness: ${palp}\n`;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>}</p>
+<p class="p1"><span class="Apple-converted-space">                </span>});</p>
+<p class="p1"><span class="Apple-converted-space">            </span>}</p>
+<p class="p1"><span class="Apple-converted-space">            </span>t += pText;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>});</p>
+<p class="p2"><span class="Apple-converted-space">        </span></p>
+<p class="p1"><span class="Apple-converted-space">        </span>t += `Power\nUpper limb: right / left\n <span class="Apple-converted-space">                  </span>${pt.assess.pul || ''}\n`;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>t += `Lower limb: right / left\n <span class="Apple-converted-space">                  </span>${pt.assess.pll || ''}\n`;</p>
+<p class="p2"><span class="Apple-converted-space">        </span></p>
+<p class="p1"><span class="Apple-converted-space">        </span>t += `Bed mobility: ${pt.plan.bed || ''}\nTransfer: ${pt.plan.tf || ''}\nGait: ${pt.plan.gait || ''}\n`;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>t += `Problem: ${pt.plan.prob || ''}\nShort term goal: ${pt.plan.stg || ''}\nLong term goal: ${pt.plan.ltg || ''}\n`;</p>
+<p class="p2"><span class="Apple-converted-space">        </span></p>
+<p class="p1"><span class="Apple-converted-space">        </span>t += `Home exercise taught with exercise leaflet and red theraband given (5-10 repetitions/set, 2-3 sets/day):\n`;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>pt.ex.forEach(e =&gt; t += `-${e}\n`);</p>
+<p class="p2"><span class="Apple-converted-space">        </span></p>
+<p class="p1"><span class="Apple-converted-space">        </span>t += `Machine Test Done\nWarning / Instructional given and contraindication checked\nPost treatment uneventful`;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>document.getElementById('copy_target').value = t;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>document.getElementById('copy_target').select();</p>
+<p class="p1"><span class="Apple-converted-space">        </span>document.execCommand('copy');</p>
+<p class="p1"><span class="Apple-converted-space">        </span>alert("CMS Note Copied!");</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>window.toggleAc = (el) =&gt; { el.classList.toggle('active'); el.nextElementSibling.classList.toggle('show'); };</p>
+<p class="p1"><span class="Apple-converted-space">    </span>window.sel = (el) =&gt; { el.parentElement.querySelectorAll('.range').forEach(b=&gt;b.classList.remove('selected')); el.classList.add('selected'); };</p>
+<p class="p1"><span class="Apple-converted-space">    </span>window.tog = (el) =&gt; { el.classList.toggle('selected'); };</p>
+<p class="p1">&lt;/script&gt;</p>
+<p class="p1">&lt;/body&gt;</p>
+<p class="p1">&lt;/html&gt;</p>
+</body>
+</html>
