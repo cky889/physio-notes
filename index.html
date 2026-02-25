@@ -1,768 +1,1401 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>CMS Clinical V24.1</title>
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="theme-color" content="#2c3e50">
-    <link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIiBzdHlsZT0iYmFja2dyb3VuZC1jb2xvcjojMmMzZTUwIj48cmVjdCB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiIgZmlsbD0iIzJjM2U1MCIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBkb21pbmFudC1iYXNlbGluZT0ibWlkZGxlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSIxODAiIGZpbGw9IndoaXRlIiBmb250LXdlaWdodD0iYm9sZCI+VjI0PC90ZXh0Pjwvc3ZnPg==">
-    <style>
-        :root { --main: #2c3e50; --acc: #2980b9; --bg: #f3f4f6; --warn: #f59e0b; }
-        body { font-family: -apple-system, sans-serif; background: var(--bg); margin: 0; padding-bottom: 120px; color: #1f2937; -webkit-tap-highlight-color: transparent; }
-        
-        #auth-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--main); z-index: 3000; display: flex; flex-direction: column; align-items: center; justify-content: center; color: white; transition: opacity 0.3s; }
-        .auth-card { background: white; color: #333; width: 85%; max-width: 320px; padding: 25px; border-radius: 16px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.3); }
-        .auth-input { width: 100%; padding: 14px; margin: 8px 0; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 1.1rem; text-align: center; background: #fff; appearance: none; -webkit-appearance: none; }
-        .auth-btn { width: 100%; padding: 16px; background: var(--acc); color: white; border: none; border-radius: 10px; font-weight: bold; font-size: 1.1rem; margin-top: 10px; cursor: pointer; -webkit-tap-highlight-color: transparent; }
-        .auth-btn.sec { background: white; color: var(--acc); border: 2px solid var(--acc); margin-top: 12px; }
-        .hidden { display: none !important; }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <title>CMS Clinical V25.20</title>
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="theme-color" content="#2c3e50" />
+  <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/2966/2966327.png">
+  <style>
+    :root { --main:#2c3e50; --acc:#2980b9; --bg:#f3f4f6; --warn:#f59e0b; --sticky:#fef9c3; --sticky2:#fde047; }
+    body { font-family:-apple-system, sans-serif; background:var(--bg); margin:0; padding-bottom:60px; color:#1f2937; -webkit-tap-highlight-color:transparent; }
 
-        header { background: var(--main); color: white; padding: 12px; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-        .top-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; font-size: 0.9rem; }
-        .user-badge { background: rgba(255,255,255,0.2); padding: 4px 10px; border-radius: 12px; font-weight: bold; }
-        .tab-bar { display: flex; overflow-x: auto; gap: 8px; padding-bottom: 4px; }
-        .tab-btn { padding: 8px 16px; background: rgba(255,255,255,0.15); border-radius: 20px; color: #ddd; font-size: 0.9rem; white-space: nowrap; cursor: pointer; user-select: none; -webkit-user-select: none; }
-        .tab-btn.active { background: white; color: var(--main); font-weight: 800; transform: scale(1.05); }
-        .tab-btn.add { background: var(--acc); color: white; font-weight: bold; }
+    #auth-screen { position:fixed; inset:0; background:var(--main); z-index:3000; display:flex; flex-direction:column; align-items:center; justify-content:center; color:#fff; }
+    .auth-card { background:#fff; color:#333; width:85%; max-width:320px; padding:25px; border-radius:16px; text-align:center; box-shadow:0 10px 25px rgba(0,0,0,0.3); }
+    .auth-input { width:100%; padding:14px; margin:8px 0; border:2px solid #e5e7eb; border-radius:8px; font-size:1.1rem; text-align:center; background:#fff; appearance:none; }
+    .auth-btn { width:100%; padding:16px; background:var(--acc); color:#fff; border:none; border-radius:10px; font-weight:800; font-size:1.1rem; margin-top:10px; cursor:pointer; }
+    .auth-btn.sec { background:#fff; color:var(--acc); border:2px solid var(--acc); margin-top:12px; }
+    .hidden { display:none !important; }
 
-        .import-btn { background: var(--warn); color: #fff; border:none; padding: 6px 12px; border-radius: 6px; font-weight: bold; font-size: 0.8rem; cursor: pointer; }
+    header { background:var(--main); color:#fff; padding:12px; position:sticky; top:0; z-index:100; box-shadow:0 2px 10px rgba(0,0,0,0.1); }
+    .top-row { display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; font-size:0.9rem; }
+    .user-badge { font-size:1.4rem; font-weight:900; background:rgba(255,255,255,0.2); padding:4px 12px; border-radius:8px; }
+    .date-header { display:flex; align-items:center; justify-content:center; font-size:1.25rem; font-weight:900; margin-bottom:10px; letter-spacing:0.5px; }
+    .nav-arrow { cursor:pointer; padding:0 20px; font-size:1.8rem; color:var(--sticky2); user-select:none; line-height:1; }
+    .nav-arrow:active { transform:scale(0.8); }
+    
+    .tab-bar { display:flex; overflow-x:auto; gap:8px; padding-bottom:4px; }
+    .tab-btn { padding:12px 16px; background:rgba(255,255,255,0.15); border-radius:16px; color:#ddd; font-size:0.95rem; font-weight:700; white-space:nowrap; cursor:pointer; user-select:none; display:flex; align-items:center; justify-content:center; min-width:80px; }
+    .tab-btn.active { background:#fff; color:var(--main); font-weight:900; transform:scale(1.05); }
+    .tab-btn.add { background:var(--acc); color:#fff; font-weight:900; font-size:1.4rem; padding:8px 20px; }
 
-        .container { max-width: 700px; margin: 0 auto; padding: 12px; }
-        .patient-view { display: none; }
-        .patient-view.active { display: block; }
-        .card { background: white; border-radius: 12px; padding: 16px; margin-bottom: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
-        .head-sec { font-size: 0.8rem; font-weight: 800; color: #9ca3af; text-transform: uppercase; margin-bottom: 10px; border-bottom: 1px solid #f3f4f6; padding-bottom: 5px; }
-        
-        .ref-box { background: #fffbeb; border: 2px dashed #fcd34d; padding: 12px; border-radius: 8px; margin-bottom: 15px; display: none; }
-        .ref-box.show { display: block; }
-        .ref-title { font-weight: 800; color: #b45309; font-size: 0.85rem; margin-bottom: 5px; display: flex; justify-content: space-between; }
-        .ref-content { font-size: 0.85rem; color: #78350f; white-space: pre-wrap; max-height: 150px; overflow-y: auto; font-family: monospace; line-height: 1.3; }
+    .import-btn { background:var(--warn); color:#fff; border:none; padding:6px 12px; border-radius:6px; font-weight:900; font-size:0.8rem; cursor:pointer; }
 
-        input, textarea { width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 16px; box-sizing: border-box; background: #fff; margin-bottom: 12px; -webkit-appearance: none; }
-        
-        select {
-            width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 16px; box-sizing: border-box; margin-bottom: 12px;
-            background-color: #fff; color: #1f2937;
-            appearance: none; -webkit-appearance: none;
-            background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%232980b9%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
-            background-repeat: no-repeat;
-            background-position: right 12px top 50%;
-            background-size: 10px auto;
-            padding-right: 30px;
-        }
+    .container { max-width:700px; margin:0 auto; padding:12px; }
+    .card { background:#fff; border-radius:12px; padding:16px; margin-bottom:12px; box-shadow:0 1px 3px rgba(0,0,0,0.05); }
+    .head-sec { font-size:0.8rem; font-weight:900; color:#9ca3af; text-transform:uppercase; margin-bottom:10px; border-bottom:1px solid #f3f4f6; padding-bottom:5px; }
 
-        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    input, textarea, select { width:100%; padding:12px; border:1px solid #d1d5db; border-radius:8px; font-size:16px; box-sizing:border-box; background:#fff; margin-bottom:12px; appearance:none; }
+    .inline-input { flex-grow:1; min-width:100px; margin-bottom:0; padding:8px; height:38px; }
+    .grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
 
-        .accordion { border: 1px solid #e5e7eb; border-radius: 8px; margin-bottom: 8px; overflow: hidden; }
-        .accordion-head { padding: 12px 15px; background: #f9fafb; font-weight: 600; cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
-        .accordion-body { display: none; padding: 15px; background: white; border-top: 1px solid #e5e7eb; }
-        .accordion-body.show { display: block; }
-        
-        .rom-row { margin-bottom: 15px; border-bottom: 1px solid #f3f4f6; padding-bottom: 8px; }
-        .rom-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; }
-        .rom-title { font-size: 0.9rem; font-weight: 800; color: #333; }
-        .manual-input { width: 80px; padding: 6px; margin-bottom: 0; font-size: 0.85rem; height: 32px; text-align: right; border: 1px solid #ccc; }
-        .btn-grid { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 8px; }
-        .rom-btn { padding: 8px 12px; font-size: 0.8rem; border: 1px solid #e5e7eb; border-radius: 6px; background: #f9fafb; color: #555; cursor: pointer; }
-        .rom-btn.range.selected { background: #e0f2fe; color: #0284c7; border-color: #0284c7; font-weight: 700; }
-        .rom-btn.quality.selected { background: #fef2f2; color: #dc2626; border-color: #dc2626; font-weight: 700; }
-        
-        .chk-list { display: flex; flex-direction: column; gap: 8px; margin-top: 5px;}
-        .chk-item { 
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 14px 16px; background: #fff; border: 1px solid #d1d5db; border-radius: 8px;
-            cursor: pointer; transition: all 0.2s; -webkit-tap-highlight-color: transparent;
-            font-size: 1rem; color: #374151;
-        }
-        .chk-item input { display: none; } 
-        .chk-item.active { background: #eff6ff; border-color: var(--acc); color: var(--acc); font-weight: 600; }
-        .chk-item::after {
-            content: '✓'; font-weight: 900; color: var(--acc);
-            opacity: 0; transform: scale(0.5); transition: all 0.2s;
-        }
-        .chk-item.active::after { opacity: 1; transform: scale(1.2); }
+    .pill-sec { margin-bottom:15px; }
+    .pill-label { font-size:0.75rem; font-weight:800; color:#9ca3af; text-transform:uppercase; margin-bottom:6px; letter-spacing:0.5px; }
+    .pill-group { display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin-bottom:6px; }
+    .pill { padding:8px 16px; border:1px solid #e5e7eb; border-radius:20px; font-size:0.9rem; color:#4b5563; cursor:pointer; transition:all 0.15s; background:#f9fafb; user-select:none; }
+    .pill.active { background:#e0f2fe; color:#0284c7; border-color:#0284c7; font-weight:900; }
+    .pill.score-pill { padding:6px 12px; font-size:0.8rem; }
 
-        .special-row { display: grid; grid-template-columns: 1fr 100px; gap: 10px; align-items: center; margin-bottom: 10px; border-bottom: 1px dashed #e5e7eb; padding-bottom: 8px; }
-        .special-row input { margin-bottom: 0; font-size: 0.9rem; }
-        .special-row select { margin-bottom: 0; padding: 8px; font-weight: bold; }
-        .special-label { font-size: 0.9rem; font-weight: 600; color: #444; margin-bottom: 4px; display: block; }
+    .accordion { border:1px solid #e5e7eb; border-radius:8px; margin-bottom:8px; overflow:hidden; }
+    .accordion-head { padding:12px 15px; background:#f9fafb; font-weight:700; cursor:pointer; display:flex; justify-content:space-between; align-items:center; }
+    .accordion-body { display:none; padding:15px; background:#fff; border-top:1px solid #e5e7eb; }
+    .accordion-body.show { display:block; }
 
-        /* Modal */
-        .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 2000; display: none; align-items: center; justify-content: center; }
-        .modal.open { display: flex; }
-        .modal-card { background: white; width: 90%; max-width: 500px; border-radius: 12px; padding: 20px; box-shadow: 0 20px 50px rgba(0,0,0,0.3); }
+    .outcome-head { display:flex; align-items:center; justify-content:flex-start; gap:10px; background:#fff; user-select:none; }
+    .outcome-head input[type="checkbox"] { width:20px; height:20px; margin:0; appearance:auto; pointer-events:none; }
+    .score-disp { font-weight:900; color:#2980b9; font-size:1rem; margin-left:5px; }
+    .risk-disp { margin-left:auto; font-weight:900; font-size:0.9rem; color:#dc2626; }
+    .risk-disp.mid { color:#f59e0b; }
 
-        .fab { position: fixed; bottom: 30px; left: 20px; right: 20px; background: var(--acc); color: white; padding: 16px; border-radius: 50px; font-size: 1.1rem; font-weight: 700; border: none; box-shadow: 0 4px 15px rgba(41,128,185,0.4); z-index: 1000; cursor: pointer; display:flex; justify-content:center; align-items:center; gap:10px; }
-    </style>
+    .power-row { display:flex; align-items:center; gap:15px; margin-bottom:12px; background:#f9fafb; padding:12px; border-radius:8px; border:1px solid #f3f4f6; }
+    .power-label { font-weight:800; color:#4b5563; width:40px; }
+    .power-slider { flex-grow:1; -webkit-appearance:none; height:6px; background:#d1d5db; border-radius:4px; outline:none; margin:0; }
+    .power-slider::-webkit-slider-thumb { -webkit-appearance:none; appearance:none; width:24px; height:24px; border-radius:50%; background:#3b82f6; cursor:pointer; box-shadow:0 2px 5px rgba(0,0,0,0.2); }
+    .power-val { background:#3b82f6; color:#fff; width:32px; height:32px; display:flex; align-items:center; justify-content:center; border-radius:8px; font-weight:900; font-size:1rem; }
+
+    .rom-row { margin-bottom:15px; border-bottom:1px solid #f3f4f6; padding-bottom:8px; display:flex; flex-direction:column; gap:6px; }
+    .rom-title { font-size:0.9rem; font-weight:900; color:#333; }
+    .manual-input { width:80px; padding:6px; margin-bottom:0; font-size:0.85rem; height:36px; text-align:left; border:1px solid #ccc; border-radius:6px; }
+    .rom-btn { padding:8px 12px; font-size:0.8rem; border:1px solid #e5e7eb; border-radius:6px; background:#f9fafb; color:#555; cursor:pointer; }
+    .rom-btn.range.selected { background:#e0f2fe; color:#0284c7; border-color:#0284c7; font-weight:900; }
+
+    .generate-btn { width:100%; background:#3b82f6; color:#fff; padding:18px; border-radius:25px; border:none; font-size:1.1rem; font-weight:900; cursor:pointer; margin:20px 0 10px 0; box-shadow:0 4px 6px rgba(59,130,246,0.3); transition:background 0.25s; }
+    .output-box { width:100%; height:250px; background:#fff; border:1px solid #d1d5db; border-radius:12px; padding:16px; font-family:monospace; font-size:0.8rem; line-height:1.4; color:#1f2937; resize:vertical; box-sizing:border-box; }
+
+    .modal { position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:4000; display:none; align-items:center; justify-content:center; padding:10px; }
+    .modal.open { display:flex; }
+    .modal-card { background:#fff; width:100%; max-width:520px; border-radius:12px; padding:15px; box-shadow:0 20px 50px rgba(0,0,0,0.3); max-height:95vh; overflow-y:auto; display:flex; flex-direction:column; }
+
+    .cal-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; }
+    .cal-title { font-weight:900; font-size:1.1rem; }
+    .cal-nav { font-size:1.2rem; padding:5px 15px; background:#f3f4f6; border-radius:8px; cursor:pointer; user-select:none; }
+    .cal-grid { display:grid; grid-template-columns:repeat(7, 1fr); gap:4px; margin-bottom:15px; }
+    .cal-day-head { text-align:center; font-size:0.7rem; color:#999; font-weight:900; padding:5px 0; }
+    .cal-cell { aspect-ratio:0.8; border:1px solid #eee; border-radius:6px; padding:2px; font-size:0.75rem; position:relative; display:flex; flex-direction:column; overflow:hidden; background:#fff; cursor:pointer; }
+    .cal-cell.today { background:#f0f9ff; border-color:#3b82f6; }
+    .cal-cell.selected { border:2px solid #2980b9; }
+    .cal-num { font-weight:900; margin-bottom:2px; padding-left:2px; }
+    .cal-bar { background:#3b82f6; color:#fff; font-size:0.55rem; padding:1px 3px; border-radius:3px; margin-bottom:1px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; line-height:1.2; }
+    .cal-bar.more { background:#9ca3af; text-align:center; }
+    .cal-detail { border-top:2px solid #e5e7eb; padding-top:15px; flex-grow:1; margin-top:10px; }
+    .cal-list { display:flex; flex-direction:column; gap:12px; max-height:45vh; overflow-y:auto; padding-right:5px; }
+    .cal-item { background:#f8fafc; padding:15px; border-radius:12px; border:1px solid #cbd5e1; display:flex; justify-content:space-between; align-items:center; box-shadow:0 2px 4px rgba(0,0,0,0.02); }
+    .del-btn { background:#fee2e2; color:#ef4444; font-weight:900; padding:8px 16px; border:none; border-radius:8px; font-size:0.9rem; cursor:pointer; }
+    .alert-btn { background:var(--sticky); color:#a16207; font-weight:900; font-size:1.1rem; border:2px solid var(--sticky2); border-radius:10px; padding:6px 12px; cursor:pointer; }
+
+    #reminder-fab { position:fixed; right:14px; top:50%; transform:translateY(-50%); width:54px; height:54px; border-radius:16px; background:var(--sticky); border:3px solid var(--sticky2); color:#a16207; font-weight:1000; font-size:28px; display:none; align-items:center; justify-content:center; z-index:2500; box-shadow:0 10px 25px rgba(0,0,0,0.18); user-select:none; cursor:pointer; }
+    #reminder-fab.show { display:flex; }
+  </style>
 </head>
 <body>
 
 <div id="auth-screen">
-    <div id="view-login" class="auth-card">
-        <h3>CMS Clinical V24.1</h3>
-        <select id="user-select" class="auth-input"></select>
-        <input type="tel" id="user-pin" class="auth-input" placeholder="PIN" maxlength="6" style="-webkit-text-security:disc;">
-        <button class="auth-btn" onclick="attemptLogin()">Unlock App</button>
-        <button class="auth-btn sec" onclick="toggleAuth('register')">Create New Profile</button>
-    </div>
-    <div id="view-register" class="auth-card hidden">
-        <h3>Create Profile</h3>
-        <input type="text" id="reg-name" class="auth-input" placeholder="Your Name">
-        <input type="tel" id="reg-pin" class="auth-input" placeholder="Create PIN (4 digits)" maxlength="6">
-        <button class="auth-btn" style="background:#10b981;" onclick="registerUser()">Start Using App</button>
-        <button class="auth-btn sec" style="color:#666; border-color:#ccc;" onclick="toggleAuth('login')">Back</button>
-    </div>
+  <div id="view-login" class="auth-card">
+    <h3>CMS Clinical V25.20</h3>
+    <select id="user-select" class="auth-input"></select>
+    <input type="tel" id="user-pin" class="auth-input" placeholder="PIN" maxlength="6" style="-webkit-text-security:disc;">
+    <button class="auth-btn" onclick="attemptLogin()">Unlock App</button>
+    <button class="auth-btn sec" onclick="toggleAuth('register')">Create Profile</button>
+  </div>
+  <div id="view-register" class="auth-card hidden">
+    <h3>Create Profile</h3>
+    <input type="text" id="reg-name" class="auth-input" placeholder="Your Name">
+    <input type="tel" id="reg-pin" class="auth-input" placeholder="Create PIN (4 digits)" maxlength="6">
+    <button class="auth-btn" style="background:#10b981;" onclick="registerUser()">Start App</button>
+    <button class="auth-btn sec" style="color:#666; border-color:#ccc;" onclick="toggleAuth('login')">Back</button>
+  </div>
 </div>
 
 <div id="app-ui" style="display:none;">
-    <header>
-        <div class="top-row">
-            <div class="user-badge" id="display-name">Guest</div>
-            <button class="import-btn" onclick="openImport()">Import CMS</button>
-            <div style="color:#fca5a5; cursor:pointer;" onclick="logout()">Lock 🔒</div>
-        </div>
-        <div class="tab-bar" id="tab-bar">
-            <div class="tab-btn add" onclick="addPatient()">+ Pt</div>
-        </div>
-    </header>
+  <header>
+    <div class="top-row">
+      <div class="user-badge" id="display-name">Guest</div>
+      <div>
+        <button class="import-btn" onclick="openImport()">Import CMS</button>
+        <button class="import-btn" style="background:#8b5cf6;" onclick="openCalendar()">📅 Calendar</button>
+      </div>
+      <div style="color:#fca5a5; cursor:pointer; font-size:1.2rem; font-weight:900;" onclick="logout()">Lock 🔒</div>
+    </div>
+    <div class="date-header">
+      <span class="nav-arrow" onclick="changeGlobalDate(-1)">&#8249;</span>
+      <span id="today-display" style="margin:0 10px;"></span>
+      <span class="nav-arrow" onclick="changeGlobalDate(1)">&#8250;</span>
+    </div>
+    <div class="tab-bar" id="tab-bar"></div>
+  </header>
 
-    <div class="container" id="patients-container"></div>
-    <button class="fab" onclick="generateNote()">COPY CMS NOTE</button>
+  <div class="container" id="editor-container" style="display:none;">
+    <div class="card" style="border:2px solid #2980b9; background:#f0f9ff;">
+      <div class="head-sec" style="color:#2980b9;">Admin & Case History</div>
+      <div class="grid-2">
+        <input id="val-case" placeholder="Enter Case Number..." onchange="handleCaseChange(this)" style="font-weight:900; border:2px solid #3b82f6; background:#fff; color:#1e293b;">
+        <select id="visit-time" onchange="saveWork(); if(typeof renderCalendar==='function') renderCalendar(curYear, curMonth);">
+          <option value="09:00-10:00">09:00 - 10:00</option>
+          <option value="10:00-11:00">10:00 - 11:00</option>
+          <option value="11:00-12:00">11:00 - 12:00</option>
+          <option value="12:00-13:00">12:00 - 13:00</option>
+          <option value="14:00-15:00">14:00 - 15:00</option>
+          <option value="15:00-16:00">15:00 - 16:00</option>
+          <option value="16:00-17:00">16:00 - 17:00</option>
+        </select>
+      </div>
+      <div style="margin-top:10px; padding-top:10px; border-top:1px dashed #94a3b8;">
+        <button class="auth-btn sec" style="margin:0; padding:10px; font-size:0.95rem; border-color:#3b82f6; color:#3b82f6;" onclick="searchCurrentCaseHistory()">🔍 Find Previous Notes for this Case</button>
+        <div id="history-results" style="margin-top:10px; display:flex; flex-direction:column; gap:8px;"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="head-sec">Medical History</div>
+      <div class="pill-label">Diagnosis</div>
+      <textarea id="val-dx" style="height:40px" placeholder="Diagnosis"></textarea>
+      <div class="pill-label">Past Medical History (PMH)</div>
+      <textarea id="val-pmh" style="height:60px" placeholder="PMH"></textarea>
+      <div class="pill-label">Medication</div>
+      <textarea id="val-meds" style="height:50px" placeholder="Medication"></textarea>
+      <div class="pill-label">History of Present Illness (HPI)</div>
+      <textarea id="val-hpi" style="height:60px" placeholder="HPI"></textarea>
+      <div class="pill-label">Investigations (X-ray, CT, etc)</div>
+      <textarea id="val-inv" style="height:50px" placeholder="Investigations"></textarea>
+    </div>
+
+    <div class="card">
+      <div class="head-sec">Social History</div>
+      <div class="pill-sec"><div class="pill-label">LTOT (Oxygen)</div><div class="pill-group" data-field="sh.ltot"><div class="pill" onclick="tp(this,false)">No</div><div class="pill" onclick="tp(this,false)">Yes</div><input class="inline-input" id="val-sh-ltot-l" placeholder="L/min"></div></div>
+      <div class="pill-sec"><div class="pill-label">Recent Fall (Last 1 year)</div><div class="pill-group" data-field="sh.fall"><div class="pill" onclick="tp(this,false)">No</div><div class="pill" onclick="tp(this,false)">Yes</div><input class="inline-input" id="val-sh-fall-t" placeholder="Times"></div></div>
+      <div class="pill-sec"><div class="pill-label">Occupation</div><div class="pill-group" data-field="sh.occ"><div class="pill" onclick="tp(this,false)">retired</div><div class="pill" onclick="tp(this,false)">housewife</div><div class="pill" onclick="tp(this,false)">manual worker</div><div class="pill" onclick="tp(this,false)">clerical</div><input class="inline-input" id="val-sh-occ-t" placeholder="Other..."></div></div>
+      <div class="pill-sec"><div class="pill-label">Lives with</div><div class="pill-group" data-field="sh.live"><div class="pill" onclick="tp(this,false)">family</div><div class="pill" onclick="tp(this,false)">alone</div><input class="inline-input" id="val-sh-live-t" placeholder="Other..."></div></div>
+      <div class="pill-sec"><div class="pill-label">ADL</div><div class="pill-group" data-field="sh.adl"><div class="pill" onclick="tp(this,false)">independent</div><div class="pill" onclick="tp(this,false)">assisted</div><div class="pill" onclick="tp(this,false)">dependent</div><input class="inline-input" id="val-sh-adl-t" placeholder="Other..."></div></div>
+      <div class="pill-sec"><div class="pill-label">Mobility Status</div><div class="pill-group" data-field="sh.mob"><div class="pill" onclick="tp(this,false)">homebound</div><div class="pill" onclick="tp(this,false)">chairbound</div><div class="pill" onclick="tp(this,false)">indoor walker</div><div class="pill" onclick="tp(this,false)">outdoor walker</div><input class="inline-input" id="val-sh-mob-t" placeholder="Other..."></div></div>
+      <div class="pill-sec"><div class="pill-label">Indoor Walking</div><div class="pill-group" data-field="sh.in"><div class="pill" onclick="tp(this,false)">walk with frame</div><div class="pill" onclick="tp(this,false)">rollator</div><div class="pill" onclick="tp(this,false)">quadripod</div><div class="pill" onclick="tp(this,false)">stick</div><div class="pill" onclick="tp(this,false)">unaided +- furniture</div><div class="pill" onclick="tp(this,false)">unaided</div><input class="inline-input" id="val-sh-in-t" placeholder="Other..."></div></div>
+      <div class="pill-sec"><div class="pill-label">Outdoor Walking</div><div class="pill-group" data-field="sh.out"><div class="pill" onclick="tp(this,false)">walk with frame</div><div class="pill" onclick="tp(this,false)">rollator</div><div class="pill" onclick="tp(this,false)">quadripod</div><div class="pill" onclick="tp(this,false)">stick</div><div class="pill" onclick="tp(this,false)">unaided +- furniture</div><div class="pill" onclick="tp(this,false)">unaided</div><div class="pill" onclick="tp(this,false)">wheelchair</div><div class="pill" onclick="tp(this,false)">electronic wheelchair</div><input class="inline-input" id="val-sh-out-t" placeholder="Other..."></div></div>
+      <div class="pill-sec"><div class="pill-label">Premorbid</div><div class="pill-group" data-field="sh.pre"><div class="pill" onclick="tp(this,false)">walk with frame</div><div class="pill" onclick="tp(this,false)">rollator</div><div class="pill" onclick="tp(this,false)">quadripod</div><div class="pill" onclick="tp(this,false)">stick</div><div class="pill" onclick="tp(this,false)">unaided +- furniture</div><div class="pill" onclick="tp(this,false)">unaided</div><input class="inline-input" id="val-sh-pre-t" placeholder="Other..."></div></div>
+      <div class="pill-sec"><div class="pill-label">Community service</div><div class="pill-group" data-field="sh.com"><div class="pill" onclick="tp(this,false)">nil</div><input class="inline-input" id="val-sh-com-t" placeholder="Other..."></div></div>
+    </div>
+
+    <div class="card">
+      <div class="head-sec">Home Environment</div>
+      <div class="pill-sec"><div class="pill-label">Housing Type</div><div class="pill-group" data-field="he.type"><div class="pill" onclick="tp(this,true)">PHE</div><div class="pill" onclick="tp(this,true)">private flat with direct lift-landing</div><input class="inline-input" id="val-he-type-t" placeholder="Other..."></div></div>
+      <div class="pill-sec">
+        <div class="pill-label">Accessibility</div>
+        <div class="pill-group" data-field="he.acc"><div class="pill" onclick="tp(this,true)">Lift-landing</div><div class="pill" onclick="tp(this,true)">Slope</div><div class="pill" onclick="tp(this,true)">Stairs</div></div>
+        <div class="grid-2" style="margin-top:8px;"><input id="val-he-steps" placeholder="Steps"><input id="val-he-handrail" placeholder="Handrail"></div>
+      </div>
+      <div class="pill-sec"><div class="pill-label">Kerb in toilet</div><div class="pill-group" data-field="he.kerb"><div class="pill" onclick="tp(this,true)">1 kerb in toilet</div><input class="inline-input" id="val-he-kerb-t" placeholder="Other..."></div></div>
+      <div class="pill-sec"><div class="pill-label">Indoor environment</div><div class="pill-group" data-field="he.env"><div class="pill" onclick="tp(this,true)">tidy and spacious</div><input class="inline-input" id="val-he-env-t" placeholder="Other..."></div></div>
+      <div class="pill-sec"><div class="pill-label">Toilet</div><div class="pill-group" data-field="he.toi"><div class="pill" onclick="tp(this,true)">sitting</div><div class="pill" onclick="tp(this,true)">with handrail</div><div class="pill" onclick="tp(this,true)">commode</div><div class="pill" onclick="tp(this,true)">bath tub</div><input class="inline-input" id="val-he-toi-t" placeholder="Other..."></div></div>
+      <div class="pill-sec"><div class="pill-label">Shower</div><div class="pill-group" data-field="he.sho"><div class="pill" onclick="tp(this,true)">with shower chair</div><input class="inline-input" id="val-he-sho-t" placeholder="Other..."></div></div>
+      <div class="pill-sec"><div class="pill-label">Lighting</div><div class="pill-group" data-field="he.lig"><div class="pill" onclick="tp(this,true)">adequate</div><div class="pill" onclick="tp(this,true)">appropriate switches</div><div class="pill" onclick="tp(this,true)">no nighttime light</div><input class="inline-input" id="val-he-lig-t" placeholder="Other..."></div></div>
+      <div class="pill-sec"><div class="pill-label">Floor</div><div class="pill-group" data-field="he.flo"><div class="pill" onclick="tp(this,true)">even</div><div class="pill" onclick="tp(this,true)">non-slippery</div><div class="pill" onclick="tp(this,true)">clean</div><input class="inline-input" id="val-he-flo-t" placeholder="Other..."></div></div>
+      <div class="pill-sec"><div class="pill-label">Door</div><div class="pill-group" data-field="he.dor"><div class="pill" onclick="tp(this,true)">appropriate height</div><input class="inline-input" id="val-he-dor-t" placeholder="Other..."></div></div>
+      <div class="pill-sec"><div class="pill-label">Furniture</div><div class="pill-group" data-field="he.fur"><div class="pill" onclick="tp(this,true)">appropriate height</div><div class="pill" onclick="tp(this,true)">with back support</div><input class="inline-input" id="val-he-fur-t" placeholder="Other..."></div></div>
+      <div class="pill-sec"><div class="pill-label">Bedroom</div><div class="pill-group" data-field="he.bed"><div class="pill" onclick="tp(this,true)">appropriate bed height</div><div class="pill" onclick="tp(this,true)">with bedside lamp</div><input class="inline-input" id="val-he-bed-t" placeholder="Other..."></div></div>
+      <div class="pill-sec"><div class="pill-label">Bathroom</div><div class="pill-group" data-field="he.bat"><div class="pill" onclick="tp(this,true)">dry and clean</div><div class="pill" onclick="tp(this,true)">with non-slip mat</div><input class="inline-input" id="val-he-bat-t" placeholder="Other..."></div></div>
+      <div class="pill-sec"><div class="pill-label">Personal alarm</div><div class="pill-group" data-field="he.alm"><div class="pill" onclick="tp(this,true)">Yes</div><div class="pill" onclick="tp(this,true)">No</div><input class="inline-input" id="val-he-alm-t" placeholder="Other..."></div></div>
+    </div>
+
+    <div class="card">
+      <div class="head-sec">Subjective & Vitals</div>
+      <div class="pill-sec"><div class="pill-label">Seen By</div><div class="pill-group" data-field="su.seen"><div class="pill" onclick="tp(this,false)">alone</div><div class="pill" onclick="tp(this,false)">with maid</div><div class="pill" onclick="tp(this,false)">with family</div><input class="inline-input" id="val-su-seen-t" placeholder="Name/Relation..."></div></div>
+      <div class="pill-sec"><div class="pill-label">General condition</div><div class="pill-group" data-field="su.gen"><div class="pill" onclick="tp(this,false)">stable</div><input class="inline-input" id="val-su-gen-t" placeholder="Other..."></div></div>
+      <div class="grid-2" style="margin-bottom:12px;"><input id="val-bp" placeholder="BP (mmHg)"><input id="val-hr" placeholder="Pulse (bpm)"></div>
+      <textarea id="val-fall" style="height:40px" placeholder="* Recent fall history (within 6 months):"></textarea>
+      
+      <div style="margin-top:20px; font-weight:900; font-size:1.1rem; color:#2c3e50; border-bottom:2px solid #e5e7eb; padding-bottom:5px; margin-bottom:15px;">Subjective examination</div>
+      <input id="val-su-comp" placeholder="Complain:">
+      <input id="val-su-area" placeholder="Area:">
+      <input id="val-su-nat" placeholder="Nature of symtoms:">
+      <input id="val-su-rest" placeholder="Resting pain:">
+      <input id="val-su-agg" placeholder="Aggravating factors:">
+      <input id="val-su-eas" placeholder="Easing factors:">
+      <input id="val-su-fun" placeholder="Functional limitation:">
+      <input id="val-su-walk" placeholder="Walking tolerances:">
+      <input id="val-su-oth" placeholder="Others:">
+    </div>
+
+    <div class="card">
+      <div class="head-sec">Objective (MSK & Ambulation)</div>
+      <div class="accordion" style="margin-bottom:15px; border-color:#9ca3af;">
+        <div class="accordion-head" onclick="toggleAc(this)" style="background:#f3f4f6; color:#4b5563;">Posture & Palpation <span>+</span></div>
+        <div class="accordion-body">
+          <div class="pill-label" style="font-size:0.9rem; color:#2c3e50;">Posture</div>
+          <input id="val-pos-inf" placeholder="Inflammatory sign:">
+          <input id="val-pos-swe" placeholder="Swelling, redness:">
+          <input id="val-pos-tem" placeholder="Temperature:">
+          <input id="val-pos-mus" placeholder="Muscles wasting:">
+          <div class="pill-label" style="font-size:0.9rem; color:#2c3e50; margin-top:15px;">Palpation</div>
+          <input id="val-pal-tig" placeholder="Tightness over:">
+          <input id="val-pal-ten" placeholder="Tender over:">
+        </div>
+      </div>
+      <div class="pill-sec">
+        <div class="pill-label">Range of Motion Summary</div>
+        <div class="pill-group" data-field="msk.rom">
+          <div class="pill" onclick="tp(this,false); toggleRomDetail()">All limbs full</div>
+          <div class="pill" onclick="tp(this,false); toggleRomDetail()">Detail</div>
+        </div>
+        <input id="val-msk-rom-det" class="hidden" placeholder="Specify ROM details..." style="margin-top:8px;">
+      </div>
+      <div class="pill-sec">
+        <div class="pill-label">Limb Power (MMT 0-5)</div>
+        <div class="power-row"><div class="power-label">R UL</div><input type="range" min="0" max="5" value="5" id="val-pwr-rul" class="power-slider" oninput="updatePwr(this)"><div class="power-val">5</div></div>
+        <div class="power-row"><div class="power-label">L UL</div><input type="range" min="0" max="5" value="5" id="val-pwr-lul" class="power-slider" oninput="updatePwr(this)"><div class="power-val">5</div></div>
+        <div class="power-row"><div class="power-label">R LL</div><input type="range" min="0" max="5" value="5" id="val-pwr-rll" class="power-slider" oninput="updatePwr(this)"><div class="power-val">5</div></div>
+        <div class="power-row"><div class="power-label">L LL</div><input type="range" min="0" max="5" value="5" id="val-pwr-lll" class="power-slider" oninput="updatePwr(this)"><div class="power-val">5</div></div>
+      </div>
+      <div class="pill-sec">
+        <div class="pill-label">Sensation</div>
+        <textarea id="val-sens" style="height:40px" placeholder="Light touch: Intact"></textarea>
+      </div>
+      <div class="accordion" style="margin-top:20px; border-color:#9ca3af;">
+        <div class="accordion-head" onclick="toggleAc(this)" style="background:#f3f4f6; color:#4b5563;">Specific Joint Assessment <span>+</span></div>
+        <div class="accordion-body body-container" id="joints-container" style="padding:10px;"></div>
+      </div>
+      <div style="margin-top:25px; font-weight:900; font-size:1.1rem; color:#2c3e50; border-bottom:2px solid #e5e7eb; padding-bottom:5px; margin-bottom:15px;">Ambulation</div>
+      <div class="pill-sec"><div class="pill-label">Bed mobility</div><div class="pill-group" data-field="amb.bed"><div class="pill" onclick="tp(this,false)">independent</div><div class="pill" onclick="tp(this,false)">supervision</div><div class="pill" onclick="tp(this,false)">+1 assist</div><div class="pill" onclick="tp(this,false)">+2 assist</div><div class="pill" onclick="tp(this,false)">dependent</div><input class="inline-input" id="val-amb-bed-t" placeholder="Other..."></div></div>
+      <div class="pill-sec"><div class="pill-label">Lying to sitting</div><div class="pill-group" data-field="amb.l2s"><div class="pill" onclick="tp(this,false)">independent</div><div class="pill" onclick="tp(this,false)">supervision</div><div class="pill" onclick="tp(this,false)">+1 assist</div><div class="pill" onclick="tp(this,false)">+2 assist</div><input class="inline-input" id="val-amb-l2s-t" placeholder="Other..."></div></div>
+      <div class="pill-sec"><div class="pill-label">Sitting to standing</div><div class="pill-group" data-field="amb.s2s"><div class="pill" onclick="tp(this,false)">independent</div><div class="pill" onclick="tp(this,false)">supervision</div><div class="pill" onclick="tp(this,false)">+1 assist</div><div class="pill" onclick="tp(this,false)">+2 assist</div><input class="inline-input" id="val-amb-s2s-t" placeholder="Other..."></div></div>
+      <div class="pill-sec"><div class="pill-label">Sitting balance</div><div class="pill-group" data-field="amb.sitb"><div class="pill" onclick="tp(this,false)">poor</div><div class="pill" onclick="tp(this,false)">fair</div><div class="pill" onclick="tp(this,false)">acceptable</div><div class="pill" onclick="tp(this,false)">satisfactory</div><div class="pill" onclick="tp(this,false)">good</div><input class="inline-input" id="val-amb-sitb-t" placeholder="Other..."></div></div>
+      <div class="pill-sec"><div class="pill-label">Standing balance</div><div class="pill-group" data-field="amb.stdb"><div class="pill" onclick="tp(this,false)">poor</div><div class="pill" onclick="tp(this,false)">fair</div><div class="pill" onclick="tp(this,false)">acceptable</div><div class="pill" onclick="tp(this,false)">satisfactory</div><div class="pill" onclick="tp(this,false)">good</div><input class="inline-input" id="val-amb-stdb-t" placeholder="Other..."></div></div>
+      <div class="pill-sec" style="background:#f9fafb; padding:12px; border-radius:8px; border:1px solid #e5e7eb;">
+        <div class="pill-label" style="font-size:0.85rem; color:#2c3e50; text-transform:uppercase;">Walking</div>
+        <div class="pill-label" style="margin-top:5px;">Aid</div>
+        <div class="pill-group" data-field="amb.w_aid"><div class="pill" onclick="tp(this,false)">walks unaided</div><div class="pill" onclick="tp(this,false)">stick</div><div class="pill" onclick="tp(this,false)">quadripod</div><div class="pill" onclick="tp(this,false)">frame</div><div class="pill" onclick="tp(this,false)">rollator</div><div class="pill" onclick="tp(this,false)">trolley</div></div>
+        <div class="pill-label" style="margin-top:8px;">Assistance</div>
+        <div class="pill-group" data-field="amb.w_ast"><div class="pill" onclick="tp(this,false)">independent</div><div class="pill" onclick="tp(this,false)">supervision</div><div class="pill" onclick="tp(this,false)">+1 assist</div><div class="pill" onclick="tp(this,false)">+2 assist</div></div>
+        <div class="pill-label" style="margin-top:8px;">Stability</div>
+        <div class="pill-group" data-field="amb.w_stb"><div class="pill" onclick="tp(this,false)">poor</div><div class="pill" onclick="tp(this,false)">fair</div><div class="pill" onclick="tp(this,false)">acceptable</div><div class="pill" onclick="tp(this,false)">satisfactory</div><div class="pill" onclick="tp(this,false)">good</div></div>
+        <input class="inline-input" id="val-amb-w-t" placeholder="Other walking details..." style="margin-top:8px; width:100%; box-sizing:border-box;">
+      </div>
+      <div class="pill-sec">
+        <div class="pill-label">Gait description</div>
+        <textarea id="val-amb-gait" style="height:50px" placeholder="Gait description..."></textarea>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="head-sec">Outcomes</div>
+      <div class="outcomes-container" id="outcomes-container"></div>
+    </div>
+
+    <div class="card">
+      <div class="head-sec">Problems & Goals</div>
+      <textarea id="val-prob" style="height:60px;" placeholder="Problems..."></textarea>
+      <textarea id="val-stg" style="height:60px;" placeholder="Short term goals..."></textarea>
+      <textarea id="val-ltg" style="height:60px;" placeholder="Long term goals..."></textarea>
+    </div>
+
+    <div class="card">
+      <div class="head-sec">Plan / Exercises</div>
+      <div class="pill-sec">
+        <div class="pill-label">Exercises Taught</div>
+        <div class="pill-group" id="ex-pills" data-field="plan.ex"></div>
+      </div>
+      <textarea id="val-ex-free" placeholder="Free text custom exercises..." style="height:80px; margin-top:12px;"></textarea>
+    </div>
+
+    <button id="gen-btn" class="generate-btn" onclick="generateNote()">Generate & Copy CMS Note</button>
+    <textarea id="output-box" class="output-box" placeholder="Generated report will appear here..." readonly></textarea>
+  </div>
+</div>
+
+<div id="reminder-fab" onclick="openReminderForCurrent()">!</div>
+
+<!-- Calendar Modal -->
+<div id="calendar-modal" class="modal">
+  <div class="modal-card">
+    <div class="cal-header">
+      <div class="cal-nav" onclick="changeMonth(-1)">&#8249;</div>
+      <div class="cal-title" id="cal-month-title">February 2026</div>
+      <div class="cal-nav" onclick="changeMonth(1)">&#8250;</div>
+    </div>
+    <div class="cal-grid" id="cal-grid"></div>
+    <div class="cal-detail">
+      <div style="font-size:1.2rem; font-weight:900; color:#1e293b; margin-bottom:12px; text-align:center;" id="cal-sel-date">Selected Date</div>
+      <div id="cal-list" class="cal-list"></div>
+    </div>
+    <button class="auth-btn sec" onclick="document.getElementById('calendar-modal').classList.remove('open')">Close Calendar</button>
+  </div>
+</div>
+
+<!-- Reminder Modal -->
+<div id="reminder-modal" class="modal">
+  <div class="modal-card" style="border:4px solid var(--sticky2);">
+    <h3 style="margin:0 0 10px 0; color:#a16207;">❗ CMS Reminders (Internal)</h3>
+    <div style="font-size:0.85rem; color:#666; margin-bottom:10px;">Paste the most recent doctor FU / warnings / key reminders here (will NOT appear in generated CMS note).</div>
+    <textarea id="reminder-text" style="height:170px; background:var(--sticky); border:2px dashed var(--sticky2); border-radius:8px; padding:10px; font-family:inherit; font-size:0.95rem; color:#854d0e; font-weight:800;"></textarea>
+    <div style="display:flex; gap:10px; margin-top:10px;">
+      <button class="auth-btn" style="background:#a16207;" onclick="saveReminderModal()">Save</button>
+      <button class="auth-btn sec" style="border-color:#a16207; color:#a16207;" onclick="copyReminder()">Copy</button>
+    </div>
+    <button class="auth-btn sec" style="margin-top:10px; border-color:#999; color:#666;" onclick="document.getElementById('reminder-modal').classList.remove('open')">Close</button>
+  </div>
 </div>
 
 <!-- Import Modal -->
 <div id="import-modal" class="modal">
-    <div class="modal-card">
-        <h3>Import CMS Note</h3>
-        <p style="font-size:0.9rem; color:#666;">Paste the full text from your previous session/HA Chat. The app will fill the forms and keep the text for reference.</p>
-        <textarea id="import-text" style="height:150px; font-family:monospace; font-size:0.8rem;" placeholder="Paste text here..."></textarea>
-        <button class="auth-btn" onclick="parseAndImport()">Import & Parse</button>
-        <button class="auth-btn sec" onclick="document.getElementById('import-modal').classList.remove('open')">Cancel</button>
-    </div>
+  <div class="modal-card">
+    <h3>Import Old CMS Note</h3>
+    <textarea id="import-text" style="height:200px; font-family:monospace; font-size:0.8rem;" placeholder="Community Physiotherapy..."></textarea>
+    <button class="auth-btn" onclick="parseAndImport()">Import & Parse</button>
+    <button class="auth-btn sec" onclick="document.getElementById('import-modal').classList.remove('open')">Cancel</button>
+  </div>
 </div>
 
-<textarea id="copy_target" style="opacity:0; height:1px; position:absolute; bottom:0;"></textarea>
-
-<template id="patient-template">
-    <div class="patient-view">
-        <div class="ref-box">
-            <div class="ref-title"><span>OLD NOTE REFERENCE</span> <span onclick="this.parentElement.parentElement.classList.remove('show')" style="cursor:pointer">✕</span></div>
-            <div class="ref-content"></div>
-        </div>
-
-        <div class="card" style="border:2px solid #2980b9; background:#f0f9ff;">
-            <div class="head-sec" style="color:#2980b9;">Admin Data</div>
-            <input type="text" class="pt-id" placeholder="Bed / Ref" onkeyup="saveWork(); updateTabName(this)" style="font-weight:bold; font-size:1.1rem; margin-bottom:0;">
-            <div class="grid-2">
-                <input class="dx" placeholder="Diagnosis" onkeyup="saveWork()">
-                <input class="ref" placeholder="Reason for Referral" onkeyup="saveWork()">
-            </div>
-        </div>
-        
-        <div class="card">
-            <div class="head-sec">History</div>
-            <textarea class="hpi" style="height:60px" placeholder="HPI" onkeyup="saveWork()"></textarea>
-            <textarea class="pmh" style="height:50px" placeholder="PMH" onkeyup="saveWork()"></textarea>
-            <textarea class="meds" style="height:50px" placeholder="Medication" onkeyup="saveWork()"></textarea>
-            <input class="fall" placeholder="Fall History & Reason" onkeyup="saveWork()">
-            <input class="ment" placeholder="Mental Status" onkeyup="saveWork()">
-            <input class="prev_pt" placeholder="Prev PT (Default: NIL)" value="NIL" onkeyup="saveWork()">
-        </div>
-
-        <div class="card">
-            <div class="head-sec">Social / Env</div>
-            <div class="grid-2">
-                <select class="soc_live" onchange="saveWork()"><option value="">Lives with...</option><option value="Spouse">Spouse</option><option value="Maid">Maid</option><option value="Daughter">Daughter</option><option value="Son">Son</option><option value="Alone">Alone</option></select>
-                <select class="soc_carer" onchange="saveWork()"><option value="">Carer...</option><option value="Spouse">Spouse</option><option value="Maid">Maid</option><option value="Daughter">Daughter</option><option value="Son">Son</option><option value="Self">Self</option></select>
-            </div>
-            <div class="grid-2">
-                <input class="soc_pre" placeholder="Premorbid" onkeyup="saveWork()">
-                <select class="env_type" onchange="saveWork()">
-                    <option value="" disabled selected>Housing Type</option>
-                    <option value="Public housing">Public Housing</option>
-                    <option value="Private housing">Private Housing</option>
-                    <option value="Village house">Village House</option>
-                </select>
-            </div>
-            <div class="grid-2">
-                <select class="env_acc" onchange="toggleStairs(this); saveWork()">
-                    <option value="Lift-landing">Lift-landing</option>
-                    <option value="Stairs">Stairs</option>
-                </select>
-                <input class="env_stairs_txt hidden" placeholder="No. of Steps (e.g. 5)" onkeyup="saveWork()">
-            </div>
-            <div class="grid-2">
-                <select class="env_wc" onchange="saveWork()">
-                    <option value="" disabled selected>Toilet Type</option>
-                    <option value="Sitting">WC: Sitting</option>
-                    <option value="Squatting">WC: Squatting</option>
-                    <option value="Commode">WC: Commode</option>
-                </select>
-                <select class="env_bath" onchange="saveWork()">
-                    <option value="" disabled selected>Bath Type</option>
-                    <option value="Sitting">Bath: Sitting</option>
-                    <option value="Shower cubicle">Bath: Shower</option>
-                    <option value="Bath tub">Bath: Tub</option>
-                </select>
-            </div>
-            
-            <div style="margin-top:10px;">
-                <div class="chk-item env_rails_row" onclick="toggleChk(this)">
-                    <input type="checkbox" class="env_rails">
-                    <span>Handrails available</span>
-                </div>
-            </div>
-            
-            <input class="env_note" placeholder="Env Note (Default: Spaceous...)" value="Spaceous and tidy" onkeyup="saveWork()" style="margin-top:12px;">
-        </div>
-        
-        <div class="card">
-            <div class="head-sec">Objective</div>
-            <input class="subj" placeholder="Subjective (Compliant)" value="Compliant" onkeyup="saveWork()">
-            <input class="func" placeholder="Func Limit (e.g. Prolonged walk)" onkeyup="saveWork()">
-            <input class="ass_with" placeholder="Assessed with (e.g. Maid)" onkeyup="saveWork()">
-            <div class="grid-2">
-                <input class="bp" placeholder="BP" onkeyup="saveWork()">
-                <input class="hr" placeholder="HR" onkeyup="saveWork()">
-            </div>
-            <input class="obs" placeholder="Observation" value="Thin body build" onkeyup="saveWork()">
-            <div class="body-container"></div>
-            <div style="margin-top:20px; font-weight:700; color:#555;">Power (Right / Left)</div>
-            <div style="background:#f9f9f9; padding:10px; border-radius:8px;">
-                <div class="grid-2">
-                    <input class="pwr_ul" placeholder="UL (e.g. 5 / 5)" onkeyup="saveWork()">
-                    <input class="pwr_ll" placeholder="LL (e.g. 4 / 4)" onkeyup="saveWork()">
-                </div>
-            </div>
-        </div>
-        <div class="card">
-            <div class="head-sec">Plan</div>
-            <div class="grid-2">
-                <input class="bed" placeholder="Bed Mob" onkeyup="saveWork()">
-                <input class="tf" placeholder="Transfer" onkeyup="saveWork()">
-            </div>
-            <input class="gait" placeholder="Gait" onkeyup="saveWork()">
-            <input class="prob" placeholder="Problem" onkeyup="saveWork()">
-            <div class="grid-2">
-                <input class="stg" placeholder="STG" onkeyup="saveWork()">
-                <input class="ltg" placeholder="LTG" onkeyup="saveWork()">
-            </div>
-            <div style="margin-top:10px; font-weight:bold; color:#2980b9;">Exercises Taught:</div>
-            <div class="chk-list ex-list"></div>
-            <textarea class="ex-free" placeholder="Other exercises / specific parameters..." style="height:60px; margin-top:12px;" onkeyup="saveWork()"></textarea>
-        </div>
-    </div>
-</template>
-
 <script>
-    const USERS_KEY = 'physio_users_v1';
-    let currentUser = null;
-    let currentPatients = [];
-    let currentTab = 0;
+  const USERS_KEY = 'physio_users_v2';
+  let currentUser = null;
+  let db = {};
+  let todayList = [];
+  let currentTabIdx = -1;
+  let activeDateStr = getToday();
+  let curYear = new Date().getFullYear();
+  let curMonth = new Date().getMonth();
+  let activeReminderCase = null;
+  let activeReminderIdx = null;
+  let isPopulating = false;
+
+  const cxTests = [{id:'spurl', name:"Spurling's test"}, {id:'dist', name:"Cervical distraction"}, {id:'ultt', name:"ULTT"}];
+  const lxTests = [{id:'slr', name:"Straight Leg Raise"}, {id:'slump', name:"Slump test"}];
+  const shTests = [{id:'empty', name:"Empty Can"}, {id:'hawk', name:"Hawkins-Kennedy"}, {id:'neer', name:"Neer's"}, {id:'app', name:"Apprehension test"}, {id:'speed', name:"Speed's test"}, {id:'drop', name:"Drop Arm"}];
+  const elTests = [{id:'cozen', name:"Cozen's test"}, {id:'golf', name:"Golfer's elbow test"}, {id:'tinel', name:"Tinel's sign (Cubital)"}];
+  const wrTests = [{id:'phalen', name:"Phalen's test"}, {id:'tinel', name:"Tinel's sign (Carpal)"}, {id:'fink', name:"Finkelstein's test"}];
+  const hipTests = [{id:'faber', name:"FABER/Patrick's"}, {id:'fadir', name:"FADIR"}, {id:'thomas', name:"Thomas test"}, {id:'trend', name:"Trendelenburg sign"}, {id:'ober', name:"Ober's test"}];
+  const kneeTests = [{id:'lach', name:"Lachman test"}, {id:'adraw', name:"Anterior Drawer"}, {id:'pdraw', name:"Posterior Drawer"}, {id:'mcmur', name:"McMurray's test"}, {id:'valgus', name:"Valgus stress"}, {id:'varus', name:"Varus stress"}, {id:'pat', name:"Patellar tap"}];
+  const ankTests = [{id:'adraw', name:"Anterior Drawer (ATFL)"}, {id:'talar', name:"Talar tilt"}, {id:'thomp', name:"Thompson test"}];
+
+  const shMov = ["Flexion","Extension","Abduction","Adduction","Internal Rotation","External Rotation"];
+  const elMov = ["Flexion","Extension","Pronation","Supination"];
+  const wrMov = ["Flexion","Extension","Radial Deviation","Ulnar Deviation"];
+  const hipMov = ["Flexion","Extension","Abduction","Adduction","Internal Rotation","External Rotation"];
+  const kneeMov = ["Flexion","Extension"];
+  const ankMov = ["Dorsiflexion","Plantarflexion","Inversion","Eversion"];
+  const spineMov = ["Flexion","Extension","Rotation(L)","Rotation(R)","Side Flexion(L)","Side Flexion(R)"];
+
+  const bodyParts = [
+    {name:"Neck (Cx)", id:"cx", mov:spineMov, tests: cxTests},
+    {name:"Back (Lx)", id:"lx", mov:spineMov, tests: lxTests},
+    {name:"Shoulder (R)", id:"sr", mov: shMov, tests: shTests},
+    {name:"Shoulder (L)", id:"sl", mov: shMov, tests: shTests},
+    {name:"Elbow (R)", id:"er", mov: elMov, tests: elTests},
+    {name:"Elbow (L)", id:"el", mov: elMov, tests: elTests},
+    {name:"Wrist (R)", id:"wrr", mov: wrMov, tests: wrTests},
+    {name:"Wrist (L)", id:"wrl", mov: wrMov, tests: wrTests},
+    {name:"Hip (R)", id:"hr", mov: hipMov, tests: hipTests},
+    {name:"Hip (L)", id:"hl", mov: hipMov, tests: hipTests},
+    {name:"Knee (R)", id:"kr", mov: kneeMov, tests: kneeTests},
+    {name:"Knee (L)", id:"kl", mov: kneeMov, tests: kneeTests},
+    {name:"Ankle (R)", id:"ar", mov: ankMov, tests: ankTests}
+  ];
+
+  const exercises = [
+    "Ankle and toes exercise","Hip and knee exercise","Straight leg raising",
+    "Quadriceps strengthening","Hip abductor strengthening","Gluteus Maximus strengthening",
+    "Knee extension exercise in sitting with theraband","Hip abduction exercise in sitting with theraband",
+    "Elbow flexion exercise in sitting with theraband","Heel raising exercise","Mini squat exercise"
+  ];
+
+  const bergData = [
+    {t:"Sitting to standing",o:["Indep, no hands","Indep, with hands","Use hands >1 try","Needs min assist","Needs mod/max assist"]},
+    {t:"Standing unsupported",o:["Stand 2 mins safely","Stand 2 mins with superv.","Stand 30s unsupp.","Needs several tries for 30s","Unable to stand 30s"]},
+    {t:"Sitting unsupported",o:["Sit 2 mins safely","Sit 2 mins under superv.","Sit 30s","Sit 10s","Unable to sit 10s"]},
+    {t:"Standing to sitting",o:["Sits safely, min hand use","Controls descent with hands","Back of legs against chair","Sits independently but not controlled","Needs assist to sit"]},
+    {t:"Transfers",o:["Safe with minor hands","Safe with definite hands","Needs verbal cue/superv.","Needs 1 person assist","Needs 2 people/max assist"]},
+    {t:"Standing eyes closed",o:["10s safely","10s with superv.","3s safely","Unable to keep closed 3s","Needs assist to keep from falling"]},
+    {t:"Feet together",o:["1 min safely","1 min with superv.","30s safely","15s safely","Needs assist to attain pos."]},
+    {t:"Reach forward",o:[">10 inches safely",">5 inches safely",">2 inches safely","Reaches but needs superv.","Needs assist to not fall"]},
+    {t:"Retrieve object",o:["Picks up easily/safely","Picks up with superv.","Unable to pick up, reaches 1-2 inch","Needs superv. while trying","Unable/needs assist"]},
+    {t:"Turn look behind",o:["Looks behind both sides","Looks behind one side only","Turns sideways only","Needs superv. to turn","Needs assist to keep from falling"]},
+    {t:"Turn 360",o:["Safely <4s each way","Safely one way only <4s","Safely but >4s","Needs superv. or verbal cue","Needs assist while turning"]},
+    {t:"Foot on stool",o:["8 steps in 20s safely","8 steps >20s safely","4 steps safely with superv.","Needs min assist (>2 steps)","Needs assist to keep from falling"]},
+    {t:"Tandem standing",o:["Tandem 30s safely","Step ahead 30s safely","Step ahead 30s superv.","Steps but holds 3s","Loses balance/steps"]},
+    {t:"Stand one leg",o:[">10s safely","5-10s safely",">3s safely","Tries, lifts leg <3s","Unable/needs assist"]}
+  ];
+
+  const emsItems = [
+    {title:"Lying to sitting",opts:[{l:"Indep",v:2},{l:"1 assist",v:1},{l:"2 assist",v:0}]},
+    {title:"Sitting to lying",opts:[{l:"Indep",v:2},{l:"1 assist",v:1},{l:"2 assist",v:0}]},
+    {title:"Sit to stand",opts:[{l:"Ind <3s",v:3},{l:"Ind >3s",v:2},{l:"1 assist",v:1},{l:"2 assist",v:0}]},
+    {title:"Standing",opts:[{l:"Reach unsupp",v:3},{l:"Reach supp",v:2},{l:"Stand supp",v:1},{l:"Stand assist",v:0}]},
+    {title:"Gait",opts:[{l:"Ind +/- stick",v:3},{l:"Frame",v:2},{l:"Supervision",v:1},{l:"Const Assist",v:0}]},
+    {title:"Timed walk (6m)",opts:[{l:"<15s",v:3},{l:"16-30s",v:2},{l:">30s",v:1},{l:"Unable",v:0}]},
+    {title:"Functional reach",opts:[{l:">20cm",v:4},{l:"10-20cm",v:2},{l:"<10cm",v:0}]}
+  ];
+
+  function getPills(sel) { 
+    const p = document.querySelector(sel); 
+    return p ? Array.from(p.querySelectorAll('.pill.active')).map(x => x.innerText.trim()) : []; 
+  }
+  
+  function setPills(sel, vals) { 
+    const p = document.querySelector(sel); 
+    if(!p || !vals) return;
+    if(!Array.isArray(vals)) vals = [vals];
+    p.querySelectorAll('.pill').forEach(x => {
+      if(vals.includes(x.innerText.trim())) x.classList.add('active');
+      else x.classList.remove('active');
+    });
+  }
+
+  function restoreScorePills(containerSelector, savedValues) {
+    const container = document.querySelector(containerSelector);
+    if (!container) return;
     
-    // FULL NOTE TITLES ADDED
-    const bodyParts = [
-        {name:"Neck (Cervical)", noteTitle: "Active range of movement of neck", id:"cx", mov:["Flex","Ext","Rot(L)","Rot(R)","Side(L)","Side(R)"], tests:["Spurling","Distraction"], palp:["Trapezius","Levator"]},
-        {name:"Back (Lumbar)", noteTitle: "Active range of movement of back", id:"lx", mov:["Flex","Ext","Rot(L)","Rot(R)","Side(L)","Side(R)"], tests:["SLR","Slump"], palp:["Paraspinals","PSIS"]},
-        {name:"Shoulder(R)", noteTitle: "Active range of movement of right shoulder", id:"sr", mov:["Flex","Abd","ExtRot","IntRot","HBB"], tests:["Neer","Hawkins","Empty Can"], palp:["ACJ","Supraspinatus"]},
-        {name:"Shoulder(L)", noteTitle: "Active range of movement of left shoulder", id:"sl", mov:["Flex","Abd","ExtRot","IntRot","HBB"], tests:["Neer","Hawkins","Empty Can"], palp:["ACJ","Supraspinatus"]},
-        {name:"Knee(R)", noteTitle: "Active range of movement of right knee", id:"kr", mov:["Flex","Ext"], tests:["McMurray","Lachman","Varus/Valgus"], palp:["Joint Line","Patella"]},
-        {name:"Knee(L)", noteTitle: "Active range of movement of left knee", id:"kl", mov:["Flex","Ext"], tests:["McMurray","Lachman","Varus/Valgus"], palp:["Joint Line","Patella"]},
-        {name:"Ankle(R)", noteTitle: "Active range of movement of right ankle", id:"ar", mov:["DF","PF","Inv","Eve"], tests:["Talar Tilt","Drawer"], palp:["ATFL","Med Mall"]},
-        {name:"Ankle(L)", noteTitle: "Active range of movement of left ankle", id:"al", mov:["DF","PF","Inv","Eve"], tests:["Talar Tilt","Drawer"], palp:["ATFL","Med Mall"]}
-    ];
+    container.querySelectorAll('.pill.active').forEach(p => p.classList.remove('active'));
     
-    const movMap = {
-        "Flex": "flexion", "Ext": "extension", 
-        "Rot(L)": "left rotation", "Rot(R)": "right rotation",
-        "Side(L)": "left side flexion", "Side(R)": "right side flexion",
-        "Abd": "abduction", "ExtRot": "external rotation", "IntRot": "internal rotation", "HBB": "hand behind back",
-        "DF": "dorsiflexion", "PF": "plantarflexion", "Inv": "inversion", "Eve": "eversion"
+    if (!Array.isArray(savedValues)) return;
+    
+    const groups = container.querySelectorAll('.score-group');
+    savedValues.forEach((val, i) => {
+      if (val === undefined || val === null || val === "") return;
+      if (groups[i]) {
+        const target = groups[i].querySelector(`.pill[data-v="${val}"]`);
+        if (target) target.classList.add('active');
+      }
+    });
+  }
+
+  window.onload = () => { 
+    initStaticUI(); 
+    loadUsersDropdown(); 
+    document.getElementById('today-display').innerText = activeDateStr; 
+  };
+
+  function getToday() { 
+    const d = new Date(); 
+    return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; 
+  }
+  
+  function changeGlobalDate(days) {
+    if(currentTabIdx !== -1) saveWork();
+    let [y, m, day] = activeDateStr.split('-').map(Number);
+    const d = new Date(y, m - 1, day); 
+    d.setDate(d.getDate() + days);
+    activeDateStr = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+    document.getElementById('today-display').innerText = activeDateStr;
+    currentTabIdx = -1; 
+    loadDB();
+  }
+
+  let _saveTimer = null;
+  document.addEventListener('input', () => {
+    if(isPopulating) return;
+    clearTimeout(_saveTimer); 
+    _saveTimer = setTimeout(() => saveWork(), 200);
+  }, true);
+
+  function joinVals(a, b, sep=" / ") { 
+    a=(a||"").trim(); 
+    b=(b||"").trim(); 
+    if(!a && !b) return "";
+    if(a && !b) return a;
+    if(!a && b) return b;
+    if(a.toLowerCase() === b.toLowerCase()) return a;
+    return a + sep + b;
+  }
+  
+  function joinPillsText(p, t) { 
+    return joinVals(Array.isArray(p) ? p.join(', ') : (p||''), t); 
+  }
+  
+  function getRiskText(t, v) {
+    if(v===null || v==="" || isNaN(v)) return ""; 
+    v = parseFloat(v);
+    if(t==='berg') return v>=41 ? ", low fall risk" : v>=21 ? ", medium fall risk" : ", high fall risk";
+    if(t==='frt') return v>=25 ? ", low fall risk" : v>=15 ? ", moderate fall risk" : ", high fall risk";
+    if(t==='tug') return v<12 ? ", low fall risk" : v<=14 ? ", moderate fall risk" : ", high fall risk";
+    if(t==='ems') return v>=14 ? ", independent / low fall risk" : v>=10 ? ", borderline / moderate fall risk" : ", dependent / high fall risk"; 
+    return "";
+  }
+
+  function updateFabVisibility() { 
+    const fab = document.getElementById('reminder-fab');
+    if (document.getElementById('app-ui').style.display === 'none' || currentTabIdx < 0) { 
+      fab.classList.remove('show'); return; 
+    }
+    fab.classList.add('show');
+  }
+
+  function resetAllSelectionsUI() {
+    document.querySelectorAll('.pill.active, .rom-btn.range.selected').forEach(x => x.classList.remove('active', 'selected'));
+    ['chk-sts','chk-berg','chk-frt','chk-tug','chk-ems','chk-mfac'].forEach(id => { const e=document.getElementById(id); if(e) e.checked=false; });
+    ['val-sts','val-frt','val-tug'].forEach(id => { const e=document.getElementById(id); if(e) e.value=""; });
+    document.querySelectorAll('.out-acc .accordion-body').forEach(b => b.classList.remove('show'));
+    
+    document.querySelectorAll('.score-disp').forEach(d => {
+      if(d.closest('[data-out="berg"]')) d.innerText = '0/56';
+      if(d.closest('[data-out="ems"]')) d.innerText = '0/20';
+    });
+    document.querySelectorAll('.risk-disp').forEach(r => { 
+      r.innerText = ''; 
+      r.className = 'risk-disp'; 
+    });
+  }
+
+  window.toggleOutcomeAcc = (headEl) => { 
+    const c = headEl.querySelector('input[type="checkbox"]'); 
+    c.checked = !c.checked; 
+    toggleOut(c); 
+  };
+
+  function initStaticUI() {
+    const out = document.getElementById('outcomes-container');
+    
+    out.innerHTML = `<div class="accordion out-acc" data-out="sts"><div class="accordion-head outcome-head" onclick="toggleOutcomeAcc(this)"><input type="checkbox" id="chk-sts"> 30 secs stand <span class="risk-disp"></span></div><div class="accordion-body"><input type="text" id="val-sts" class="out-val" placeholder="Reps (e.g. 12)" oninput="updateOutRisk(this)"></div></div>`;
+    
+    let bHtml = `<div class="accordion out-acc" data-out="berg"><div class="accordion-head outcome-head" onclick="toggleOutcomeAcc(this)"><input type="checkbox" id="chk-berg"> Berg balance <span class="score-disp">0/56</span><span class="risk-disp"></span></div><div class="accordion-body">`;
+    bergData.forEach((b,i) => { 
+      bHtml += `<div class="pill-sec"><div class="pill-label">${i+1}. ${b.t}</div><div class="pill-group score-group" data-idx="${i}">`; 
+      b.o.forEach((txt,idx) => { 
+        const v = 4-idx; 
+        bHtml += `<div class="pill score-pill" data-v="${v}" onclick="ts(this)">${txt} (${v})</div>`; 
+      }); 
+      bHtml += `</div></div>`; 
+    });
+    out.insertAdjacentHTML('beforeend', bHtml + `</div></div>`);
+
+    out.insertAdjacentHTML('beforeend', `<div class="accordion out-acc" data-out="frt"><div class="accordion-head outcome-head" onclick="toggleOutcomeAcc(this)"><input type="checkbox" id="chk-frt"> Functional Reach Test <span class="risk-disp"></span></div><div class="accordion-body"><input type="text" id="val-frt" class="out-val" placeholder="Distance in cm" oninput="updateOutRisk(this)"></div></div><div class="accordion out-acc" data-out="tug"><div class="accordion-head outcome-head" onclick="toggleOutcomeAcc(this)"><input type="checkbox" id="chk-tug"> Timed Up and Go Test <span class="risk-disp"></span></div><div class="accordion-body"><input type="text" id="val-tug" class="out-val" placeholder="Seconds" oninput="updateOutRisk(this)"></div></div>`);
+
+    let eHtml = `<div class="accordion out-acc" data-out="ems"><div class="accordion-head outcome-head" onclick="toggleOutcomeAcc(this)"><input type="checkbox" id="chk-ems"> Elderly Mobility Scale (EMS) <span class="score-disp">0/20</span><span class="risk-disp"></span></div><div class="accordion-body">`;
+    emsItems.forEach((e,i) => { 
+      eHtml += `<div class="pill-sec"><div class="pill-label">${e.title}</div><div class="pill-group score-group" data-idx="${i}">`; 
+      e.opts.forEach(o => { 
+        eHtml += `<div class="pill score-pill" data-v="${o.v}" onclick="ts(this)">${o.l} (${o.v})</div>`; 
+      }); 
+      eHtml += `</div></div>`; 
+    });
+    out.insertAdjacentHTML('beforeend', eHtml + `</div></div>`);
+
+    let mHtml = `<div class="accordion out-acc" data-out="mfac"><div class="accordion-head outcome-head" onclick="toggleOutcomeAcc(this)"><input type="checkbox" id="chk-mfac"> MFAC</div><div class="accordion-body"><div class="pill-group out-mfac" id="val-mfac" style="justify-content:flex-start;">`;
+    ["Cat 1: Lyer","Cat 2: Sitter","Cat 3: Dependent walker","Cat 4: Assisted walker","Cat 5: Supervised walker","Cat 6: Indoor walker","Cat 7: Outdoor walker"].forEach(m => mHtml += `<div class="pill" onclick="tp(this,false)">${m}</div>`);
+    out.insertAdjacentHTML('beforeend', mHtml + `</div></div></div>`);
+
+    const jCont = document.getElementById('joints-container');
+    bodyParts.forEach(bp => {
+      let h = `<div class="accordion" style="border:1px dashed #d1d5db; margin-bottom:8px;"><div class="accordion-head" onclick="toggleAc(this)">${bp.name} <span>+</span></div><div class="accordion-body" style="padding:12px;"><div style="font-size:0.8rem; font-weight:800; color:#9ca3af; margin-bottom:8px; text-transform:uppercase;">Range of Motion</div>`;
+      bp.mov.forEach(m => {
+        h += `<div class="rom-row" data-uid="${bp.id}_${m}" style="display:flex; flex-direction:column; gap:6px; margin-bottom:12px; border-bottom:1px solid #f3f4f6; padding-bottom:8px;"><div class="rom-title" style="font-weight:700; color:#4b5563; font-size:0.9rem;">${m}</div><div style="display:flex; flex-wrap:wrap; gap:8px; align-items:center;"><input class="manual-input" style="width:75px; padding:6px; margin:0; border:1px solid #ccc; border-radius:6px;" placeholder="Range"><div class="rom-btn range" onclick="sel(this)">Full</div><div class="rom-btn range" onclick="sel(this)">pain limited</div><div class="rom-btn range" onclick="sel(this)">pain at end range</div></div></div>`
+      });
+      if(bp.tests && bp.tests.length) {
+        h += `<div style="font-size:0.8rem; font-weight:800; color:#9ca3af; margin-top:15px; margin-bottom:8px; text-transform:uppercase;">Special Tests</div>`;
+        bp.tests.forEach(t => h += `<div class="test-row" data-uid="${bp.id}_${t.id}" style="margin-bottom:10px;"><div style="font-size:0.85rem; font-weight:700; color:#4b5563; margin-bottom:4px;">${t.name}</div><div class="pill-group"><div class="pill" onclick="tp(this, false)">+ve</div><div class="pill" onclick="tp(this, false)">-ve</div></div></div>`);
+        h += `<input class="manual-input" id="test_other_${bp.id}" style="width:100%; text-align:left; margin-top:5px;" placeholder="Other tests / notes for ${bp.name}...">`;
+      }
+      jCont.insertAdjacentHTML('beforeend', h + `</div></div>`);
+    });
+
+    const exP = document.getElementById('ex-pills');
+    exercises.forEach(e => exP.insertAdjacentHTML('beforeend', `<div class="pill" onclick="tp(this,true)">${e}</div>`));
+  }
+
+  function loadUsersDropdown() {
+    let users = JSON.parse(localStorage.getItem(USERS_KEY) || '{}');
+    let keys = Object.keys(users).filter(k=>k.trim());
+    const sel = document.getElementById('user-select');
+    if(!keys.length) { 
+      sel.innerHTML = '<option value="" disabled selected>No users found</option>'; 
+      toggleAuth('register'); 
+    } else { 
+      sel.innerHTML = '<option value="" disabled selected>Select User</option>'; 
+      keys.forEach(u => sel.innerHTML += `<option value="${u}">${u}</option>`); 
+    }
+  }
+
+  function toggleAuth(m) {
+    document.getElementById('view-login').classList.toggle('hidden', m!=='login');
+    document.getElementById('view-register').classList.toggle('hidden', m!=='register');
+  }
+
+  function registerUser() {
+    const n = document.getElementById('reg-name').value.trim();
+    const p = document.getElementById('reg-pin').value.trim();
+    if(!n || p.length < 4) return alert("Enter Name & 4-digit PIN");
+    
+    const users = JSON.parse(localStorage.getItem(USERS_KEY) || '{}'); 
+    users[n] = p;
+    localStorage.setItem(USERS_KEY, JSON.stringify(users)); 
+    authSuccess(n);
+  }
+
+  function attemptLogin() {
+    const n = document.getElementById('user-select').value;
+    const p = document.getElementById('user-pin').value;
+    if(!n) return alert("Select user");
+    
+    const users = JSON.parse(localStorage.getItem(USERS_KEY) || '{}');
+    if(users[n] == p) authSuccess(n); 
+    else alert("Invalid PIN");
+  }
+
+  function authSuccess(n) {
+    currentUser = n; 
+    document.getElementById('display-name').innerText = n;
+    document.getElementById('auth-screen').style.display = 'none';
+    document.getElementById('app-ui').style.display = 'block';
+    loadDB(); 
+    updateFabVisibility();
+  }
+
+  function logout() { location.reload(); }
+
+  function deepDefaults(tgt, def) {
+    if(!tgt || typeof tgt!=='object') tgt = Array.isArray(def)?[]:{};
+    Object.keys(def).forEach(k => {
+      if(tgt[k]===undefined || tgt[k]===null) tgt[k] = JSON.parse(JSON.stringify(def[k]));
+      else if(typeof def[k]==='object' && !Array.isArray(def[k]) && typeof tgt[k]==='object') deepDefaults(tgt[k], def[k]);
+    });
+    return tgt;
+  }
+
+  function schemaDefaults() {
+    return { 
+      reminders:"", dx:"", pmh:"", meds:"", hpi:"", inv:"",
+      sh:{ltot:"",ltot_l:"",fall:"",fall_t:"",occ:"",occ_t:"",live:"",live_t:"",adl:"",adl_t:"",mob:"",mob_t:"",in:"",in_t:"",out:"",out_t:"",pre:"",pre_t:"",com:"",com_t:""},
+      he:{type:[],type_t:"",acc:[],steps:"",handrail:"",kerb:[],kerb_t:"",env:[],env_t:"",toi:[],toi_t:"",sho:[],sho_t:"",lig:[],lig_t:"",flo:[],flo_t:"",dor:[],dor_t:"",fur:[],fur_t:"",bed:[],bed_t:"",bat:[],bat_t:"",alm:[],alm_t:""},
+      su:{seen:"",seen_t:"",gen:"",gen_t:"",comp:"",area:"",nat:"",rest:"",agg:"",eas:"",fun:"",walk:"",oth:""},
+      pos:{inf:"",swe:"",tem:"",mus:""}, 
+      pal:{tig:"",ten:""}, 
+      fall:"", bp:"", hr:"",
+      msk:{rom:"",romd:"",rulp:5,lulp:5,rllp:5,lllp:5,sens:""},
+      amb:{bed:"",bed_t:"",l2s:"",l2s_t:"",s2s:"",s2s_t:"",sitb:"",sitb_t:"",stdb:"",stdb_t:"",w_aid:"",w_ast:"",w_stb:"",w_t:"",gait:""},
+      prob:"", stg:"", ltg:"", roms:{}, out:{}, ex:[], exf:"", tests:{}, test_others:{}
+    };
+  }
+
+  function normalizeRecord(d) {
+    if(!d || typeof d!=='object') d={}; 
+    if(typeof d.amb==='string') d.amb={gait:d.amb};
+    return deepDefaults(d, schemaDefaults());
+  }
+
+  function saveDB() { 
+    localStorage.setItem(`db_v25_${currentUser}`, JSON.stringify(db)); 
+  }
+  
+  function loadDB() {
+    db = JSON.parse(localStorage.getItem(`db_v25_${currentUser}`) || '{}'); 
+    todayList = [];
+    Object.keys(db).forEach(c => {
+      db[c].forEach((v, idx) => { 
+        if(v.date === activeDateStr) todayList.push({caseNum:c, dbIdx:idx}); 
+      });
+    });
+    renderTabs();
+  }
+
+  function renderTabs() {
+    const bar = document.getElementById('tab-bar'); 
+    bar.innerHTML = '';
+    
+    todayList.forEach((item, i) => {
+      const btn = document.createElement('div'); 
+      btn.className = `tab-btn ${i===currentTabIdx?'active':''}`;
+      btn.innerHTML = `<span>${item.caseNum.startsWith('NEW_')?'New Patient':item.caseNum}</span>`;
+      btn.onclick = () => switchTab(i);
+      
+      let tmr;
+      btn.onmousedown = btn.ontouchstart = () => { tmr = setTimeout(()=>confirmDeleteTab(i),800); };
+      btn.onmouseup = btn.ontouchend = btn.ontouchmove = () => clearTimeout(tmr);
+      bar.appendChild(btn);
+    });
+    
+    const addBtn = document.createElement('div'); 
+    addBtn.className = 'tab-btn add'; 
+    addBtn.innerText = '+'; 
+    addBtn.onclick = promptNewPatient; 
+    bar.appendChild(addBtn);
+    
+    if(todayList.length>0 && currentTabIdx===-1) switchTab(0);
+    if(!todayList.length) document.getElementById('editor-container').style.display = 'none';
+    
+    updateFabVisibility();
+  }
+
+  function switchTab(i) { 
+    if(currentTabIdx!==-1) saveWork(); 
+    currentTabIdx = i; 
+    renderTabs(); 
+    document.getElementById('editor-container').style.display = 'block'; 
+    populateUI(); 
+    updateFabVisibility(); 
+  }
+
+  function confirmDeleteTab(i) {
+    if(confirm(`Remove this patient tab from this day?`)) {
+      const it = todayList[i]; 
+      db[it.caseNum].splice(it.dbIdx, 1);
+      if(!db[it.caseNum].length) delete db[it.caseNum];
+      saveDB(); 
+      currentTabIdx = -1; 
+      loadDB();
+    }
+  }
+
+  function promptNewPatient() {
+    if(currentTabIdx!==-1) saveWork();
+    const tId = "NEW_" + Date.now();
+    const d = schemaDefaults();
+    
+    d.prob = "- Upper limbs and lower limbs muscles weakness\n- Reduced mobility"; 
+    d.stg = "- Muscles strengthening\n- Self pain management"; 
+    d.ltg = "- Optimize function\n- Fall prevention";
+    
+    db[tId] = [{ date: activeDateStr, time:"14:00-15:00",  d }]; 
+    saveDB(); 
+    loadDB();
+    
+    currentTabIdx = todayList.length - 1; 
+    switchTab(currentTabIdx);
+    document.getElementById('val-case').focus();
+  }
+
+  function handleCaseChange(el) {
+    if(currentTabIdx<0) return;
+    const nc = el.value.trim().toUpperCase();
+    const it = todayList[currentTabIdx];
+    const oc = it.caseNum;
+    
+    if(!nc) { 
+      el.value = oc.startsWith('NEW_') ? "" : oc; 
+      return; 
+    }
+    if(oc===nc) return;
+    
+    if(!db[nc]) db[nc]=[];
+    db[nc].push(db[oc].splice(it.dbIdx, 1)[0]); 
+    if(!db[oc].length) delete db[oc];
+    
+    saveDB(); 
+    loadDB(); 
+    currentTabIdx = todayList.findIndex(t => t.caseNum===nc && t.dbIdx===db[nc].length-1);
+    renderTabs(); 
+    document.getElementById('history-results').innerHTML = '';
+  }
+
+  function searchCurrentCaseHistory() {
+    const c = document.getElementById('val-case').value.trim().toUpperCase();
+    const rDiv = document.getElementById('history-results'); 
+    rDiv.innerHTML = '';
+    
+    if(!c || !db[c] || c.startsWith('NEW_')) { 
+      rDiv.innerHTML = '<div style="font-size:0.85rem; color:#ef4444; padding:5px;">No previous history found.</div>'; 
+      return; 
+    }
+    
+    let f = false;
+    for(let i = db[c].length - 1; i>=0; i--) {
+      const v = db[c][i]; 
+      if(v.date === activeDateStr && i === todayList[currentTabIdx]?.dbIdx) continue;
+      
+      f = true; 
+      rDiv.innerHTML += `
+        <div style="display:flex; justify-content:space-between; align-items:center; background:#fff; padding:12px; border:1px solid #cbd5e1; border-radius:8px;">
+          <div>
+            <div style="font-weight:1000; font-size:1rem; color:#1e293b;">${v.date}</div>
+            <div style="font-size:0.85rem; color:#64748b; font-weight:800;">Time: ${v.time||'N/A'}</div>
+          </div>
+          <div style="display:flex; gap:8px;">
+            <button style="padding:8px 14px; background:#3b82f6; color:white; font-weight:900; border:none; border-radius:6px; cursor:pointer;" onclick="loadHistoryNote('${c}', ${i})">Load</button>
+            <button style="padding:8px 14px; background:#fee2e2; color:#ef4444; font-weight:900; border:none; border-radius:6px; cursor:pointer;" onclick="deleteHistoryNote('${c}', ${i})">Del</button>
+          </div>
+        </div>`;
+    }
+    if(!f) rDiv.innerHTML = '<div style="font-size:0.85rem; color:#64748b; padding:5px;">Only current note exists.</div>';
+  }
+
+  function loadHistoryNote(c, i) {
+    if(confirm("OVERWRITE current tab with this historical note?")) {
+      db[todayList[currentTabIdx].caseNum][todayList[currentTabIdx].dbIdx].data = normalizeRecord(JSON.parse(JSON.stringify(db[c][i].data)));
+      saveDB(); 
+      populateUI(); 
+      alert("History loaded!");
+    }
+  }
+  
+  function deleteHistoryNote(c, i) { 
+    if(confirm("Permanently delete this note?")) { 
+      db[c].splice(i,1); 
+      if(!db[c].length) delete db[c]; 
+      saveDB(); 
+      loadDB(); 
+      searchCurrentCaseHistory(); 
+    } 
+  }
+
+  function saveWork() {
+    if(currentTabIdx < 0 || isPopulating) return;
+    const it = todayList[currentTabIdx];
+    const v = db[it.caseNum][it.dbIdx];
+    
+    v.time = document.getElementById('visit-time').value;
+    const d = normalizeRecord(v.data); 
+    v.data = d;
+
+    const getV = (id) => document.getElementById(id).value;
+    const getP = (sel) => getPills(sel)[0] || "";
+
+    d.dx=getV('val-dx'); 
+    d.pmh=getV('val-pmh'); 
+    d.meds=getV('val-meds'); 
+    d.hpi=getV('val-hpi'); 
+    d.inv=getV('val-inv');
+    d.fall=getV('val-fall'); 
+    d.bp=getV('val-bp'); 
+    d.hr=getV('val-hr');
+    d.prob=getV('val-prob'); 
+    d.stg=getV('val-stg'); 
+    d.ltg=getV('val-ltg');
+
+    d.sh = { ltot:getP('[data-field="sh.ltot"]'), ltot_l:getV('val-sh-ltot-l'), fall:getP('[data-field="sh.fall"]'), fall_t:getV('val-sh-fall-t'), occ:getP('[data-field="sh.occ"]'), occ_t:getV('val-sh-occ-t'), live:getP('[data-field="sh.live"]'), live_t:getV('val-sh-live-t'), adl:getP('[data-field="sh.adl"]'), adl_t:getV('val-sh-adl-t'), mob:getP('[data-field="sh.mob"]'), mob_t:getV('val-sh-mob-t'), in:getP('[data-field="sh.in"]'), in_t:getV('val-sh-in-t'), out:getP('[data-field="sh.out"]'), out_t:getV('val-sh-out-t'), pre:getP('[data-field="sh.pre"]'), pre_t:getV('val-sh-pre-t'), com:getP('[data-field="sh.com"]'), com_t:getV('val-sh-com-t') };
+    d.he = { type:getPills('[data-field="he.type"]'), type_t:getV('val-he-type-t'), acc:getPills('[data-field="he.acc"]'), steps:getV('val-he-steps'), handrail:getV('val-he-handrail'), kerb:getPills('[data-field="he.kerb"]'), kerb_t:getV('val-he-kerb-t'), env:getPills('[data-field="he.env"]'), env_t:getV('val-he-env-t'), toi:getPills('[data-field="he.toi"]'), toi_t:getV('val-he-toi-t'), sho:getPills('[data-field="he.sho"]'), sho_t:getV('val-he-sho-t'), lig:getPills('[data-field="he.lig"]'), lig_t:getV('val-he-lig-t'), flo:getPills('[data-field="he.flo"]'), flo_t:getV('val-he-flo-t'), dor:getPills('[data-field="he.dor"]'), dor_t:getV('val-he-dor-t'), fur:getPills('[data-field="he.fur"]'), fur_t:getV('val-he-fur-t'), bed:getPills('[data-field="he.bed"]'), bed_t:getV('val-he-bed-t'), bat:getPills('[data-field="he.bat"]'), bat_t:getV('val-he-bat-t'), alm:getPills('[data-field="he.alm"]'), alm_t:getV('val-he-alm-t') };
+    d.su = { seen:getP('[data-field="su.seen"]'), seen_t:getV('val-su-seen-t'), gen:getP('[data-field="su.gen"]'), gen_t:getV('val-su-gen-t'), comp:getV('val-su-comp'), area:getV('val-su-area'), nat:getV('val-su-nat'), rest:getV('val-su-rest'), agg:getV('val-su-agg'), eas:getV('val-su-eas'), fun:getV('val-su-fun'), walk:getV('val-su-walk'), oth:getV('val-su-oth') };
+    d.pos = { inf:getV('val-pos-inf'), swe:getV('val-pos-swe'), tem:getV('val-pos-tem'), mus:getV('val-pos-mus') };
+    d.pal = { tig:getV('val-pal-tig'), ten:getV('val-pal-ten') };
+    d.msk = { rom:getP('[data-field="msk.rom"]'), romd:getV('val-msk-rom-det'), rulp:getV('val-pwr-rul'), lulp:getV('val-pwr-lul'), rllp:getV('val-pwr-rll'), lllp:getV('val-pwr-lll'), sens:getV('val-sens') };
+    d.amb = { bed:getP('[data-field="amb.bed"]'), bed_t:getV('val-amb-bed-t'), l2s:getP('[data-field="amb.l2s"]'), l2s_t:getV('val-amb-l2s-t'), s2s:getP('[data-field="amb.s2s"]'), s2s_t:getV('val-amb-s2s-t'), sitb:getP('[data-field="amb.sitb"]'), sitb_t:getV('val-amb-sitb-t'), stdb:getP('[data-field="amb.stdb"]'), stdb_t:getV('val-amb-stdb-t'), w_aid:getP('[data-field="amb.w_aid"]'), w_ast:getP('[data-field="amb.w_ast"]'), w_stb:getP('[data-field="amb.w_stb"]'), w_t:getV('val-amb-w-t'), gait:getV('val-amb-gait') };
+
+    d.roms = {}; 
+    document.querySelectorAll('#joints-container .rom-row').forEach(r => { 
+      const u=r.dataset.uid; 
+      const m=r.querySelector('.manual-input').value; 
+      const rn=r.querySelector('.range.selected')?.innerText; 
+      if(m||rn) d.roms[u]={m, r:rn||""}; 
+    });
+    
+    d.tests = {}; 
+    document.querySelectorAll('#joints-container .test-row').forEach(r => { 
+      const u=r.dataset.uid; 
+      const v=r.querySelector('.pill.active')?.innerText; 
+      if(v) d.tests[u]=v; 
+    });
+    
+    d.test_others = {}; 
+    bodyParts.forEach(bp => { 
+      const e=document.getElementById(`test_other_${bp.id}`); 
+      if(e&&e.value) d.test_others[bp.id]=e.value; 
+    });
+
+    d.ex = getPills('#ex-pills'); 
+    d.exf = getV('val-ex-free');
+
+    d.out = {
+      sc: document.getElementById('chk-sts').checked, 
+      sv: getV('val-sts'),
+      bc: document.getElementById('chk-berg').checked, 
+      bv: Array.from(document.querySelectorAll('[data-out="berg"] .score-group')).map(g=>g.querySelector('.active')?.dataset.v),
+      fc: document.getElementById('chk-frt').checked, 
+      fv: getV('val-frt'),
+      tc: document.getElementById('chk-tug').checked, 
+      tv: getV('val-tug'),
+      ec: document.getElementById('chk-ems').checked, 
+      ev: Array.from(document.querySelectorAll('[data-out="ems"] .score-group')).map(g=>g.querySelector('.active')?.dataset.v),
+      mc: document.getElementById('chk-mfac').checked, 
+      mv: getP('#val-mfac')
     };
 
-    const exercises = [
-        "resisted Biceps flexion exercise in sitting",
-        "resisted Knee extension exercise in sitting",
-        "resisted Hip abduction exercise in sitting",
-        "LL elevation",
-        "active ankle and toes exercise",
-        "self-stretching over right hamstrings muscles",
-        "active knee mobilization in sitting",
-        "Walking exercise with stick",
-        "Gait correction",
-        "Sit to stand training",
-        "Fall prevention reinforced",
-        "Exercise precautions reinforced",
-        "OA knee care reinforced",
-        "carer skills reinforced",
-        "Suggested to have bathing in sitting position for fall prevention",
-        "Encouraged to increase the frequency of walking exercise in the corridor",
-        "Encouraged patient's wife to tidy up home and remove obstacles"
-    ];
+    saveDB();
+  }
 
-    window.onload = loadUsersDropdown;
+  function populateUI() {
+    if(currentTabIdx < 0) return;
+    isPopulating = true;
+    try {
+      resetAllSelectionsUI();
+      const it = todayList[currentTabIdx];
+      const v = db[it.caseNum][it.dbIdx];
+      const d = normalizeRecord(v.data);
+      
+      const setV = (id, val) => { const e = document.getElementById(id); if(e) e.value = val||""; };
+      const setP = (f, val) => setPills(`[data-field="${f}"]`, val);
 
-    function loadUsersDropdown() {
-        let users = JSON.parse(localStorage.getItem(USERS_KEY) || '{}');
-        let validKeys = Object.keys(users).filter(k => k && k.trim() !== "");
-        const sel = document.getElementById('user-select');
-        if (validKeys.length === 0) {
-            sel.innerHTML = '<option value="" disabled selected>No users found</option>';
-            toggleAuth('register');
-        } else {
-            sel.innerHTML = '<option value="" disabled selected>Select User</option>';
-            validKeys.forEach(u => sel.innerHTML += `<option value="${u}">${u}</option>`);
-        }
-    }
+      setV('val-case', it.caseNum.startsWith('NEW_') ? "" : it.caseNum); 
+      setV('visit-time', v.time || "14:00-15:00");
+      setV('val-dx', d.dx); 
+      setV('val-pmh', d.pmh); 
+      setV('val-meds', d.meds); 
+      setV('val-hpi', d.hpi); 
+      setV('val-inv', d.inv);
+      setV('val-fall', d.fall); 
+      setV('val-bp', d.bp); 
+      setV('val-hr', d.hr);
+      setV('val-prob', d.prob); 
+      setV('val-stg', d.stg); 
+      setV('val-ltg', d.ltg);
 
-    function toggleAuth(m) {
-        document.getElementById('view-login').classList.toggle('hidden', m !== 'login');
-        document.getElementById('view-register').classList.toggle('hidden', m !== 'register');
-    }
+      if(d.sh) { setP('sh.ltot',[d.sh.ltot]); setV('val-sh-ltot-l',d.sh.ltot_l); setP('sh.fall',[d.sh.fall]); setV('val-sh-fall-t',d.sh.fall_t); setP('sh.occ',[d.sh.occ]); setV('val-sh-occ-t',d.sh.occ_t); setP('sh.live',[d.sh.live]); setV('val-sh-live-t',d.sh.live_t); setP('sh.adl',[d.sh.adl]); setV('val-sh-adl-t',d.sh.adl_t); setP('sh.mob',[d.sh.mob]); setV('val-sh-mob-t',d.sh.mob_t); setP('sh.in',[d.sh.in]); setV('val-sh-in-t',d.sh.in_t); setP('sh.out',[d.sh.out]); setV('val-sh-out-t',d.sh.out_t); setP('sh.pre',[d.sh.pre]); setV('val-sh-pre-t',d.sh.pre_t); setP('sh.com',[d.sh.com]); setV('val-sh-com-t',d.sh.com_t); }
+      if(d.he) { setP('he.type',d.he.type); setV('val-he-type-t',d.he.type_t); setP('he.acc',d.he.acc); setV('val-he-steps',d.he.steps); setV('val-he-handrail',d.he.handrail); setP('he.kerb',d.he.kerb); setV('val-he-kerb-t',d.he.kerb_t); setP('he.env',d.he.env); setV('val-he-env-t',d.he.env_t); setP('he.toi',d.he.toi); setV('val-he-toi-t',d.he.toi_t); setP('he.sho',d.he.sho); setV('val-he-sho-t',d.he.sho_t); setP('he.lig',d.he.lig); setV('val-he-lig-t',d.he.lig_t); setP('he.flo',d.he.flo); setV('val-he-flo-t',d.he.flo_t); setP('he.dor',d.he.dor); setV('val-he-dor-t',d.he.dor_t); setP('he.fur',d.he.fur); setV('val-he-fur-t',d.he.fur_t); setP('he.bed',d.he.bed); setV('val-he-bed-t',d.he.bed_t); setP('he.bat',d.he.bat); setV('val-he-bat-t',d.he.bat_t); setP('he.alm',d.he.alm); setV('val-he-alm-t',d.he.alm_t); }
+      if(d.su) { setP('su.seen',[d.su.seen]); setV('val-su-seen-t',d.su.seen_t); setP('su.gen',[d.su.gen]); setV('val-su-gen-t',d.su.gen_t); setV('val-su-comp',d.su.comp); setV('val-su-area',d.su.area); setV('val-su-nat',d.su.nat); setV('val-su-rest',d.su.rest); setV('val-su-agg',d.su.agg); setV('val-su-eas',d.su.eas); setV('val-su-fun',d.su.fun); setV('val-su-walk',d.su.walk); setV('val-su-oth',d.su.oth); }
+      if(d.pos) { setV('val-pos-inf',d.pos.inf); setV('val-pos-swe',d.pos.swe); setV('val-pos-tem',d.pos.tem); setV('val-pos-mus',d.pos.mus); }
+      if(d.pal) { setV('val-pal-tig',d.pal.tig); setV('val-pal-ten',d.pal.ten); }
+      
+      if(d.msk) {
+        setP('msk.rom',[d.msk.rom]); 
+        setV('val-msk-rom-det',d.msk.romd); 
+        toggleRomDetail();
+        setV('val-pwr-rul',d.msk.rulp||5); document.getElementById('val-pwr-rul').nextElementSibling.innerText=d.msk.rulp||5;
+        setV('val-pwr-lul',d.msk.lulp||5); document.getElementById('val-pwr-lul').nextElementSibling.innerText=d.msk.lulp||5;
+        setV('val-pwr-rll',d.msk.rllp||5); document.getElementById('val-pwr-rll').nextElementSibling.innerText=d.msk.rllp||5;
+        setV('val-pwr-lll',d.msk.lllp||5); document.getElementById('val-pwr-lll').nextElementSibling.innerText=d.msk.lllp||5;
+        setV('val-sens',d.msk.sens);
+      }
+      
+      let a=d.amb||{}; 
+      setP('amb.bed',[a.bed]); setV('val-amb-bed-t',a.bed_t); 
+      setP('amb.l2s',[a.l2s]); setV('val-amb-l2s-t',a.l2s_t); 
+      setP('amb.s2s',[a.s2s]); setV('val-amb-s2s-t',a.s2s_t); 
+      setP('amb.sitb',[a.sitb]); setV('val-amb-sitb-t',a.sitb_t); 
+      setP('amb.stdb',[a.stdb]); setV('val-amb-stdb-t',a.stdb_t); 
+      setP('amb.w_aid',[a.w_aid]); 
+      setP('amb.w_ast',[a.w_ast]); 
+      setP('amb.w_stb',[a.w_stb]); 
+      setV('val-amb-w-t',a.w_t); 
+      setV('val-amb-gait',a.gait);
 
-    function registerUser() {
-        const n = document.getElementById('reg-name').value.trim();
-        const p = document.getElementById('reg-pin').value.trim();
-        if(!n || p.length < 4) return alert("Enter Name & 4-digit PIN");
-        const users = JSON.parse(localStorage.getItem(USERS_KEY) || '{}');
-        users[n] = p;
-        localStorage.setItem(USERS_KEY, JSON.stringify(users));
-        currentUser = n;
-        document.getElementById('display-name').innerText = n;
-        document.getElementById('auth-screen').style.display = 'none';
-        document.getElementById('app-ui').style.display = 'block';
-        loadWorkspace();
-    }
-
-    function attemptLogin() {
-        const n = document.getElementById('user-select').value;
-        const p = document.getElementById('user-pin').value;
-        if(!n) return alert("Select user");
-        const users = JSON.parse(localStorage.getItem(USERS_KEY) || '{}');
-        if(users[n] == p) {
-            currentUser = n;
-            document.getElementById('display-name').innerText = n;
-            document.getElementById('auth-screen').style.display = 'none';
-            document.getElementById('app-ui').style.display = 'block';
-            loadWorkspace();
-        } else alert("Invalid PIN");
-    }
-
-    function logout() { location.reload(); }
-
-    function loadWorkspace() {
-        const raw = localStorage.getItem(`physio_data_${currentUser}`);
-        currentPatients = raw ? JSON.parse(raw) : [];
-        if(currentPatients.length === 0) createPatientData();
-        renderAll();
-    }
-
-    function saveWork() {
-        const view = document.getElementById(`view-${currentTab}`);
-        if(!view) return;
-        const pt = currentPatients[currentTab];
-        pt.id = view.querySelector('.pt-id').value;
-        pt.dx = view.querySelector('.dx').value;
-        pt.ref = view.querySelector('.ref').value;
-        pt.hpi = view.querySelector('.hpi').value;
-        pt.pmh = view.querySelector('.pmh').value;
-        pt.meds = view.querySelector('.meds').value;
-        pt.fall = view.querySelector('.fall').value;
-        pt.ment = view.querySelector('.ment').value;
-        pt.prev = view.querySelector('.prev_pt').value;
-        
-        pt.soc = {
-            live: view.querySelector('.soc_live').value,
-            carer: view.querySelector('.soc_carer').value,
-            pre: view.querySelector('.soc_pre').value,
-            acc: view.querySelector('.env_acc').value,
-            stairs: view.querySelector('.env_stairs_txt').value,
-            wc: view.querySelector('.env_wc').value,
-            type: view.querySelector('.env_type').value,
-            bath: view.querySelector('.env_bath').value,
-            rails: view.querySelector('.env_rails').checked,
-            note: view.querySelector('.env_note').value
-        };
-        pt.assess = {
-            subj: view.querySelector('.subj').value,
-            func: view.querySelector('.func').value,
-            ass_with: view.querySelector('.ass_with').value,
-            bp: view.querySelector('.bp').value,
-            hr: view.querySelector('.hr').value,
-            obs: view.querySelector('.obs').value,
-            pul: view.querySelector('.pwr_ul').value,
-            pll: view.querySelector('.pwr_ll').value
-        };
-        pt.plan = {
-            bed: view.querySelector('.bed').value,
-            tf: view.querySelector('.tf').value,
-            gait: view.querySelector('.gait').value,
-            prob: view.querySelector('.prob').value,
-            stg: view.querySelector('.stg').value,
-            ltg: view.querySelector('.ltg').value
-        };
-        
-        pt.roms = {};
-        view.querySelectorAll('.rom-row').forEach(r => {
-            const uid = r.dataset.uid;
-            const man = r.querySelector('.manual-input')?.value;
-            const ran = r.querySelector('.range.selected')?.innerText;
-            const qua = Array.from(r.querySelectorAll('.quality.selected')).map(b=>b.innerText).join(',');
-            const splTxt = r.querySelector('.special-txt')?.value;
-            const splSel = r.querySelector('.special-sel')?.value;
-            
-            if(man !== undefined) pt.roms[uid] = {m:man, r:ran||"", q:qua};
-            else if(splSel) pt.roms[uid] = {txt: splTxt, res: splSel}; 
-        });
-        pt.ex = Array.from(view.querySelectorAll('.ex-list input:checked')).map(c=>c.value);
-        pt.ex_free = view.querySelector('.ex-free').value;
-        
-        localStorage.setItem(`physio_data_${currentUser}`, JSON.stringify(currentPatients));
-    }
-
-    function createPatientData() {
-        currentPatients.push({ id:"", hpi:"", soc:{}, assess:{}, plan:{}, roms:{}, ex:[] });
-        renderAll(); switchTab(currentPatients.length - 1);
-    }
-    
-    function addPatient() { saveWork(); createPatientData(); }
-    
-    function deletePatient(idx) {
-        if(currentPatients.length <= 1) return alert("Cannot delete the last patient.");
-        if(confirm("Delete this patient? This cannot be undone.")) {
-            currentPatients.splice(idx, 1);
-            localStorage.setItem(`physio_data_${currentUser}`, JSON.stringify(currentPatients));
-            currentTab = Math.max(0, idx - 1); // Move to previous tab
-            renderAll();
-        }
-    }
-
-    function openImport() {
-        document.getElementById('import-text').value = '';
-        document.getElementById('import-modal').classList.add('open');
-    }
-
-    function parseAndImport() {
-        const text = document.getElementById('import-text').value;
-        if(!text.trim()) return alert("No text entered.");
-        
-        // Use current tab
-        const pt = currentPatients[currentTab];
-        
-        // Helper regex
-        const find = (regex) => { const m = text.match(regex); return m ? m[1].trim() : ""; }
-        const findBlock = (start, end) => {
-            const idx1 = text.indexOf(start);
-            if(idx1 === -1) return "";
-            const sub = text.substring(idx1 + start.length);
-            const idx2 = end ? sub.indexOf(end) : sub.length;
-            return idx2 === -1 ? sub.trim() : sub.substring(0, idx2).trim();
-        }
-
-        // --- Parsing Logic ---
-        if(!pt.dx) pt.dx = find(/Diagnosis: (.*)/);
-        if(!pt.ref) pt.ref = find(/Reason for referral: (.*)/);
-        
-        pt.hpi = findBlock("History of Present Illness:", "Past Medical History:");
-        pt.pmh = findBlock("Past Medical History:", "Medication:");
-        pt.meds = findBlock("Medication:", "Social History:");
-        
-        // Social
-        const socBlock = findBlock("Social History:", "Home Environment:");
-        if(socBlock.includes("Spouse")) pt.soc.live = "Spouse";
-        else if(socBlock.includes("Maid")) pt.soc.live = "Maid";
-        else if(socBlock.includes("Son")) pt.soc.live = "Son";
-        else if(socBlock.includes("Daughter")) pt.soc.live = "Daughter";
-        else if(socBlock.includes("Alone")) pt.soc.live = "Alone";
-
-        // Vitals
-        const bp = find(/Blood Pressure (.*) mmHg/);
-        if(bp) pt.assess.bp = bp;
-        const hr = find(/Pulse (.*) bpm/);
-        if(hr) pt.assess.hr = hr;
-
-        // Store Full Text for Reference
-        pt.refText = text;
-
-        // Save & Render
-        document.getElementById('import-modal').classList.remove('open');
-        localStorage.setItem(`physio_data_${currentUser}`, JSON.stringify(currentPatients));
-        renderAll();
-        alert("Imported! Admin, History, and Vitals have been filled. Check the yellow box for the original note.");
-    }
-
-    function renderAll() {
-        const cont = document.getElementById('patients-container');
-        const bar = document.getElementById('tab-bar');
-        cont.innerHTML = '';
-        Array.from(bar.children).forEach(c => { if(!c.classList.contains('add')) c.remove(); });
-        
-        currentPatients.forEach((pt, idx) => {
-            const btn = document.createElement('div');
-            btn.className = `tab-btn ${idx === currentTab ? 'active' : ''}`;
-            btn.innerText = pt.id || `Pt ${idx+1}`;
-            
-            btn.onclick = () => switchTab(idx);
-            let timer;
-            btn.addEventListener('touchstart', () => { timer = setTimeout(() => deletePatient(idx), 800); });
-            btn.addEventListener('touchend', () => clearTimeout(timer));
-            btn.addEventListener('touchmove', () => clearTimeout(timer));
-
-            bar.insertBefore(btn, bar.lastElementChild);
-            
-            const clone = document.getElementById('patient-template').content.cloneNode(true);
-            const view = clone.querySelector('.patient-view');
-            view.id = `view-${idx}`;
-            if(idx === currentTab) view.classList.add('active');
-            
-            // Reference Box Logic
-            const refBox = view.querySelector('.ref-box');
-            if(pt.refText) {
-                refBox.classList.add('show');
-                refBox.querySelector('.ref-content').innerText = pt.refText;
-            }
-
-            view.querySelector('.pt-id').value = pt.id || "";
-            view.querySelector('.dx').value = pt.dx || "";
-            view.querySelector('.ref').value = pt.ref || "";
-            view.querySelector('.hpi').value = pt.hpi || "";
-            view.querySelector('.pmh').value = pt.pmh || "";
-            view.querySelector('.meds').value = pt.meds || "";
-            view.querySelector('.fall').value = pt.fall || "";
-            view.querySelector('.ment').value = pt.ment || "";
-            view.querySelector('.prev_pt').value = pt.prev || "NIL";
-            
-            if(pt.soc) {
-                view.querySelector('.soc_live').value = pt.soc.live || "";
-                view.querySelector('.soc_carer').value = pt.soc.carer || "";
-                view.querySelector('.soc_pre').value = pt.soc.pre || "";
-                view.querySelector('.env_acc').value = pt.soc.acc || "Lift-landing";
-                view.querySelector('.env_stairs_txt').value = pt.soc.stairs || "";
-                view.querySelector('.env_wc').value = pt.soc.wc || "";
-                view.querySelector('.env_type').value = pt.soc.type || "";
-                view.querySelector('.env_bath').value = pt.soc.bath || "";
-                view.querySelector('.env_note').value = pt.soc.note || "Spaceous and tidy";
-                
-                const railsChk = view.querySelector('.env_rails');
-                const railsRow = view.querySelector('.env_rails_row');
-                railsChk.checked = pt.soc.rails || false;
-                if(railsChk.checked) railsRow.classList.add('active');
-                
-                toggleStairs(view.querySelector('.env_acc'));
-            }
-            if(pt.assess) {
-                view.querySelector('.subj').value = pt.assess.subj || "Compliant";
-                view.querySelector('.func').value = pt.assess.func || "";
-                view.querySelector('.ass_with').value = pt.assess.ass_with || "";
-                view.querySelector('.bp').value = pt.assess.bp || "";
-                view.querySelector('.hr').value = pt.assess.hr || "";
-                view.querySelector('.obs').value = pt.assess.obs || "Thin body build";
-                view.querySelector('.pwr_ul').value = pt.assess.pul || "";
-                view.querySelector('.pwr_ll').value = pt.assess.pll || "";
-            }
-            if(pt.plan) {
-                view.querySelector('.bed').value = pt.plan.bed || "";
-                view.querySelector('.tf').value = pt.plan.tf || "";
-                view.querySelector('.gait').value = pt.plan.gait || "";
-                view.querySelector('.prob').value = pt.plan.prob || "";
-                view.querySelector('.stg').value = pt.plan.stg || "";
-                view.querySelector('.ltg').value = pt.plan.ltg || "";
-            }
-            
-            const bc = view.querySelector('.body-container');
-            bodyParts.forEach(bp => {
-                let html = `<div class="accordion"><div class="accordion-head" onclick="toggleAc(this)">${bp.name} <span>+</span></div><div class="accordion-body">`;
-                
-                bp.mov.forEach(m => {
-                    const uid = `${bp.id}_${m}`;
-                    const d = pt.roms[uid] || {m:"",r:"",q:""};
-                    const rs = (t) => d.r===t ? 'selected' : '';
-                    const qs = (t) => d.q.includes(t) ? 'selected' : '';
-                    html += `<div class="rom-row" data-uid="${uid}">
-                        <div class="rom-header"><div class="rom-title">${m}</div><input class="manual-input" value="${d.m}" onkeyup="saveWork()"></div>
-                        <div class="btn-grid"><div class="rom-btn range ${rs('Full')}" onclick="sel(this);saveWork()">Full</div><div class="rom-btn range ${rs('limited')}" onclick="sel(this);saveWork()">limited</div></div>
-                        <div class="btn-grid"><div class="rom-btn quality ${qs('Pain')}" onclick="tog(this);saveWork()">Pain</div></div>
-                    </div>`;
-                });
-
-                if(bp.tests) {
-                    bp.tests.forEach(test => {
-                        const uid = `${bp.id}_test_${test}`;
-                        const d = pt.roms[uid] || {txt:"", res:"-ve"};
-                        html += `<div class="rom-row special-row" data-uid="${uid}">
-                                <div>
-                                    <span class="special-label">${test}</span>
-                                    <input class="special-txt" placeholder="Note (optional)" value="${d.txt}" onkeyup="saveWork()">
-                                </div>
-                                <select class="special-sel" onchange="saveWork()" style="color:${d.res==='+ve'?'red':'green'}">
-                                    <option value="-ve" ${d.res==='-ve'?'selected':''}>-ve</option>
-                                    <option value="+ve" ${d.res==='+ve'?'selected':''}>+ve</option>
-                                </select>
-                            </div>`;
-                    });
-                }
-
-                if(bp.palp) {
-                    bp.palp.forEach(palp => {
-                        const uid = `${bp.id}_palp_${palp}`;
-                        const d = pt.roms[uid] || {txt:"", res:"-ve"};
-                        html += `<div class="rom-row special-row" data-uid="${uid}">
-                                <div>
-                                    <span class="special-label">${palp}</span>
-                                    <input class="special-txt" placeholder="Note (optional)" value="${d.txt}" onkeyup="saveWork()">
-                                </div>
-                                <select class="special-sel" onchange="saveWork()" style="color:${d.res==='+ve'?'red':'green'}">
-                                    <option value="-ve" ${d.res==='-ve'?'selected':''}>-ve</option>
-                                    <option value="+ve" ${d.res==='+ve'?'selected':''}>+ve</option>
-                                </select>
-                            </div>`;
-                    });
-                }
-
-                html += `</div></div>`;
-                bc.insertAdjacentHTML('beforeend', html);
+      document.querySelectorAll('#joints-container .rom-row').forEach(r => { 
+        r.querySelector('.manual-input').value = ""; 
+        r.querySelectorAll('.range').forEach(b=>b.classList.remove('selected')); 
+        if(d.roms && d.roms[r.dataset.uid]){ 
+          r.querySelector('.manual-input').value = d.roms[r.dataset.uid].m || ""; 
+          if(d.roms[r.dataset.uid].r) {
+            Array.from(r.querySelectorAll('.range')).forEach(b=>{
+              if(b.innerText === d.roms[r.dataset.uid].r) b.classList.add('selected');
             });
-            
-            const el = view.querySelector('.ex-list');
-            exercises.forEach(e => {
-                const chk = pt.ex.includes(e) ? 'checked' : '';
-                const activeClass = pt.ex.includes(e) ? 'active' : '';
-                el.insertAdjacentHTML('beforeend', 
-                    `<div class="chk-item ${activeClass}" onclick="toggleChk(this)">
-                        <input type="checkbox" value="${e}" ${chk}>
-                        <span>${e}</span>
-                    </div>`
-                );
-            });
-            
-            view.querySelector('.ex-free').value = pt.ex_free || "";
-            cont.appendChild(view);
-        });
-    }
-
-    function switchTab(i) { saveWork(); currentTab = i; renderAll(); }
-    function updateTabName(i) { document.querySelectorAll('.tab-btn')[currentTab].innerText = i.value.substr(0,8) || `Pt ${currentTab+1}`; }
-    function toggleStairs(sel) { sel.nextElementSibling.classList.toggle('hidden', sel.value !== 'Stairs'); }
-    
-    function toggleChk(div) { 
-        const chk = div.querySelector('input'); 
-        chk.checked = !chk.checked; 
-        div.classList.toggle('active', chk.checked);
-        saveWork();
-    }
-    
-    function generateNote() {
-        saveWork();
-        const pt = currentPatients[currentTab];
-        const line = "======================================================";
-        let t = `Diagnosis: ${pt.dx || ''}\nReason for referral: ${pt.ref || ''}\n`;
-        t += `Physiotherapy Home Visit\n${line}\n`;
-        
-        t += `History of Present Illness:\n${pt.hpi || ''}\n`;
-        t += `Past Medical History:\n${pt.pmh || ''}\n`;
-        t += `Medication:\n${pt.meds || ''}\n`;
-        
-        t += `Social History:\nLives with ${pt.soc.live || ''}\nTake cared by ${pt.soc.carer || ''}\nADL-I\n`;
-        t += `Premorbid: ${pt.soc.pre || ''}\n`;
-        
-        let envText = `${pt.soc.note || ''}\n${pt.soc.type || ''}\n`;
-        if(pt.soc.acc === 'Stairs') envText += `Stairs: ${pt.soc.stairs || '?'} steps\n`;
-        else envText += `${pt.soc.acc || ''}\nNo stairs\n`;
-        t += `Home Environment:\n${envText}`;
-        
-        let toiletText = `Toilet: ${pt.soc.wc || ''}`;
-        let bathText = `Bath: ${pt.soc.bath || ''}`;
-        if(pt.soc.rails) { toiletText += " (Handrails available)"; bathText += " (Handrails available)"; }
-        t += `${toiletText}\n${bathText}\n`;
-        
-        t += `Fall History and Reason: ${pt.fall || ''}\n`;
-        t += `Mental Status: ${pt.ment || ''}\n`;
-        t += `Previous physiotherapy treatment received and its effects:\n${pt.prev || 'NIL'}\n`;
-        
-        t += `Subjective examination:\nCompliant: ${pt.assess.subj || ''}\nFunctional limitation: ${pt.assess.func || ''}\n`;
-        
-        t += `Objective examination:\nPatient assessed with ${pt.assess.ass_with || ''}\nGeneral condition stable\n`;
-        t += `Blood Pressure ${pt.assess.bp || ''} mmHg ;Pulse ${pt.assess.hr || ''} bpm\nTOCC-ve\nBody temperature: afebrile\n`;
-        t += `Observation:\n${pt.assess.obs || ''}\n`;
-        
-        bodyParts.forEach(bp => {
-            let pText = "";
-            let hasHeader = false;
-            
-            bp.mov.forEach(m => {
-                const uid = `${bp.id}_${m}`;
-                const d = pt.roms[uid];
-                let val = "";
-                if(d) {
-                    if(d.r) val += d.r + " ";
-                    if(d.q) val += "with " + d.q + " ";
-                    if(d.m) val += "(" + d.m + ")";
-                }
-                
-                // MAPPING TO FULL TEXT
-                const fullMov = movMap[m] || m;
-                
-                if(val.trim()) {
-                    if(!hasHeader) { pText += `${bp.noteTitle}\n`; hasHeader = true; }
-                    pText += `${fullMov}: ${val || '-'}\n`;
-                }
-            });
-
-            if(bp.tests) {
-                bp.tests.forEach(test => {
-                    const uid = `${bp.id}_test_${test}`;
-                    const d = pt.roms[uid];
-                    if(d && (d.res === '+ve' || (d.txt && d.txt.trim().length > 0))) {
-                         if(!hasHeader) { pText += `${bp.noteTitle}\n`; hasHeader = true; }
-                         let line = `${test}: ${d.res}`;
-                         if(d.txt) line += ` (${d.txt})`;
-                         pText += line + "\n";
-                    }
-                });
-            }
-
-            if(bp.palp) {
-                bp.palp.forEach(palp => {
-                    const uid = `${bp.id}_palp_${palp}`;
-                    const d = pt.roms[uid];
-                    if(d && (d.res === '+ve' || (d.txt && d.txt.trim().length > 0))) {
-                         if(!hasHeader) { pText += `${bp.noteTitle}\n`; hasHeader = true; }
-                         let line = `Tenderness (${palp}): ${d.res}`;
-                         if(d.txt) line += ` (${d.txt})`;
-                         pText += line + "\n";
-                    }
-                });
-            }
-            t += pText;
-        });
-        
-        t += `Power\nUpper limb: right / left\n                   ${pt.assess.pul || ''}\n`;
-        t += `Lower limb: right / left\n                   ${pt.assess.pll || ''}\n`;
-        
-        t += `Bed mobility: ${pt.plan.bed || ''}\nTransfer: ${pt.plan.tf || ''}\nGait: ${pt.plan.gait || ''}\n`;
-        t += `Problem: ${pt.plan.prob || ''}\nShort term goal: ${pt.plan.stg || ''}\nLong term goal: ${pt.plan.ltg || ''}\n`;
-        
-        t += `Home exercise taught with exercise leaflet and red theraband given (5-10 repetitions/set, 2-3 sets/day):\n`;
-        pt.ex.forEach(e => t += `-${e}\n`);
-        
-        if(pt.ex_free) {
-            let lines = pt.ex_free.split('\n');
-            lines.forEach(l => { if(l.trim()) t += `-${l.trim()}\n`; });
+          }
+        } 
+      });
+      
+      document.querySelectorAll('#joints-container .test-row').forEach(r => { 
+        r.querySelectorAll('.pill').forEach(p=>p.classList.remove('active')); 
+        if(d.tests && d.tests[r.dataset.uid]) {
+          Array.from(r.querySelectorAll('.pill')).forEach(p => {
+            if(p.innerText === d.tests[r.dataset.uid]) p.classList.add('active');
+          }); 
         }
-        
-        t += `Machine Test Done\nWarning / Instructional given and contraindication checked\nPost treatment uneventful`;
+      });
+      
+      bodyParts.forEach(bp => setV(`test_other_${bp.id}`, d.test_others?.[bp.id]));
 
-        document.getElementById('copy_target').value = t;
-        document.getElementById('copy_target').select();
-        document.execCommand('copy');
-        alert("CMS Note Copied!");
+      setPills('#ex-pills', d.ex||[]); 
+      setV('val-ex-free', d.exf);
+
+      if(d.out) {
+        const cS = document.getElementById('chk-sts'); cS.checked = !!d.out.sc; setV('val-sts', d.out.sv); toggleOut(cS);
+        const cB = document.getElementById('chk-berg'); cB.checked = !!d.out.bc; if(d.out.bv) restoreScorePills('[data-out="berg"]', d.out.bv); toggleOut(cB); calcScore(document.querySelector('[data-out="berg"]'));
+        const cF = document.getElementById('chk-frt'); cF.checked = !!d.out.fc; setV('val-frt', d.out.fv); toggleOut(cF);
+        const cT = document.getElementById('chk-tug'); cT.checked = !!d.out.tc; setV('val-tug', d.out.tv); toggleOut(cT);
+        const cE = document.getElementById('chk-ems'); cE.checked = !!d.out.ec; if(d.out.ev) restoreScorePills('[data-out="ems"]', d.out.ev); toggleOut(cE); calcScore(document.querySelector('[data-out="ems"]'));
+        const cM = document.getElementById('chk-mfac'); cM.checked = !!d.out.mc; setPills('#val-mfac', [d.out.mv||""]); toggleOut(cM);
+      }
+      
+      document.getElementById('history-results').innerHTML = ''; 
+      updateFabVisibility();
+      
+    } finally { 
+      isPopulating = false; 
+    }
+  }
+
+  window.tp = (el, isMulti) => { 
+    const act = el.classList.contains('active'); 
+    if(!isMulti) {
+      Array.from(el.parentElement.children).forEach(c => { 
+        if(c.classList?.contains('pill')) c.classList.remove('active'); 
+      }); 
+    }
+    if(!act) el.classList.add('active'); 
+    else if(isMulti) el.classList.remove('active'); 
+    saveWork(); 
+  };
+  
+  window.ts = (el) => { 
+    const act = el.classList.contains('active'); 
+    Array.from(el.parentElement.children).forEach(c => c.classList.remove('active')); 
+    if(!act) el.classList.add('active'); 
+    calcScore(el.closest('.out-acc')); 
+    saveWork(); 
+  };
+  
+  window.toggleAc = (el) => { 
+    el.classList.toggle('active'); 
+    el.nextElementSibling.classList.toggle('show'); 
+  };
+  
+  window.sel = (el) => { 
+    el.parentElement.querySelectorAll('.range').forEach(b=>b.classList.remove('selected')); 
+    el.classList.add('selected'); 
+    saveWork(); 
+  };
+  
+  window.updatePwr = (el) => { 
+    el.nextElementSibling.innerText = el.value; 
+  };
+  
+  window.toggleRomDetail = () => { 
+    const grp = document.querySelector('[data-field="msk.rom"]');
+    const det = document.getElementById('val-msk-rom-det'); 
+    if(grp && det) {
+      det.classList.toggle('hidden', !grp.children[1].classList.contains('active')); 
+    }
+  };
+  
+  window.toggleOut = (chk) => { 
+    const acc = chk.closest('.out-acc'); 
+    acc.querySelector('.accordion-body').classList.toggle('show', chk.checked); 
+    updateOutRisk(acc); 
+    saveWork(); 
+  };
+
+  function calcScore(acc) {
+    const d = acc.querySelector('.score-disp'); 
+    if(!d) return; 
+    let s = 0; 
+    acc.querySelectorAll('.score-pill.active').forEach(p => s += parseInt(p.dataset.v));
+    d.innerText = `${s}/${acc.dataset.out==='berg'?56:20}`; 
+    updateOutRisk(acc);
+  }
+
+  window.updateOutRisk = (el) => {
+    try {
+      const acc = el.closest ? el.closest('.out-acc') : el; 
+      if(!acc) return;
+      const type = acc.dataset.out;
+      const r = acc.querySelector('.risk-disp'); 
+      if(!r) return;
+      
+      let v = null;
+      if(['berg','ems'].includes(type)) { 
+        let s=0; 
+        acc.querySelectorAll('.score-pill.active').forEach(p => s += parseInt(p.dataset.v)); 
+        v = s; 
+      } else { 
+        const o = acc.querySelector('.out-val'); 
+        if(o){ 
+          const m = (o.value||"").match(/(\d+(\.\d+)?)/); 
+          if(m) v=parseFloat(m[1]); 
+        } 
+      }
+      
+      r.innerText = ""; 
+      r.className = "risk-disp"; 
+      if(v===null) return;
+      
+      if(type==='berg' && v<41){ r.innerText="(Risk)"; r.classList.add('mid'); }
+      if(type==='tug' && v>=12){ r.innerText="(Risk)"; r.classList.add('mid'); }
+      if(type==='frt' && v<25){ r.innerText="(Risk)"; r.classList.add('mid'); }
+    } catch(e) {}
+  };
+
+  function openReminderForCurrent() { 
+    if(currentTabIdx>=0) openReminderModal(todayList[currentTabIdx].caseNum, todayList[currentTabIdx].dbIdx); 
+  }
+  
+  function openReminderModal(c, i) { 
+    activeReminderCase=c; 
+    activeReminderIdx=i; 
+    document.getElementById('reminder-text').value = (db[c][i]?.data?.reminders)||""; 
+    document.getElementById('reminder-modal').classList.add('open'); 
+  }
+  
+  function saveReminderModal() { 
+    if(!activeReminderCase) return; 
+    db[activeReminderCase][activeReminderIdx].data.reminders = document.getElementById('reminder-text').value; 
+    saveDB(); 
+    document.getElementById('reminder-modal').classList.remove('open'); 
+  }
+  
+  function copyReminder() { 
+    const textArea = document.getElementById('reminder-text');
+    executeCopy(textArea.value, textArea);
+  }
+
+  function generateNote() {
+    saveWork(); 
+    const d = db[todayList[currentTabIdx].caseNum][todayList[currentTabIdx].dbIdx].data;
+    
+    let t = `Community Physiotherapy\n\n-------------------------------------------------\nPast Medical History:\n${d.pmh||'-'}\n`;
+    if(d.dx) t += `Diagnosis:\n${d.dx}\n`;
+    
+    t += `\n------------------------------------------------------------------------------------------------------\nMedication:\n${d.meds||'-'}\n\n------------------------------------------------------------------------------------------------------\nHistory of Present Illness:\n${d.hpi||'-'}\n`;
+    if(d.inv) t += `Investigations:\n${d.inv}\n`;
+    
+    t += `\n-------------------------------------------------------------------------------\nSocial History:\n`;
+    if(d.sh) {
+      if(d.sh.ltot) t += `LTOT: ${d.sh.ltot === 'Yes' ? `Yes (${d.sh.ltot_l||'?'} L/min)` : d.sh.ltot}\n`;
+      if(d.sh.fall) t += `Recent fall (last 1 year): ${d.sh.fall === 'Yes' ? `Yes (${d.sh.fall_t||'?'} times)` : d.sh.fall}\n`;
+      ['occ','live','adl','mob','in','out','pre','com'].forEach(k => { 
+        const v = joinVals(d.sh[k], d.sh[k+'_t']); 
+        if(v) t+=`${k==='occ'?'Occupation: ':k==='live'?'Lives with ':k==='adl'?'ADL- ':k==='in'?'Indoor: ':k==='out'?'Outdoor: ':k==='pre'?'Premorbid: ':k==='com'?'Community service: ':''}${v}\n`; 
+      });
+    }
+    
+    t += `\nHome environment:\n`;
+    if(d.he) {
+      const type = joinPillsText(d.he.type, d.he.type_t); 
+      if(type) t += `- ${type}\n`;
+      
+      if((d.he.acc && d.he.acc.length) || d.he.steps || d.he.handrail) { 
+        let aStr = d.he.acc?.join(', ')||''; 
+        if(d.he.acc?.includes("Stairs")) {
+          aStr+=` (${d.he.steps||'?'} steps, Handrail: ${d.he.handrail||'?'})`; 
+        } else if(d.he.steps||d.he.handrail) {
+          aStr+=`${aStr?' ':''}(Steps: ${d.he.steps||'?'}, Handrail: ${d.he.handrail||'?'})`; 
+        }
+        t += `- Accessibility: ${aStr.trim()}\n`; 
+      }
+      
+      ['kerb','env','toi','sho','lig','flo','dor','fur','bed','bat','alm'].forEach(k => { 
+        const v = joinPillsText(d.he[k], d.he[k+'_t']); 
+        if(v) t+=`- ${k==='env'?'Indoor environment: ':k==='toi'?'Toilet: ':k==='sho'?'Shower: ':k==='lig'?'Lighting: ':k==='flo'?'Floor: ':k==='dor'?'Door: ':k==='fur'?'Furniture: ':k==='bed'?'Bedroom: ':k==='bat'?'Bathroom: ':k==='alm'?'Personal alarm: ':''}${v}\n`; 
+      });
+    }
+    
+    t += `-------------------------------------------------------------------------------\nSeen ${joinVals(d.su?.seen, d.su?.seen_t)||'\n'}General condition: ${joinVals(d.su?.gen, d.su?.gen_t)}\nBlood pressure: ${d.bp||''} mmHg; Pulse: ${d.hr||''} bpm\n\n`;
+    
+    if(d.fall) t += `* Recent fall history (within 6 months): ${d.fall}\n\n`;
+    
+    t += `Subjective examination:\n`;
+    if(d.su) { 
+      ['comp','area','nat','rest','agg','eas','fun','walk','oth'].forEach(k => { 
+        if(d.su[k]) t+=`${k==='comp'?'Complain ':k==='area'?'Area: ':k==='nat'?'Nature of symtoms ':k==='rest'?'Resting pain: ':k==='agg'?'Aggravating factors: ':k==='eas'?'Easing factors: ':k==='fun'?'Functional limitation: ':k==='walk'?'Walking tolerances: ':k==='oth'?'Others: ':''}${d.su[k]}\n`; 
+      }); 
+    }
+    
+    t += `\nPosture:\n`; 
+    if(d.pos) { 
+      if(d.pos.inf) t+=`Inflammatory sign: ${d.pos.inf}\n`; 
+      if(d.pos.swe) t+=`Swelling, redness: ${d.pos.swe}\n`; 
+      if(d.pos.tem) t+=`temperature: ${d.pos.tem}\n`; 
+      if(d.pos.mus) t+=`Muscles wasting: ${d.pos.mus}\n`; 
+    }
+    
+    t += `\nPalpation:\n`; 
+    if(d.pal) { 
+      if(d.pal.tig) t+=`Tightness over ${d.pal.tig}\n`; 
+      if(d.pal.ten) t+=`Tender over ${d.pal.ten}\n`; 
+    }
+    
+    if(d.msk) { 
+      const rs = (d.msk.rom==="Detail") ? (d.msk.romd ? `Detail: ${d.msk.romd}` : "Detail") : (d.msk.rom||""); 
+      if(rs==="All limbs full") t+=`\nRange of Motion:\nUL and LL : Full and grossly intact with no pain reported\n`; 
+      else if(rs) t+=`\nRange of Motion: ${rs}\n`; 
+    }
+    
+    if(d.msk?.sens) t += `\nSensation:\n${d.msk.sens}\n`;
+
+    let specStr = "";
+    bodyParts.forEach(bp => {
+      let rStr = "";
+      bp.mov.forEach(m => { 
+        const rm = d.roms?.[`${bp.id}_${m}`]; 
+        if(rm && (rm.m||rm.r)) rStr+=`${m}: ${[rm.m,rm.r].filter(Boolean).join(', ')}\n`; 
+      });
+      bp.tests?.forEach(test => { 
+        const tv = d.tests?.[`${bp.id}_${test.id}`]; 
+        if(tv) rStr+=`${test.name}: ${tv}\n`; 
+      });
+      if(d.test_others?.[bp.id]) rStr+=`Other tests: ${d.test_others[bp.id]}\n`;
+      if(rStr) specStr += `\n${bp.name} Assessment:\n${rStr}`;
+    });
+    
+    t += specStr + `\nMuscle strength (in Oxford scale):\n   UL  LL\nR  ${d.msk.rulp}   ${d.msk.rllp}\nL  ${d.msk.lulp}   ${d.msk.lllp}\n`;
+    
+    let a = d.amb||{};
+    let ambP = [];
+    if(joinVals(a.bed, a.bed_t)) ambP.push(`- Bed mobility: ${joinVals(a.bed, a.bed_t)}`);
+    if(joinVals(a.l2s, a.l2s_t)) ambP.push(`- Lying to sitting: ${joinVals(a.l2s, a.l2s_t)}`);
+    if(joinVals(a.s2s, a.s2s_t)) ambP.push(`- Sitting to standing: ${joinVals(a.s2s, a.s2s_t)}`);
+    if(joinVals(a.sitb, a.sitb_t)) ambP.push(`- Sitting balance: ${joinVals(a.sitb, a.sitb_t)}`);
+    if(joinVals(a.stdb, a.stdb_t)) ambP.push(`- Standing balance: ${joinVals(a.stdb, a.stdb_t)}`);
+    
+    let wP=[]; 
+    if(a.w_aid) wP.push(a.w_aid==='walks unaided'?a.w_aid:`walks with ${a.w_aid}`); 
+    if(a.w_ast) wP.push(a.w_ast); 
+    if(a.w_stb) wP.push(`stability: ${a.w_stb}`);
+    
+    let wS=joinVals(wP.join('; '), a.w_t); 
+    if(wS) ambP.push(`- Walking: ${wS}`);
+    if(a.gait) ambP.push(`- Gait description: ${a.gait}`);
+    if(ambP.length) t += `\nAmbulation:\n${ambP.join('\n')}\n`;
+
+    if(d.out && Object.values(d.out).some(v=>v===true)) {
+      t += `\nIndicator (full) result\n`;
+      if(d.out.sc) t += `30 secs stand: ${d.out.sv||''}\n`;
+      if(d.out.bc) { 
+        let s=0; (d.out.bv||[]).forEach(x=>s+=parseInt(x||0)); 
+        t += `Berg balance: ${s}/56${getRiskText('berg', s)}\n`; 
+      }
+      if(d.out.fc) t += `Functional Reach Test: ${d.out.fv||''} cm${getRiskText('frt', d.out.fv)}\n`;
+      if(d.out.tc) t += `Timed Up and Go Test: ${d.out.tv||''} secs${getRiskText('tug', d.out.tv)}\n`;
+      if(d.out.ec) { 
+        let s=0; (d.out.ev||[]).forEach(x=>s+=parseInt(x||0)); 
+        t += `Elderly Mobility Scale (EMS): ${s}/20${getRiskText('ems', s)}\n`; 
+      }
+      if(d.out.mc) { 
+        const m=(d.out.mv||"").match(/Cat\s*(\d)/); 
+        t += `Modified Functional Ambulatory Category (MFAC): ${m?m[1]:''}/7\n`; 
+      }
     }
 
-    window.toggleAc = (el) => { el.classList.toggle('active'); el.nextElementSibling.classList.toggle('show'); };
-    window.sel = (el) => { el.parentElement.querySelectorAll('.range').forEach(b=>b.classList.remove('selected')); el.classList.add('selected'); };
-    window.tog = (el) => { el.classList.toggle('selected'); };
+    t += `\nProblems:\n${d.prob}\n\nShort term goals:\n${d.stg}\n\nLong term goals:\n${d.ltg}\n-------------------------------------------------------\n`;
+
+    let eT=[], eN=[]; 
+    (d.ex||[]).forEach(e=>{ 
+      if(e.toLowerCase().includes('theraband')) eT.push(e); 
+      else eN.push(e); 
+    });
+    
+    if(eN.length || (!eT.length && d.exf)) { 
+      t += `Home exercises with booklet and precautions given:\n`; 
+      eN.forEach(e=>t+=`- ${e}\n`); 
+      if(eN.length && !eT.length && d.exf) t+=`\n${d.exf}\n`; 
+      if(eT.length) t+=`\n`; 
+    }
+    
+    if(eT.length) { 
+      t += `Education on home exercises with booklet, red theraband and precautions given:\n`; 
+      eT.forEach(e=>t+=`- ${e}\n`); 
+      if(d.exf) t+=`\n${d.exf}\n`; 
+    }
+
+    t += `\nPatient safety guide given \nVerbal consent obtained for hands-on assessment / treatment\nClinical findings and treatment plan explained to patient, patient showed understanding and agreed \nMachine test / skin sensation test done\nWarning / Instruction given and contraindication checked \nPost treatment uneventful`;
+
+    const ob = document.getElementById('output-box'); 
+    ob.value = t; 
+    
+    executeCopy(t, ob);
+  }
+
+  // Improved copy function for modern mobile browsers
+  function executeCopy(text, fallbackTextArea) {
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(text).then(showCopySuccess).catch(() => fallbackCopyMethod(fallbackTextArea));
+    } else {
+      fallbackCopyMethod(fallbackTextArea);
+    }
+  }
+
+  function fallbackCopyMethod(textArea) {
+    textArea.focus();
+    textArea.select();
+    try {
+      document.execCommand('copy');
+      showCopySuccess();
+    } catch (err) {
+      console.error('Copy failed', err);
+    }
+    window.getSelection().removeAllRanges(); // Prevents iOS keyboard from randomly popping up
+    textArea.blur();
+  }
+
+  function showCopySuccess() {
+    const btn = document.getElementById('gen-btn'), oT = btn.innerText; 
+    btn.innerText = "✓ CMS Note Copied!"; 
+    btn.style.background = "#10b981";
+    setTimeout(() => { btn.innerText = oT; btn.style.background = "#3b82f6"; }, 2000);
+  }
+
+  function openCalendar() { 
+    saveWork(); 
+    renderCalendar(curYear, curMonth); 
+    document.getElementById('calendar-modal').classList.add('open'); 
+  }
+  
+  function changeMonth(d) { 
+    curMonth+=d; 
+    if(curMonth>11){curMonth=0;curYear++;} 
+    else if(curMonth<0){curMonth=11;curYear--;} 
+    renderCalendar(curYear, curMonth); 
+  }
+  
+  function renderCalendar(y, m) {
+    const fDay = new Date(y, m, 1).getDay();
+    const dInM = new Date(y, m+1, 0).getDate();
+    document.getElementById('cal-month-title').innerText = new Date(y, m).toLocaleString('default', {month:'long',year:'numeric'});
+    
+    const grid = document.getElementById('cal-grid'); 
+    grid.innerHTML = '<div class="cal-day-head">Sun</div><div class="cal-day-head">Mon</div><div class="cal-day-head">Tue</div><div class="cal-day-head">Wed</div><div class="cal-day-head">Thu</div><div class="cal-day-head">Fri</div><div class="cal-day-head">Sat</div>';
+    
+    for(let i=0; i<fDay; i++) grid.innerHTML += '<div class="cal-cell empty" style="border:none; background:transparent;"></div>';
+    
+    for(let d=1; d<=dInM; d++) {
+      const dS = `${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+      let h = `<div class="cal-cell ${dS===getToday()?'today':''}" id="cell-${dS}" onclick="selectDate('${dS}')"><div class="cal-num">${d}</div>`;
+      
+      let c=0; 
+      Object.keys(db).forEach(k => { 
+        if(k.startsWith('NEW_')) return; 
+        db[k].forEach(v => { 
+          if(v.date===dS) { 
+            c++; 
+            if(c<=2) h+=`<div class="cal-bar">${k}-${v.time?v.time.split('-')[0]:''}</div>`; 
+          } 
+        }); 
+      });
+      
+      if(c>2) h+=`<div class="cal-bar more">+${c-2} more</div>`;
+      grid.innerHTML += h + `</div>`;
+    }
+    selectDate(activeDateStr);
+  }
+  
+  function selectDate(dS) {
+    document.querySelectorAll('.cal-cell').forEach(c=>c.classList.remove('selected'));
+    const aC = document.getElementById(`cell-${dS}`); 
+    if(aC) aC.classList.add('selected');
+    
+    document.getElementById('cal-sel-date').innerText = new Date(dS).toLocaleString('default', {month:'long',day:'numeric',year:'numeric'});
+    const list = document.getElementById('cal-list'); 
+    list.innerHTML = ''; 
+    let f=false;
+    
+    Object.keys(db).forEach(k => {
+      if(k.startsWith('NEW_')) return;
+      db[k].forEach((v,i) => {
+        if(v.date===dS) {
+          f=true; 
+          list.innerHTML += `
+            <div class="cal-item">
+              <div style="display:flex; align-items:center; gap:15px;">
+                <div style="background:#3b82f6; width:6px; height:45px; border-radius:4px;"></div>
+                <div>
+                  <div style="font-weight:1000; font-size:1.3rem; color:#1e293b; letter-spacing:0.5px;">${k}</div>
+                  <div style="font-size:1rem; color:#64748b; font-weight:800; margin-top:3px;">🕒 ${v.time||'N/A'}</div>
+                </div>
+              </div>
+              <div style="display:flex; gap:8px;">
+                <button class="alert-btn" onclick="event.stopPropagation(); openReminderModal('${k}', ${i})">❗</button>
+                <button class="del-btn" onclick="event.stopPropagation(); deleteHistoryNote('${k}', ${i}); renderCalendar(curYear, curMonth); selectDate('${dS}');">Del</button>
+              </div>
+            </div>`;
+        }
+      });
+    });
+    
+    if(!f) list.innerHTML = `<div style="text-align:center; color:#94a3b8; padding:20px; font-size:1rem;">No patients on this day.</div>`;
+  }
+  
+  function openImport() { 
+    if(currentTabIdx<0) return alert("Select patient tab first."); 
+    document.getElementById('import-text').value=''; 
+    document.getElementById('import-modal').classList.add('open'); 
+  }
+  
+  function parseAndImport() { 
+    alert("Import parser is not enabled in this version. Paste reminders via the ! button instead."); 
+    document.getElementById('import-modal').classList.remove('open'); 
+  }
 </script>
 </body>
 </html>
