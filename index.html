@@ -3,14 +3,14 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-  <title>CMS Clinical V25.20</title>
+  <title>CMS Clinical V25.30</title>
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="theme-color" content="#2c3e50" />
   <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/2966/2966327.png">
   <style>
     :root { --main:#2c3e50; --acc:#2980b9; --bg:#f3f4f6; --warn:#f59e0b; --sticky:#fef9c3; --sticky2:#fde047; }
-    body { font-family:-apple-system, sans-serif; background:var(--bg); margin:0; padding-bottom:60px; color:#1f2937; -webkit-tap-highlight-color:transparent; }
+    body { font-family:-apple-system, sans-serif; background:var(--bg); margin:0; padding-bottom:10px; color:#1f2937; -webkit-tap-highlight-color:transparent; }
 
     #auth-screen { position:fixed; inset:0; background:var(--main); z-index:3000; display:flex; flex-direction:column; align-items:center; justify-content:center; color:#fff; }
     .auth-card { background:#fff; color:#333; width:85%; max-width:320px; padding:25px; border-radius:16px; text-align:center; box-shadow:0 10px 25px rgba(0,0,0,0.3); }
@@ -37,9 +37,10 @@
     .card { background:#fff; border-radius:12px; padding:16px; margin-bottom:12px; box-shadow:0 1px 3px rgba(0,0,0,0.05); }
     .head-sec { font-size:0.8rem; font-weight:900; color:#9ca3af; text-transform:uppercase; margin-bottom:10px; border-bottom:1px solid #f3f4f6; padding-bottom:5px; }
 
-    input, textarea, select { width:100%; padding:12px; border:1px solid #d1d5db; border-radius:8px; font-size:16px; box-sizing:border-box; background:#fff; margin-bottom:12px; appearance:none; }
+    input, textarea, select { width:100%; padding:12px; border:1px solid #d1d5db; border-radius:8px; font-size:16px; box-sizing:border-box; background:#fff; margin-bottom:12px; appearance:none; font-family:inherit; }
     .inline-input { flex-grow:1; min-width:100px; margin-bottom:0; padding:8px; height:38px; }
     .grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+    .grid-4 { display:grid; grid-template-columns:1fr 1fr 1fr 1fr; gap:10px; }
 
     .pill-sec { margin-bottom:15px; }
     .pill-label { font-size:0.75rem; font-weight:800; color:#9ca3af; text-transform:uppercase; margin-bottom:6px; letter-spacing:0.5px; }
@@ -65,14 +66,19 @@
     .power-slider::-webkit-slider-thumb { -webkit-appearance:none; appearance:none; width:24px; height:24px; border-radius:50%; background:#3b82f6; cursor:pointer; box-shadow:0 2px 5px rgba(0,0,0,0.2); }
     .power-val { background:#3b82f6; color:#fff; width:32px; height:32px; display:flex; align-items:center; justify-content:center; border-radius:8px; font-weight:900; font-size:1rem; }
 
+    .power-detail-grid { display:grid; grid-template-columns: 40px 1fr 1fr; gap:10px; align-items:center; margin-bottom:10px; }
+    .power-detail-head { font-size:0.75rem; font-weight:800; color:#9ca3af; text-align:center; }
+    .power-detail-input { margin:0; text-align:center; padding:8px; }
+
     .rom-row { margin-bottom:15px; border-bottom:1px solid #f3f4f6; padding-bottom:8px; display:flex; flex-direction:column; gap:6px; }
     .rom-title { font-size:0.9rem; font-weight:900; color:#333; }
     .manual-input { width:80px; padding:6px; margin-bottom:0; font-size:0.85rem; height:36px; text-align:left; border:1px solid #ccc; border-radius:6px; }
     .rom-btn { padding:8px 12px; font-size:0.8rem; border:1px solid #e5e7eb; border-radius:6px; background:#f9fafb; color:#555; cursor:pointer; }
     .rom-btn.range.selected { background:#e0f2fe; color:#0284c7; border-color:#0284c7; font-weight:900; }
+    .rom-power-select { padding:6px; border-radius:6px; border:1px solid #ccc; background:#fff; font-size:0.85rem; height:36px; }
 
     .generate-btn { width:100%; background:#3b82f6; color:#fff; padding:18px; border-radius:25px; border:none; font-size:1.1rem; font-weight:900; cursor:pointer; margin:20px 0 10px 0; box-shadow:0 4px 6px rgba(59,130,246,0.3); transition:background 0.25s; }
-    .output-box { width:100%; height:250px; background:#fff; border:1px solid #d1d5db; border-radius:12px; padding:16px; font-family:monospace; font-size:0.8rem; line-height:1.4; color:#1f2937; resize:vertical; box-sizing:border-box; }
+    .output-box { width:100%; height:250px; background:#fff; border:1px solid #d1d5db; border-radius:12px; padding:16px; font-family:monospace; font-size:0.8rem; line-height:1.4; color:#1f2937; resize:vertical; box-sizing:border-box; white-space:pre-wrap; }
 
     .modal { position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:4000; display:none; align-items:center; justify-content:center; padding:10px; }
     .modal.open { display:flex; }
@@ -97,13 +103,16 @@
 
     #reminder-fab { position:fixed; right:14px; top:50%; transform:translateY(-50%); width:54px; height:54px; border-radius:16px; background:var(--sticky); border:3px solid var(--sticky2); color:#a16207; font-weight:1000; font-size:28px; display:none; align-items:center; justify-content:center; z-index:2500; box-shadow:0 10px 25px rgba(0,0,0,0.18); user-select:none; cursor:pointer; }
     #reminder-fab.show { display:flex; }
+    
+    .footer-note { text-align:center; padding:15px; font-size:0.75rem; color:#9ca3af; margin-top:20px; border-top:1px solid #e5e7eb; }
+    .footer-note a { color:#2980b9; text-decoration:none; font-weight:700; }
   </style>
 </head>
 <body>
 
 <div id="auth-screen">
   <div id="view-login" class="auth-card">
-    <h3>CMS Clinical V25.20</h3>
+    <h3>CMS Clinical V25.30</h3>
     <select id="user-select" class="auth-input"></select>
     <input type="tel" id="user-pin" class="auth-input" placeholder="PIN" maxlength="6" style="-webkit-text-security:disc;">
     <button class="auth-btn" onclick="attemptLogin()">Unlock App</button>
@@ -116,6 +125,10 @@
     <button class="auth-btn" style="background:#10b981;" onclick="registerUser()">Start App</button>
     <button class="auth-btn sec" style="color:#666; border-color:#ccc;" onclick="toggleAuth('login')">Back</button>
   </div>
+  <div style="position:absolute; bottom:20px; font-size:0.75rem; color:rgba(255,255,255,0.6); text-align:center;">
+    Created by TMH APPT, Billy CHUNG.<br>
+    If any enquiries, please contact <a href="mailto:cky889@ha.org.hk" style="color:#fff; font-weight:bold; text-decoration:none;">cky889@ha.org.hk</a>
+  </div>
 </div>
 
 <div id="app-ui" style="display:none;">
@@ -123,7 +136,6 @@
     <div class="top-row">
       <div class="user-badge" id="display-name">Guest</div>
       <div>
-        <button class="import-btn" onclick="openImport()">Import CMS</button>
         <button class="import-btn" style="background:#8b5cf6;" onclick="openCalendar()">📅 Calendar</button>
       </div>
       <div style="color:#fca5a5; cursor:pointer; font-size:1.2rem; font-weight:900;" onclick="logout()">Lock 🔒</div>
@@ -158,9 +170,15 @@
     </div>
 
     <div class="card">
-      <div class="head-sec">Medical History</div>
-      <div class="pill-label">Diagnosis</div>
-      <textarea id="val-dx" style="height:40px" placeholder="Diagnosis"></textarea>
+      <div class="head-sec">Referral & Diagnosis</div>
+      <div class="grid-2">
+        <input id="val-ref-by" placeholder="Refer by...">
+        <input id="val-ref-date" placeholder="Refer date (e.g. 26/02/2026)...">
+      </div>
+      <textarea id="val-ref-rsn" style="height:40px" placeholder="Reason for referral..."></textarea>
+      <textarea id="val-dx" style="height:40px" placeholder="Diagnosis..."></textarea>
+      
+      <div class="head-sec" style="margin-top:15px;">Medical History</div>
       <div class="pill-label">Past Medical History (PMH)</div>
       <textarea id="val-pmh" style="height:60px" placeholder="PMH"></textarea>
       <div class="pill-label">Medication</div>
@@ -173,56 +191,56 @@
 
     <div class="card">
       <div class="head-sec">Social History</div>
-      <div class="pill-sec"><div class="pill-label">LTOT (Oxygen)</div><div class="pill-group" data-field="sh.ltot"><div class="pill" onclick="tp(this,false)">No</div><div class="pill" onclick="tp(this,false)">Yes</div><input class="inline-input" id="val-sh-ltot-l" placeholder="L/min"></div></div>
-      <div class="pill-sec"><div class="pill-label">Recent Fall (Last 1 year)</div><div class="pill-group" data-field="sh.fall"><div class="pill" onclick="tp(this,false)">No</div><div class="pill" onclick="tp(this,false)">Yes</div><input class="inline-input" id="val-sh-fall-t" placeholder="Times"></div></div>
-      <div class="pill-sec"><div class="pill-label">Occupation</div><div class="pill-group" data-field="sh.occ"><div class="pill" onclick="tp(this,false)">retired</div><div class="pill" onclick="tp(this,false)">housewife</div><div class="pill" onclick="tp(this,false)">manual worker</div><div class="pill" onclick="tp(this,false)">clerical</div><input class="inline-input" id="val-sh-occ-t" placeholder="Other..."></div></div>
-      <div class="pill-sec"><div class="pill-label">Lives with</div><div class="pill-group" data-field="sh.live"><div class="pill" onclick="tp(this,false)">family</div><div class="pill" onclick="tp(this,false)">alone</div><input class="inline-input" id="val-sh-live-t" placeholder="Other..."></div></div>
-      <div class="pill-sec"><div class="pill-label">ADL</div><div class="pill-group" data-field="sh.adl"><div class="pill" onclick="tp(this,false)">independent</div><div class="pill" onclick="tp(this,false)">assisted</div><div class="pill" onclick="tp(this,false)">dependent</div><input class="inline-input" id="val-sh-adl-t" placeholder="Other..."></div></div>
-      <div class="pill-sec"><div class="pill-label">Mobility Status</div><div class="pill-group" data-field="sh.mob"><div class="pill" onclick="tp(this,false)">homebound</div><div class="pill" onclick="tp(this,false)">chairbound</div><div class="pill" onclick="tp(this,false)">indoor walker</div><div class="pill" onclick="tp(this,false)">outdoor walker</div><input class="inline-input" id="val-sh-mob-t" placeholder="Other..."></div></div>
-      <div class="pill-sec"><div class="pill-label">Indoor Walking</div><div class="pill-group" data-field="sh.in"><div class="pill" onclick="tp(this,false)">walk with frame</div><div class="pill" onclick="tp(this,false)">rollator</div><div class="pill" onclick="tp(this,false)">quadripod</div><div class="pill" onclick="tp(this,false)">stick</div><div class="pill" onclick="tp(this,false)">unaided +- furniture</div><div class="pill" onclick="tp(this,false)">unaided</div><input class="inline-input" id="val-sh-in-t" placeholder="Other..."></div></div>
-      <div class="pill-sec"><div class="pill-label">Outdoor Walking</div><div class="pill-group" data-field="sh.out"><div class="pill" onclick="tp(this,false)">walk with frame</div><div class="pill" onclick="tp(this,false)">rollator</div><div class="pill" onclick="tp(this,false)">quadripod</div><div class="pill" onclick="tp(this,false)">stick</div><div class="pill" onclick="tp(this,false)">unaided +- furniture</div><div class="pill" onclick="tp(this,false)">unaided</div><div class="pill" onclick="tp(this,false)">wheelchair</div><div class="pill" onclick="tp(this,false)">electronic wheelchair</div><input class="inline-input" id="val-sh-out-t" placeholder="Other..."></div></div>
-      <div class="pill-sec"><div class="pill-label">Premorbid</div><div class="pill-group" data-field="sh.pre"><div class="pill" onclick="tp(this,false)">walk with frame</div><div class="pill" onclick="tp(this,false)">rollator</div><div class="pill" onclick="tp(this,false)">quadripod</div><div class="pill" onclick="tp(this,false)">stick</div><div class="pill" onclick="tp(this,false)">unaided +- furniture</div><div class="pill" onclick="tp(this,false)">unaided</div><input class="inline-input" id="val-sh-pre-t" placeholder="Other..."></div></div>
-      <div class="pill-sec"><div class="pill-label">Community service</div><div class="pill-group" data-field="sh.com"><div class="pill" onclick="tp(this,false)">nil</div><input class="inline-input" id="val-sh-com-t" placeholder="Other..."></div></div>
+      <div class="pill-sec"><div class="pill-label">LTOT (Oxygen)</div><div class="pill-group" data-field="sh.ltot"><div class="pill" onclick="tp(this,true)">No</div><div class="pill" onclick="tp(this,true)">Yes</div><input class="inline-input" id="val-sh-ltot-l" placeholder="L/min"></div></div>
+      <div class="pill-sec"><div class="pill-label">Recent Fall (Last 1 year)</div><div class="pill-group" data-field="sh.fall"><div class="pill" onclick="tp(this,true)">No</div><div class="pill" onclick="tp(this,true)">Yes</div><input class="inline-input" id="val-sh-fall-t" placeholder="Times"></div></div>
+      <div class="pill-sec"><div class="pill-label">Occupation</div><div class="pill-group" data-field="sh.occ"><div class="pill" onclick="tp(this,true)">retired</div><div class="pill" onclick="tp(this,true)">housewife</div><div class="pill" onclick="tp(this,true)">manual worker</div><div class="pill" onclick="tp(this,true)">clerical</div><input class="inline-input" id="val-sh-occ-t" placeholder="Other..."></div></div>
+      <div class="pill-sec"><div class="pill-label">Lives with</div><div class="pill-group" data-field="sh.live"><div class="pill" onclick="tp(this,true)">family</div><div class="pill" onclick="tp(this,true)">alone</div><input class="inline-input" id="val-sh-live-t" placeholder="Other..."></div></div>
+      <div class="pill-sec"><div class="pill-label">ADL</div><div class="pill-group" data-field="sh.adl"><div class="pill" onclick="tp(this,true)">independent</div><div class="pill" onclick="tp(this,true)">assisted</div><div class="pill" onclick="tp(this,true)">dependent</div><input class="inline-input" id="val-sh-adl-t" placeholder="Other..."></div></div>
+      <div class="pill-sec"><div class="pill-label">Mobility Status</div><div class="pill-group" data-field="sh.mob"><div class="pill" onclick="tp(this,true)">homebound</div><div class="pill" onclick="tp(this,true)">chairbound</div><div class="pill" onclick="tp(this,true)">indoor walker</div><div class="pill" onclick="tp(this,true)">outdoor walker</div><input class="inline-input" id="val-sh-mob-t" placeholder="Other..."></div></div>
+      <div class="pill-sec"><div class="pill-label">Indoor Walking</div><div class="pill-group" data-field="sh.in"><div class="pill" onclick="tp(this,true)">walk with frame</div><div class="pill" onclick="tp(this,true)">rollator</div><div class="pill" onclick="tp(this,true)">quadripod</div><div class="pill" onclick="tp(this,true)">stick</div><div class="pill" onclick="tp(this,true)">unaided +- furniture</div><div class="pill" onclick="tp(this,true)">unaided</div><div class="pill" onclick="tp(this,true)">+1 assistance</div><div class="pill" onclick="tp(this,true)">+2 assistance</div><input class="inline-input" id="val-sh-in-t" placeholder="Other..."></div></div>
+      <div class="pill-sec"><div class="pill-label">Outdoor Walking</div><div class="pill-group" data-field="sh.out"><div class="pill" onclick="tp(this,true)">walk with frame</div><div class="pill" onclick="tp(this,true)">rollator</div><div class="pill" onclick="tp(this,true)">quadripod</div><div class="pill" onclick="tp(this,true)">stick</div><div class="pill" onclick="tp(this,true)">unaided +- furniture</div><div class="pill" onclick="tp(this,true)">unaided</div><div class="pill" onclick="tp(this,true)">wheelchair</div><div class="pill" onclick="tp(this,true)">electronic wheelchair</div><div class="pill" onclick="tp(this,true)">+1 assistance</div><div class="pill" onclick="tp(this,true)">+2 assistance</div><input class="inline-input" id="val-sh-out-t" placeholder="Other..."></div></div>
+      <div class="pill-sec"><div class="pill-label">Premorbid</div><div class="pill-group" data-field="sh.pre"><div class="pill" onclick="tp(this,true)">walk with frame</div><div class="pill" onclick="tp(this,true)">rollator</div><div class="pill" onclick="tp(this,true)">quadripod</div><div class="pill" onclick="tp(this,true)">stick</div><div class="pill" onclick="tp(this,true)">unaided +- furniture</div><div class="pill" onclick="tp(this,true)">unaided</div><div class="pill" onclick="tp(this,true)">+1 assistance</div><div class="pill" onclick="tp(this,true)">+2 assistance</div><input class="inline-input" id="val-sh-pre-t" placeholder="Other..."></div></div>
+      <div class="pill-sec"><div class="pill-label">Community service</div><div class="pill-group" data-field="sh.com"><div class="pill" onclick="tp(this,true)">nil</div><input class="inline-input" id="val-sh-com-t" placeholder="Other..."></div></div>
     </div>
 
     <div class="card">
       <div class="head-sec">Home Environment</div>
-      <div class="pill-sec"><div class="pill-label">Housing Type</div><div class="pill-group" data-field="he.type"><div class="pill" onclick="tp(this,true)">PHE</div><div class="pill" onclick="tp(this,true)">private flat with direct lift-landing</div><input class="inline-input" id="val-he-type-t" placeholder="Other..."></div></div>
+      <div class="pill-sec"><div class="pill-label">Housing Type</div><div class="pill-group" data-field="he.type"><div class="pill" onclick="tp(this,true)">PHE</div><div class="pill" onclick="tp(this,true)">private flat with direct lift-landing</div><div class="pill" onclick="tp(this,true)">OAH</div><input class="inline-input" id="val-he-type-t" placeholder="Other..."></div></div>
       <div class="pill-sec">
         <div class="pill-label">Accessibility</div>
         <div class="pill-group" data-field="he.acc"><div class="pill" onclick="tp(this,true)">Lift-landing</div><div class="pill" onclick="tp(this,true)">Slope</div><div class="pill" onclick="tp(this,true)">Stairs</div></div>
         <div class="grid-2" style="margin-top:8px;"><input id="val-he-steps" placeholder="Steps"><input id="val-he-handrail" placeholder="Handrail"></div>
       </div>
-      <div class="pill-sec"><div class="pill-label">Kerb in toilet</div><div class="pill-group" data-field="he.kerb"><div class="pill" onclick="tp(this,true)">1 kerb in toilet</div><input class="inline-input" id="val-he-kerb-t" placeholder="Other..."></div></div>
       <div class="pill-sec"><div class="pill-label">Indoor environment</div><div class="pill-group" data-field="he.env"><div class="pill" onclick="tp(this,true)">tidy and spacious</div><input class="inline-input" id="val-he-env-t" placeholder="Other..."></div></div>
-      <div class="pill-sec"><div class="pill-label">Toilet</div><div class="pill-group" data-field="he.toi"><div class="pill" onclick="tp(this,true)">sitting</div><div class="pill" onclick="tp(this,true)">with handrail</div><div class="pill" onclick="tp(this,true)">commode</div><div class="pill" onclick="tp(this,true)">bath tub</div><input class="inline-input" id="val-he-toi-t" placeholder="Other..."></div></div>
-      <div class="pill-sec"><div class="pill-label">Shower</div><div class="pill-group" data-field="he.sho"><div class="pill" onclick="tp(this,true)">with shower chair</div><input class="inline-input" id="val-he-sho-t" placeholder="Other..."></div></div>
+      <div class="pill-sec"><div class="pill-label">Bathroom</div><div class="pill-group" data-field="he.bat"><div class="pill" onclick="tp(this,true)">dry and clean</div><div class="pill" onclick="tp(this,true)">with non-slip mat</div><div class="pill" onclick="tp(this,true)">shower</div><div class="pill" onclick="tp(this,true)">with shower chair</div><div class="pill" onclick="tp(this,true)">1 kerb to access</div><div class="pill" onclick="tp(this,true)">bath tub</div><div class="pill" onclick="tp(this,true)">platform</div><input class="inline-input" id="val-he-bat-t" placeholder="Other..."></div></div>
       <div class="pill-sec"><div class="pill-label">Lighting</div><div class="pill-group" data-field="he.lig"><div class="pill" onclick="tp(this,true)">adequate</div><div class="pill" onclick="tp(this,true)">appropriate switches</div><div class="pill" onclick="tp(this,true)">no nighttime light</div><input class="inline-input" id="val-he-lig-t" placeholder="Other..."></div></div>
       <div class="pill-sec"><div class="pill-label">Floor</div><div class="pill-group" data-field="he.flo"><div class="pill" onclick="tp(this,true)">even</div><div class="pill" onclick="tp(this,true)">non-slippery</div><div class="pill" onclick="tp(this,true)">clean</div><input class="inline-input" id="val-he-flo-t" placeholder="Other..."></div></div>
       <div class="pill-sec"><div class="pill-label">Door</div><div class="pill-group" data-field="he.dor"><div class="pill" onclick="tp(this,true)">appropriate height</div><input class="inline-input" id="val-he-dor-t" placeholder="Other..."></div></div>
       <div class="pill-sec"><div class="pill-label">Furniture</div><div class="pill-group" data-field="he.fur"><div class="pill" onclick="tp(this,true)">appropriate height</div><div class="pill" onclick="tp(this,true)">with back support</div><input class="inline-input" id="val-he-fur-t" placeholder="Other..."></div></div>
       <div class="pill-sec"><div class="pill-label">Bedroom</div><div class="pill-group" data-field="he.bed"><div class="pill" onclick="tp(this,true)">appropriate bed height</div><div class="pill" onclick="tp(this,true)">with bedside lamp</div><input class="inline-input" id="val-he-bed-t" placeholder="Other..."></div></div>
-      <div class="pill-sec"><div class="pill-label">Bathroom</div><div class="pill-group" data-field="he.bat"><div class="pill" onclick="tp(this,true)">dry and clean</div><div class="pill" onclick="tp(this,true)">with non-slip mat</div><input class="inline-input" id="val-he-bat-t" placeholder="Other..."></div></div>
       <div class="pill-sec"><div class="pill-label">Personal alarm</div><div class="pill-group" data-field="he.alm"><div class="pill" onclick="tp(this,true)">Yes</div><div class="pill" onclick="tp(this,true)">No</div><input class="inline-input" id="val-he-alm-t" placeholder="Other..."></div></div>
     </div>
 
     <div class="card">
       <div class="head-sec">Subjective & Vitals</div>
-      <div class="pill-sec"><div class="pill-label">Seen By</div><div class="pill-group" data-field="su.seen"><div class="pill" onclick="tp(this,false)">alone</div><div class="pill" onclick="tp(this,false)">with maid</div><div class="pill" onclick="tp(this,false)">with family</div><input class="inline-input" id="val-su-seen-t" placeholder="Name/Relation..."></div></div>
-      <div class="pill-sec"><div class="pill-label">General condition</div><div class="pill-group" data-field="su.gen"><div class="pill" onclick="tp(this,false)">stable</div><input class="inline-input" id="val-su-gen-t" placeholder="Other..."></div></div>
+      <div class="pill-sec"><div class="pill-label">Seen By</div><div class="pill-group" data-field="su.seen"><div class="pill" onclick="tp(this,true)">alone</div><div class="pill" onclick="tp(this,true)">with maid</div><div class="pill" onclick="tp(this,true)">with family</div><div class="pill" onclick="tp(this,true)">PCA</div><input class="inline-input" id="val-su-seen-t" placeholder="Name/Relation..."></div></div>
+      <div class="pill-sec"><div class="pill-label">General condition</div><div class="pill-group" data-field="su.gen"><div class="pill" onclick="tp(this,true)">stable</div><input class="inline-input" id="val-su-gen-t" placeholder="Other..."></div></div>
       <div class="grid-2" style="margin-bottom:12px;"><input id="val-bp" placeholder="BP (mmHg)"><input id="val-hr" placeholder="Pulse (bpm)"></div>
       <textarea id="val-fall" style="height:40px" placeholder="* Recent fall history (within 6 months):"></textarea>
       
       <div style="margin-top:20px; font-weight:900; font-size:1.1rem; color:#2c3e50; border-bottom:2px solid #e5e7eb; padding-bottom:5px; margin-bottom:15px;">Subjective examination</div>
-      <input id="val-su-comp" placeholder="Complain:">
-      <input id="val-su-area" placeholder="Area:">
-      <input id="val-su-nat" placeholder="Nature of symtoms:">
-      <input id="val-su-rest" placeholder="Resting pain:">
-      <input id="val-su-agg" placeholder="Aggravating factors:">
-      <input id="val-su-eas" placeholder="Easing factors:">
-      <input id="val-su-fun" placeholder="Functional limitation:">
-      <input id="val-su-walk" placeholder="Walking tolerances:">
-      <input id="val-su-oth" placeholder="Others:">
+      <div class="pill-sec"><div class="pill-label">Previous treatment received and effect</div><div class="pill-group" data-field="su.prev"><div class="pill" onclick="tp(this,true)">Yes</div><div class="pill" onclick="tp(this,true)">No</div><div class="pill" onclick="tp(this,true)">N/A</div></div></div>
+      <div class="pill-sec"><div class="pill-label">Injury on Duty</div><div class="pill-group" data-field="su.iod"><div class="pill" onclick="tp(this,true)">Yes</div><div class="pill" onclick="tp(this,true)">No</div></div></div>
+      
+      <textarea id="val-su-comp" style="height:40px" placeholder="Complain:"></textarea>
+      <textarea id="val-su-area" style="height:40px" placeholder="Area:"></textarea>
+      <textarea id="val-su-nat" style="height:40px" placeholder="Nature of symtoms:"></textarea>
+      <textarea id="val-su-rest" style="height:40px" placeholder="Resting pain:"></textarea>
+      <textarea id="val-su-agg" style="height:40px" placeholder="Aggravating factors:"></textarea>
+      <textarea id="val-su-eas" style="height:40px" placeholder="Easing factors:"></textarea>
+      <textarea id="val-su-fun" style="height:40px" placeholder="Functional limitation:"></textarea>
+      <textarea id="val-su-walk" style="height:40px" placeholder="Walking tolerances:"></textarea>
+      <textarea id="val-su-oth" style="height:40px" placeholder="Others:"></textarea>
     </div>
 
     <div class="card">
@@ -231,30 +249,48 @@
         <div class="accordion-head" onclick="toggleAc(this)" style="background:#f3f4f6; color:#4b5563;">Posture & Palpation <span>+</span></div>
         <div class="accordion-body">
           <div class="pill-label" style="font-size:0.9rem; color:#2c3e50;">Posture</div>
-          <input id="val-pos-inf" placeholder="Inflammatory sign:">
-          <input id="val-pos-swe" placeholder="Swelling, redness:">
-          <input id="val-pos-tem" placeholder="Temperature:">
-          <input id="val-pos-mus" placeholder="Muscles wasting:">
+          <textarea id="val-pos-free" style="height:50px" placeholder="Free text for Posture..."></textarea>
           <div class="pill-label" style="font-size:0.9rem; color:#2c3e50; margin-top:15px;">Palpation</div>
-          <input id="val-pal-tig" placeholder="Tightness over:">
-          <input id="val-pal-ten" placeholder="Tender over:">
+          <div style="display:flex; align-items:center; gap:10px; margin-bottom:12px;">
+            <textarea id="val-pal-swe" style="height:40px; flex-grow:1; margin-bottom:0;" placeholder="Swelling..."></textarea>
+            <div class="pill-group" data-field="pal.red" style="margin:0;"><div class="pill" onclick="tp(this,true)" style="background:#fee2e2; border-color:#ef4444; color:#b91c1c;">Redness +ve</div></div>
+          </div>
+          <textarea id="val-pal-tig" style="height:40px" placeholder="Tightness over:"></textarea>
+          <textarea id="val-pal-ten" style="height:40px" placeholder="Tender over:"></textarea>
+          <textarea id="val-pal-oth" style="height:40px" placeholder="Others:"></textarea>
         </div>
       </div>
-      <div class="pill-sec">
-        <div class="pill-label">Range of Motion Summary</div>
-        <div class="pill-group" data-field="msk.rom">
-          <div class="pill" onclick="tp(this,false); toggleRomDetail()">All limbs full</div>
-          <div class="pill" onclick="tp(this,false); toggleRomDetail()">Detail</div>
+      
+      <div class="pill-sec" id="pwr-container">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <div class="pill-label">Limb Power (MMT 0-5)</div>
+          <div class="pill-group"><div class="pill" id="pwr-det-btn" onclick="togglePwrMode(this)">Detail</div></div>
         </div>
-        <input id="val-msk-rom-det" class="hidden" placeholder="Specify ROM details..." style="margin-top:8px;">
+        
+        <div id="pwr-sliders">
+          <div class="power-row"><div class="power-label">R UL</div><input type="range" min="0" max="5" value="5" id="val-pwr-rul" class="power-slider" oninput="updatePwr(this)"><div class="power-val">5</div></div>
+          <div class="power-row"><div class="power-label">L UL</div><input type="range" min="0" max="5" value="5" id="val-pwr-lul" class="power-slider" oninput="updatePwr(this)"><div class="power-val">5</div></div>
+          <div class="power-row"><div class="power-label">R LL</div><input type="range" min="0" max="5" value="5" id="val-pwr-rll" class="power-slider" oninput="updatePwr(this)"><div class="power-val">5</div></div>
+          <div class="power-row"><div class="power-label">L LL</div><input type="range" min="0" max="5" value="5" id="val-pwr-lll" class="power-slider" oninput="updatePwr(this)"><div class="power-val">5</div></div>
+        </div>
+        
+        <div id="pwr-inputs" style="display:none; background:#f9fafb; padding:15px; border-radius:8px; border:1px solid #e5e7eb;">
+          <div class="power-detail-grid" style="margin-bottom:5px;">
+            <div></div><div class="power-detail-head">UL</div><div class="power-detail-head">LL</div>
+          </div>
+          <div class="power-detail-grid">
+            <div style="font-weight:900; text-align:center;">R</div>
+            <input id="val-pwr-rul-t" class="power-detail-input" placeholder="e.g. 3/3/3">
+            <input id="val-pwr-rll-t" class="power-detail-input" placeholder="e.g. 3/2/3">
+          </div>
+          <div class="power-detail-grid">
+            <div style="font-weight:900; text-align:center;">L</div>
+            <input id="val-pwr-lul-t" class="power-detail-input" placeholder="e.g. 3/3/3">
+            <input id="val-pwr-lll-t" class="power-detail-input" placeholder="e.g. 3/2/3">
+          </div>
+        </div>
       </div>
-      <div class="pill-sec">
-        <div class="pill-label">Limb Power (MMT 0-5)</div>
-        <div class="power-row"><div class="power-label">R UL</div><input type="range" min="0" max="5" value="5" id="val-pwr-rul" class="power-slider" oninput="updatePwr(this)"><div class="power-val">5</div></div>
-        <div class="power-row"><div class="power-label">L UL</div><input type="range" min="0" max="5" value="5" id="val-pwr-lul" class="power-slider" oninput="updatePwr(this)"><div class="power-val">5</div></div>
-        <div class="power-row"><div class="power-label">R LL</div><input type="range" min="0" max="5" value="5" id="val-pwr-rll" class="power-slider" oninput="updatePwr(this)"><div class="power-val">5</div></div>
-        <div class="power-row"><div class="power-label">L LL</div><input type="range" min="0" max="5" value="5" id="val-pwr-lll" class="power-slider" oninput="updatePwr(this)"><div class="power-val">5</div></div>
-      </div>
+      
       <div class="pill-sec">
         <div class="pill-label">Sensation</div>
         <textarea id="val-sens" style="height:40px" placeholder="Light touch: Intact"></textarea>
@@ -264,19 +300,19 @@
         <div class="accordion-body body-container" id="joints-container" style="padding:10px;"></div>
       </div>
       <div style="margin-top:25px; font-weight:900; font-size:1.1rem; color:#2c3e50; border-bottom:2px solid #e5e7eb; padding-bottom:5px; margin-bottom:15px;">Ambulation</div>
-      <div class="pill-sec"><div class="pill-label">Bed mobility</div><div class="pill-group" data-field="amb.bed"><div class="pill" onclick="tp(this,false)">independent</div><div class="pill" onclick="tp(this,false)">supervision</div><div class="pill" onclick="tp(this,false)">+1 assist</div><div class="pill" onclick="tp(this,false)">+2 assist</div><div class="pill" onclick="tp(this,false)">dependent</div><input class="inline-input" id="val-amb-bed-t" placeholder="Other..."></div></div>
-      <div class="pill-sec"><div class="pill-label">Lying to sitting</div><div class="pill-group" data-field="amb.l2s"><div class="pill" onclick="tp(this,false)">independent</div><div class="pill" onclick="tp(this,false)">supervision</div><div class="pill" onclick="tp(this,false)">+1 assist</div><div class="pill" onclick="tp(this,false)">+2 assist</div><input class="inline-input" id="val-amb-l2s-t" placeholder="Other..."></div></div>
-      <div class="pill-sec"><div class="pill-label">Sitting to standing</div><div class="pill-group" data-field="amb.s2s"><div class="pill" onclick="tp(this,false)">independent</div><div class="pill" onclick="tp(this,false)">supervision</div><div class="pill" onclick="tp(this,false)">+1 assist</div><div class="pill" onclick="tp(this,false)">+2 assist</div><input class="inline-input" id="val-amb-s2s-t" placeholder="Other..."></div></div>
-      <div class="pill-sec"><div class="pill-label">Sitting balance</div><div class="pill-group" data-field="amb.sitb"><div class="pill" onclick="tp(this,false)">poor</div><div class="pill" onclick="tp(this,false)">fair</div><div class="pill" onclick="tp(this,false)">acceptable</div><div class="pill" onclick="tp(this,false)">satisfactory</div><div class="pill" onclick="tp(this,false)">good</div><input class="inline-input" id="val-amb-sitb-t" placeholder="Other..."></div></div>
-      <div class="pill-sec"><div class="pill-label">Standing balance</div><div class="pill-group" data-field="amb.stdb"><div class="pill" onclick="tp(this,false)">poor</div><div class="pill" onclick="tp(this,false)">fair</div><div class="pill" onclick="tp(this,false)">acceptable</div><div class="pill" onclick="tp(this,false)">satisfactory</div><div class="pill" onclick="tp(this,false)">good</div><input class="inline-input" id="val-amb-stdb-t" placeholder="Other..."></div></div>
+      <div class="pill-sec"><div class="pill-label">Bed mobility</div><div class="pill-group" data-field="amb.bed"><div class="pill" onclick="tp(this,true)">independent</div><div class="pill" onclick="tp(this,true)">supervision</div><div class="pill" onclick="tp(this,true)">+1 assist</div><div class="pill" onclick="tp(this,true)">+2 assist</div><div class="pill" onclick="tp(this,true)">dependent</div><input class="inline-input" id="val-amb-bed-t" placeholder="Other..."></div></div>
+      <div class="pill-sec"><div class="pill-label">Lying to sitting</div><div class="pill-group" data-field="amb.l2s"><div class="pill" onclick="tp(this,true)">independent</div><div class="pill" onclick="tp(this,true)">supervision</div><div class="pill" onclick="tp(this,true)">+1 assist</div><div class="pill" onclick="tp(this,true)">+2 assist</div><input class="inline-input" id="val-amb-l2s-t" placeholder="Other..."></div></div>
+      <div class="pill-sec"><div class="pill-label">Sitting to standing</div><div class="pill-group" data-field="amb.s2s"><div class="pill" onclick="tp(this,true)">independent</div><div class="pill" onclick="tp(this,true)">supervision</div><div class="pill" onclick="tp(this,true)">+1 assist</div><div class="pill" onclick="tp(this,true)">+2 assist</div><input class="inline-input" id="val-amb-s2s-t" placeholder="Other..."></div></div>
+      <div class="pill-sec"><div class="pill-label">Sitting balance</div><div class="pill-group" data-field="amb.sitb"><div class="pill" onclick="tp(this,true)">poor</div><div class="pill" onclick="tp(this,true)">fair</div><div class="pill" onclick="tp(this,true)">acceptable</div><div class="pill" onclick="tp(this,true)">satisfactory</div><div class="pill" onclick="tp(this,true)">good</div><input class="inline-input" id="val-amb-sitb-t" placeholder="Other..."></div></div>
+      <div class="pill-sec"><div class="pill-label">Standing balance</div><div class="pill-group" data-field="amb.stdb"><div class="pill" onclick="tp(this,true)">poor</div><div class="pill" onclick="tp(this,true)">fair</div><div class="pill" onclick="tp(this,true)">acceptable</div><div class="pill" onclick="tp(this,true)">satisfactory</div><div class="pill" onclick="tp(this,true)">good</div><input class="inline-input" id="val-amb-stdb-t" placeholder="Other..."></div></div>
       <div class="pill-sec" style="background:#f9fafb; padding:12px; border-radius:8px; border:1px solid #e5e7eb;">
         <div class="pill-label" style="font-size:0.85rem; color:#2c3e50; text-transform:uppercase;">Walking</div>
         <div class="pill-label" style="margin-top:5px;">Aid</div>
-        <div class="pill-group" data-field="amb.w_aid"><div class="pill" onclick="tp(this,false)">walks unaided</div><div class="pill" onclick="tp(this,false)">stick</div><div class="pill" onclick="tp(this,false)">quadripod</div><div class="pill" onclick="tp(this,false)">frame</div><div class="pill" onclick="tp(this,false)">rollator</div><div class="pill" onclick="tp(this,false)">trolley</div></div>
+        <div class="pill-group" data-field="amb.w_aid"><div class="pill" onclick="tp(this,true)">walks unaided</div><div class="pill" onclick="tp(this,true)">stick</div><div class="pill" onclick="tp(this,true)">quadripod</div><div class="pill" onclick="tp(this,true)">frame</div><div class="pill" onclick="tp(this,true)">rollator</div><div class="pill" onclick="tp(this,true)">trolley</div></div>
         <div class="pill-label" style="margin-top:8px;">Assistance</div>
-        <div class="pill-group" data-field="amb.w_ast"><div class="pill" onclick="tp(this,false)">independent</div><div class="pill" onclick="tp(this,false)">supervision</div><div class="pill" onclick="tp(this,false)">+1 assist</div><div class="pill" onclick="tp(this,false)">+2 assist</div></div>
+        <div class="pill-group" data-field="amb.w_ast"><div class="pill" onclick="tp(this,true)">independent</div><div class="pill" onclick="tp(this,true)">supervision</div><div class="pill" onclick="tp(this,true)">+1 assist</div><div class="pill" onclick="tp(this,true)">+2 assist</div></div>
         <div class="pill-label" style="margin-top:8px;">Stability</div>
-        <div class="pill-group" data-field="amb.w_stb"><div class="pill" onclick="tp(this,false)">poor</div><div class="pill" onclick="tp(this,false)">fair</div><div class="pill" onclick="tp(this,false)">acceptable</div><div class="pill" onclick="tp(this,false)">satisfactory</div><div class="pill" onclick="tp(this,false)">good</div></div>
+        <div class="pill-group" data-field="amb.w_stb"><div class="pill" onclick="tp(this,true)">poor</div><div class="pill" onclick="tp(this,true)">fair</div><div class="pill" onclick="tp(this,true)">acceptable</div><div class="pill" onclick="tp(this,true)">satisfactory</div><div class="pill" onclick="tp(this,true)">good</div></div>
         <input class="inline-input" id="val-amb-w-t" placeholder="Other walking details..." style="margin-top:8px; width:100%; box-sizing:border-box;">
       </div>
       <div class="pill-sec">
@@ -308,6 +344,11 @@
 
     <button id="gen-btn" class="generate-btn" onclick="generateNote()">Generate & Copy CMS Note</button>
     <textarea id="output-box" class="output-box" placeholder="Generated report will appear here..." readonly></textarea>
+  </div>
+  
+  <div class="footer-note">
+    Created by TMH APPT, Billy CHUNG.<br>
+    If any enquiries, please contact <a href="mailto:cky889@ha.org.hk">cky889@ha.org.hk</a>
   </div>
 </div>
 
@@ -344,16 +385,6 @@
   </div>
 </div>
 
-<!-- Import Modal -->
-<div id="import-modal" class="modal">
-  <div class="modal-card">
-    <h3>Import Old CMS Note</h3>
-    <textarea id="import-text" style="height:200px; font-family:monospace; font-size:0.8rem;" placeholder="Community Physiotherapy..."></textarea>
-    <button class="auth-btn" onclick="parseAndImport()">Import & Parse</button>
-    <button class="auth-btn sec" onclick="document.getElementById('import-modal').classList.remove('open')">Cancel</button>
-  </div>
-</div>
-
 <script>
   const USERS_KEY = 'physio_users_v2';
   let currentUser = null;
@@ -383,6 +414,8 @@
   const kneeMov = ["Flexion","Extension"];
   const ankMov = ["Dorsiflexion","Plantarflexion","Inversion","Eversion"];
   const spineMov = ["Flexion","Extension","Rotation(L)","Rotation(R)","Side Flexion(L)","Side Flexion(R)"];
+  
+  const pwrOptions = ["","0","1","2","3-","3","3+","4-","4","4+","5-","5"];
 
   const bodyParts = [
     {name:"Neck (Cx)", id:"cx", mov:spineMov, tests: cxTests},
@@ -397,7 +430,8 @@
     {name:"Hip (L)", id:"hl", mov: hipMov, tests: hipTests},
     {name:"Knee (R)", id:"kr", mov: kneeMov, tests: kneeTests},
     {name:"Knee (L)", id:"kl", mov: kneeMov, tests: kneeTests},
-    {name:"Ankle (R)", id:"ar", mov: ankMov, tests: ankTests}
+    {name:"Ankle (R)", id:"ar", mov: ankMov, tests: ankTests},
+    {name:"Ankle (L)", id:"al", mov: ankMov, tests: ankTests}
   ];
 
   const exercises = [
@@ -532,6 +566,13 @@
     document.querySelectorAll('.pill.active, .rom-btn.range.selected').forEach(x => x.classList.remove('active', 'selected'));
     ['chk-sts','chk-berg','chk-frt','chk-tug','chk-ems','chk-mfac'].forEach(id => { const e=document.getElementById(id); if(e) e.checked=false; });
     ['val-sts','val-frt','val-tug'].forEach(id => { const e=document.getElementById(id); if(e) e.value=""; });
+    
+    document.querySelectorAll('input, textarea').forEach(el => {
+      if(el.type !== 'radio' && el.type !== 'checkbox' && el.id !== 'val-case') el.value = "";
+    });
+    
+    document.querySelectorAll('select.rom-power-select').forEach(s => s.selectedIndex = 0);
+    
     document.querySelectorAll('.out-acc .accordion-body').forEach(b => b.classList.remove('show'));
     
     document.querySelectorAll('.score-disp').forEach(d => {
@@ -579,18 +620,31 @@
     out.insertAdjacentHTML('beforeend', eHtml + `</div></div>`);
 
     let mHtml = `<div class="accordion out-acc" data-out="mfac"><div class="accordion-head outcome-head" onclick="toggleOutcomeAcc(this)"><input type="checkbox" id="chk-mfac"> MFAC</div><div class="accordion-body"><div class="pill-group out-mfac" id="val-mfac" style="justify-content:flex-start;">`;
-    ["Cat 1: Lyer","Cat 2: Sitter","Cat 3: Dependent walker","Cat 4: Assisted walker","Cat 5: Supervised walker","Cat 6: Indoor walker","Cat 7: Outdoor walker"].forEach(m => mHtml += `<div class="pill" onclick="tp(this,false)">${m}</div>`);
+    ["Cat 1: Lyer","Cat 2: Sitter","Cat 3: Dependent walker","Cat 4: Assisted walker","Cat 5: Supervised walker","Cat 6: Indoor walker","Cat 7: Outdoor walker"].forEach(m => mHtml += `<div class="pill" onclick="tp(this,true)">${m}</div>`);
     out.insertAdjacentHTML('beforeend', mHtml + `</div></div></div>`);
 
     const jCont = document.getElementById('joints-container');
+    let pwrOptsHTML = pwrOptions.map(o => `<option value="${o}">${o?`Power ${o}`:'Power...'}</option>`).join('');
+    
     bodyParts.forEach(bp => {
-      let h = `<div class="accordion" style="border:1px dashed #d1d5db; margin-bottom:8px;"><div class="accordion-head" onclick="toggleAc(this)">${bp.name} <span>+</span></div><div class="accordion-body" style="padding:12px;"><div style="font-size:0.8rem; font-weight:800; color:#9ca3af; margin-bottom:8px; text-transform:uppercase;">Range of Motion</div>`;
+      let h = `<div class="accordion" style="border:1px dashed #d1d5db; margin-bottom:8px;"><div class="accordion-head" onclick="toggleAc(this)">${bp.name} <span>+</span></div><div class="accordion-body" style="padding:12px;">`;
+      h += `<div class="pill-group" data-uid="${bp.id}_type" style="margin-bottom:15px;"><div class="pill" onclick="tp(this, true)">AROM</div><div class="pill" onclick="tp(this, true)">PROM</div></div>`;
+      
       bp.mov.forEach(m => {
-        h += `<div class="rom-row" data-uid="${bp.id}_${m}" style="display:flex; flex-direction:column; gap:6px; margin-bottom:12px; border-bottom:1px solid #f3f4f6; padding-bottom:8px;"><div class="rom-title" style="font-weight:700; color:#4b5563; font-size:0.9rem;">${m}</div><div style="display:flex; flex-wrap:wrap; gap:8px; align-items:center;"><input class="manual-input" style="width:75px; padding:6px; margin:0; border:1px solid #ccc; border-radius:6px;" placeholder="Range"><div class="rom-btn range" onclick="sel(this)">Full</div><div class="rom-btn range" onclick="sel(this)">pain limited</div><div class="rom-btn range" onclick="sel(this)">pain at end range</div></div></div>`
+        h += `<div class="rom-row" data-uid="${bp.id}_${m}" style="display:flex; flex-direction:column; gap:6px; margin-bottom:12px; border-bottom:1px solid #f3f4f6; padding-bottom:8px;">
+                <div class="rom-title" style="font-weight:700; color:#4b5563; font-size:0.9rem;">${m}</div>
+                <div style="display:flex; flex-wrap:wrap; gap:8px; align-items:center;">
+                  <input class="manual-input" style="width:75px; padding:6px; margin:0; border:1px solid #ccc; border-radius:6px;" placeholder="Range">
+                  <div class="rom-btn range" onclick="sel(this)">Full</div>
+                  <div class="rom-btn range" onclick="sel(this)">pain limited</div>
+                  <div class="rom-btn range" onclick="sel(this)">pain at end range</div>
+                  <select class="rom-power-select" onchange="saveWork()">${pwrOptsHTML}</select>
+                </div>
+              </div>`
       });
       if(bp.tests && bp.tests.length) {
         h += `<div style="font-size:0.8rem; font-weight:800; color:#9ca3af; margin-top:15px; margin-bottom:8px; text-transform:uppercase;">Special Tests</div>`;
-        bp.tests.forEach(t => h += `<div class="test-row" data-uid="${bp.id}_${t.id}" style="margin-bottom:10px;"><div style="font-size:0.85rem; font-weight:700; color:#4b5563; margin-bottom:4px;">${t.name}</div><div class="pill-group"><div class="pill" onclick="tp(this, false)">+ve</div><div class="pill" onclick="tp(this, false)">-ve</div></div></div>`);
+        bp.tests.forEach(t => h += `<div class="test-row" data-uid="${bp.id}_${t.id}" style="margin-bottom:10px;"><div style="font-size:0.85rem; font-weight:700; color:#4b5563; margin-bottom:4px;">${t.name}</div><div class="pill-group"><div class="pill" onclick="tp(this, true)">+ve</div><div class="pill" onclick="tp(this, true)">-ve</div></div></div>`);
         h += `<input class="manual-input" id="test_other_${bp.id}" style="width:100%; text-align:left; margin-top:5px;" placeholder="Other tests / notes for ${bp.name}...">`;
       }
       jCont.insertAdjacentHTML('beforeend', h + `</div></div>`);
@@ -661,19 +715,19 @@
 
   function schemaDefaults() {
     return { 
-      reminders:"", dx:"", pmh:"", meds:"", hpi:"", inv:"",
-      sh:{ltot:"",ltot_l:"",fall:"",fall_t:"",occ:"",occ_t:"",live:"",live_t:"",adl:"",adl_t:"",mob:"",mob_t:"",in:"",in_t:"",out:"",out_t:"",pre:"",pre_t:"",com:"",com_t:""},
-      he:{type:[],type_t:"",acc:[],steps:"",handrail:"",kerb:[],kerb_t:"",env:[],env_t:"",toi:[],toi_t:"",sho:[],sho_t:"",lig:[],lig_t:"",flo:[],flo_t:"",dor:[],dor_t:"",fur:[],fur_t:"",bed:[],bed_t:"",bat:[],bat_t:"",alm:[],alm_t:""},
-      su:{seen:"",seen_t:"",gen:"",gen_t:"",comp:"",area:"",nat:"",rest:"",agg:"",eas:"",fun:"",walk:"",oth:""},
-      pos:{inf:"",swe:"",tem:"",mus:""}, 
-      pal:{tig:"",ten:""}, 
+      reminders:"", ref_by:"", ref_date:"", ref_rsn:"", dx:"", pmh:"", meds:"", hpi:"", inv:"",
+      sh:{ltot:[],ltot_l:"",fall:[],fall_t:"",occ:[],occ_t:"",live:[],live_t:"",adl:[],adl_t:"",mob:[],mob_t:"",in:[],in_t:"",out:[],out_t:"",pre:[],pre_t:"",com:[],com_t:""},
+      he:{type:[],type_t:"",acc:[],steps:"",handrail:"",env:[],env_t:"",bat:[],bat_t:"",lig:[],lig_t:"",flo:[],flo_t:"",dor:[],dor_t:"",fur:[],fur_t:"",bed:[],bed_t:"",alm:[],alm_t:""},
+      su:{seen:[],seen_t:"",gen:[],gen_t:"",prev:[],iod:[],comp:"",area:"",nat:"",rest:"",agg:"",eas:"",fun:"",walk:"",oth:""},
+      pos:{free:""}, 
+      pal:{swe:"",red:[],tig:"",ten:"",oth:""}, 
       fall:"", bp:"", hr:"",
-      msk:{rom:"",romd:"",rulp:5,lulp:5,rllp:5,lllp:5,sens:""},
-      amb:{bed:"",bed_t:"",l2s:"",l2s_t:"",s2s:"",s2s_t:"",sitb:"",sitb_t:"",stdb:"",stdb_t:"",w_aid:"",w_ast:"",w_stb:"",w_t:"",gait:""},
+      msk:{pwrmode:false, rulp:5,lulp:5,rllp:5,lllp:5, rult:"",lult:"",rllt:"",lllt:"",sens:""},
+      amb:{bed:[],bed_t:"",l2s:[],l2s_t:"",s2s:[],s2s_t:"",sitb:[],sitb_t:"",stdb:[],stdb_t:"",w_aid:[],w_ast:[],w_stb:[],w_t:"",gait:""},
       prob:"- Upper limbs and lower limbs muscles weakness\n- Reduced mobility\n- Impaired balance\n- Decreased muscle strength", 
       stg:"- Muscles strengthening\n- Self pain management\n- Pain relief\n- Functional mobility improvement", 
       ltg:"- Optimize function\n- Fall prevention\n- Functional independency and tolerance improvement", 
-      roms:{}, out:{}, ex:[], exf:"", tests:{}, test_others:{}
+      rom_type:{}, roms:{}, out:{}, ex:[], exf:"", tests:{}, test_others:{}
     };
   }
 
@@ -833,6 +887,14 @@
     } 
   }
 
+  window.togglePwrMode = (el) => {
+    el.classList.toggle('active');
+    const isDet = el.classList.contains('active');
+    document.getElementById('pwr-sliders').style.display = isDet ? 'none' : 'block';
+    document.getElementById('pwr-inputs').style.display = isDet ? 'block' : 'none';
+    saveWork();
+  };
+
   function saveWork() {
     if(currentTabIdx < 0 || isPopulating) return;
     const it = todayList[currentTabIdx];
@@ -843,8 +905,11 @@
     v.data = d;
 
     const getV = (id) => document.getElementById(id).value;
-    const getP = (sel) => getPills(sel)[0] || "";
+    const getP = (sel) => getPills(sel) || [];
 
+    d.ref_by=getV('val-ref-by');
+    d.ref_date=getV('val-ref-date');
+    d.ref_rsn=getV('val-ref-rsn');
     d.dx=getV('val-dx'); 
     d.pmh=getV('val-pmh'); 
     d.meds=getV('val-meds'); 
@@ -858,26 +923,39 @@
     d.ltg=getV('val-ltg');
 
     d.sh = { ltot:getP('[data-field="sh.ltot"]'), ltot_l:getV('val-sh-ltot-l'), fall:getP('[data-field="sh.fall"]'), fall_t:getV('val-sh-fall-t'), occ:getP('[data-field="sh.occ"]'), occ_t:getV('val-sh-occ-t'), live:getP('[data-field="sh.live"]'), live_t:getV('val-sh-live-t'), adl:getP('[data-field="sh.adl"]'), adl_t:getV('val-sh-adl-t'), mob:getP('[data-field="sh.mob"]'), mob_t:getV('val-sh-mob-t'), in:getP('[data-field="sh.in"]'), in_t:getV('val-sh-in-t'), out:getP('[data-field="sh.out"]'), out_t:getV('val-sh-out-t'), pre:getP('[data-field="sh.pre"]'), pre_t:getV('val-sh-pre-t'), com:getP('[data-field="sh.com"]'), com_t:getV('val-sh-com-t') };
-    d.he = { type:getPills('[data-field="he.type"]'), type_t:getV('val-he-type-t'), acc:getPills('[data-field="he.acc"]'), steps:getV('val-he-steps'), handrail:getV('val-he-handrail'), kerb:getPills('[data-field="he.kerb"]'), kerb_t:getV('val-he-kerb-t'), env:getPills('[data-field="he.env"]'), env_t:getV('val-he-env-t'), toi:getPills('[data-field="he.toi"]'), toi_t:getV('val-he-toi-t'), sho:getPills('[data-field="he.sho"]'), sho_t:getV('val-he-sho-t'), lig:getPills('[data-field="he.lig"]'), lig_t:getV('val-he-lig-t'), flo:getPills('[data-field="he.flo"]'), flo_t:getV('val-he-flo-t'), dor:getPills('[data-field="he.dor"]'), dor_t:getV('val-he-dor-t'), fur:getPills('[data-field="he.fur"]'), fur_t:getV('val-he-fur-t'), bed:getPills('[data-field="he.bed"]'), bed_t:getV('val-he-bed-t'), bat:getPills('[data-field="he.bat"]'), bat_t:getV('val-he-bat-t'), alm:getPills('[data-field="he.alm"]'), alm_t:getV('val-he-alm-t') };
-    d.su = { seen:getP('[data-field="su.seen"]'), seen_t:getV('val-su-seen-t'), gen:getP('[data-field="su.gen"]'), gen_t:getV('val-su-gen-t'), comp:getV('val-su-comp'), area:getV('val-su-area'), nat:getV('val-su-nat'), rest:getV('val-su-rest'), agg:getV('val-su-agg'), eas:getV('val-su-eas'), fun:getV('val-su-fun'), walk:getV('val-su-walk'), oth:getV('val-su-oth') };
-    d.pos = { inf:getV('val-pos-inf'), swe:getV('val-pos-swe'), tem:getV('val-pos-tem'), mus:getV('val-pos-mus') };
-    d.pal = { tig:getV('val-pal-tig'), ten:getV('val-pal-ten') };
-    d.msk = { rom:getP('[data-field="msk.rom"]'), romd:getV('val-msk-rom-det'), rulp:getV('val-pwr-rul'), lulp:getV('val-pwr-lul'), rllp:getV('val-pwr-rll'), lllp:getV('val-pwr-lll'), sens:getV('val-sens') };
+    d.he = { type:getPills('[data-field="he.type"]'), type_t:getV('val-he-type-t'), acc:getPills('[data-field="he.acc"]'), steps:getV('val-he-steps'), handrail:getV('val-he-handrail'), env:getPills('[data-field="he.env"]'), env_t:getV('val-he-env-t'), bat:getPills('[data-field="he.bat"]'), bat_t:getV('val-he-bat-t'), lig:getPills('[data-field="he.lig"]'), lig_t:getV('val-he-lig-t'), flo:getPills('[data-field="he.flo"]'), flo_t:getV('val-he-flo-t'), dor:getPills('[data-field="he.dor"]'), dor_t:getV('val-he-dor-t'), fur:getPills('[data-field="he.fur"]'), fur_t:getV('val-he-fur-t'), bed:getPills('[data-field="he.bed"]'), bed_t:getV('val-he-bed-t'), alm:getPills('[data-field="he.alm"]'), alm_t:getV('val-he-alm-t') };
+    d.su = { seen:getP('[data-field="su.seen"]'), seen_t:getV('val-su-seen-t'), gen:getP('[data-field="su.gen"]'), gen_t:getV('val-su-gen-t'), prev:getP('[data-field="su.prev"]'), iod:getP('[data-field="su.iod"]'), comp:getV('val-su-comp'), area:getV('val-su-area'), nat:getV('val-su-nat'), rest:getV('val-su-rest'), agg:getV('val-su-agg'), eas:getV('val-su-eas'), fun:getV('val-su-fun'), walk:getV('val-su-walk'), oth:getV('val-su-oth') };
+    d.pos = { free:getV('val-pos-free') };
+    d.pal = { swe:getV('val-pal-swe'), red:getP('[data-field="pal.red"]'), tig:getV('val-pal-tig'), ten:getV('val-pal-ten'), oth:getV('val-pal-oth') };
+    
+    d.msk = { 
+      pwrmode: document.getElementById('pwr-det-btn').classList.contains('active'), 
+      rulp:getV('val-pwr-rul'), lulp:getV('val-pwr-lul'), rllp:getV('val-pwr-rll'), lllp:getV('val-pwr-lll'), 
+      rult:getV('val-pwr-rul-t'), lult:getV('val-pwr-lul-t'), rllt:getV('val-pwr-rll-t'), lllt:getV('val-pwr-lll-t'), 
+      sens:getV('val-sens') 
+    };
+    
     d.amb = { bed:getP('[data-field="amb.bed"]'), bed_t:getV('val-amb-bed-t'), l2s:getP('[data-field="amb.l2s"]'), l2s_t:getV('val-amb-l2s-t'), s2s:getP('[data-field="amb.s2s"]'), s2s_t:getV('val-amb-s2s-t'), sitb:getP('[data-field="amb.sitb"]'), sitb_t:getV('val-amb-sitb-t'), stdb:getP('[data-field="amb.stdb"]'), stdb_t:getV('val-amb-stdb-t'), w_aid:getP('[data-field="amb.w_aid"]'), w_ast:getP('[data-field="amb.w_ast"]'), w_stb:getP('[data-field="amb.w_stb"]'), w_t:getV('val-amb-w-t'), gait:getV('val-amb-gait') };
+
+    d.rom_type = {};
+    bodyParts.forEach(bp => {
+      d.rom_type[bp.id] = getPills(`[data-uid="${bp.id}_type"]`);
+    });
 
     d.roms = {}; 
     document.querySelectorAll('#joints-container .rom-row').forEach(r => { 
       const u=r.dataset.uid; 
       const m=r.querySelector('.manual-input').value; 
       const rn=r.querySelector('.range.selected')?.innerText; 
-      if(m||rn) d.roms[u]={m, r:rn||""}; 
+      const pw=r.querySelector('.rom-power-select').value;
+      if(m||rn||pw) d.roms[u]={m, r:rn||"", p:pw||""}; 
     });
     
     d.tests = {}; 
     document.querySelectorAll('#joints-container .test-row').forEach(r => { 
       const u=r.dataset.uid; 
-      const v=r.querySelector('.pill.active')?.innerText; 
-      if(v) d.tests[u]=v; 
+      const v=getPills(`[data-uid="${u}"] .pill-group`);
+      if(v.length) d.tests[u]=v; 
     });
     
     d.test_others = {}; 
@@ -921,7 +999,12 @@
 
       setV('val-case', it.caseNum.startsWith('NEW_') ? "" : it.caseNum); 
       setV('visit-time', v.time || "14:00-15:00");
+      
+      setV('val-ref-by', d.ref_by);
+      setV('val-ref-date', d.ref_date);
+      setV('val-ref-rsn', d.ref_rsn);
       setV('val-dx', d.dx); 
+      
       setV('val-pmh', d.pmh); 
       setV('val-meds', d.meds); 
       setV('val-hpi', d.hpi); 
@@ -933,38 +1016,50 @@
       setV('val-stg', d.stg); 
       setV('val-ltg', d.ltg);
 
-      if(d.sh) { setP('sh.ltot',[d.sh.ltot]); setV('val-sh-ltot-l',d.sh.ltot_l); setP('sh.fall',[d.sh.fall]); setV('val-sh-fall-t',d.sh.fall_t); setP('sh.occ',[d.sh.occ]); setV('val-sh-occ-t',d.sh.occ_t); setP('sh.live',[d.sh.live]); setV('val-sh-live-t',d.sh.live_t); setP('sh.adl',[d.sh.adl]); setV('val-sh-adl-t',d.sh.adl_t); setP('sh.mob',[d.sh.mob]); setV('val-sh-mob-t',d.sh.mob_t); setP('sh.in',[d.sh.in]); setV('val-sh-in-t',d.sh.in_t); setP('sh.out',[d.sh.out]); setV('val-sh-out-t',d.sh.out_t); setP('sh.pre',[d.sh.pre]); setV('val-sh-pre-t',d.sh.pre_t); setP('sh.com',[d.sh.com]); setV('val-sh-com-t',d.sh.com_t); }
-      if(d.he) { setP('he.type',d.he.type); setV('val-he-type-t',d.he.type_t); setP('he.acc',d.he.acc); setV('val-he-steps',d.he.steps); setV('val-he-handrail',d.he.handrail); setP('he.kerb',d.he.kerb); setV('val-he-kerb-t',d.he.kerb_t); setP('he.env',d.he.env); setV('val-he-env-t',d.he.env_t); setP('he.toi',d.he.toi); setV('val-he-toi-t',d.he.toi_t); setP('he.sho',d.he.sho); setV('val-he-sho-t',d.he.sho_t); setP('he.lig',d.he.lig); setV('val-he-lig-t',d.he.lig_t); setP('he.flo',d.he.flo); setV('val-he-flo-t',d.he.flo_t); setP('he.dor',d.he.dor); setV('val-he-dor-t',d.he.dor_t); setP('he.fur',d.he.fur); setV('val-he-fur-t',d.he.fur_t); setP('he.bed',d.he.bed); setV('val-he-bed-t',d.he.bed_t); setP('he.bat',d.he.bat); setV('val-he-bat-t',d.he.bat_t); setP('he.alm',d.he.alm); setV('val-he-alm-t',d.he.alm_t); }
-      if(d.su) { setP('su.seen',[d.su.seen]); setV('val-su-seen-t',d.su.seen_t); setP('su.gen',[d.su.gen]); setV('val-su-gen-t',d.su.gen_t); setV('val-su-comp',d.su.comp); setV('val-su-area',d.su.area); setV('val-su-nat',d.su.nat); setV('val-su-rest',d.su.rest); setV('val-su-agg',d.su.agg); setV('val-su-eas',d.su.eas); setV('val-su-fun',d.su.fun); setV('val-su-walk',d.su.walk); setV('val-su-oth',d.su.oth); }
-      if(d.pos) { setV('val-pos-inf',d.pos.inf); setV('val-pos-swe',d.pos.swe); setV('val-pos-tem',d.pos.tem); setV('val-pos-mus',d.pos.mus); }
-      if(d.pal) { setV('val-pal-tig',d.pal.tig); setV('val-pal-ten',d.pal.ten); }
+      if(d.sh) { setP('sh.ltot',d.sh.ltot); setV('val-sh-ltot-l',d.sh.ltot_l); setP('sh.fall',d.sh.fall); setV('val-sh-fall-t',d.sh.fall_t); setP('sh.occ',d.sh.occ); setV('val-sh-occ-t',d.sh.occ_t); setP('sh.live',d.sh.live); setV('val-sh-live-t',d.sh.live_t); setP('sh.adl',d.sh.adl); setV('val-sh-adl-t',d.sh.adl_t); setP('sh.mob',d.sh.mob); setV('val-sh-mob-t',d.sh.mob_t); setP('sh.in',d.sh.in); setV('val-sh-in-t',d.sh.in_t); setP('sh.out',d.sh.out); setV('val-sh-out-t',d.sh.out_t); setP('sh.pre',d.sh.pre); setV('val-sh-pre-t',d.sh.pre_t); setP('sh.com',d.sh.com); setV('val-sh-com-t',d.sh.com_t); }
+      if(d.he) { setP('he.type',d.he.type); setV('val-he-type-t',d.he.type_t); setP('he.acc',d.he.acc); setV('val-he-steps',d.he.steps); setV('val-he-handrail',d.he.handrail); setP('he.env',d.he.env); setV('val-he-env-t',d.he.env_t); setP('he.bat',d.he.bat); setV('val-he-bat-t',d.he.bat_t); setP('he.lig',d.he.lig); setV('val-he-lig-t',d.he.lig_t); setP('he.flo',d.he.flo); setV('val-he-flo-t',d.he.flo_t); setP('he.dor',d.he.dor); setV('val-he-dor-t',d.he.dor_t); setP('he.fur',d.he.fur); setV('val-he-fur-t',d.he.fur_t); setP('he.bed',d.he.bed); setV('val-he-bed-t',d.he.bed_t); setP('he.alm',d.he.alm); setV('val-he-alm-t',d.he.alm_t); }
+      if(d.su) { setP('su.seen',d.su.seen); setV('val-su-seen-t',d.su.seen_t); setP('su.gen',d.su.gen); setV('val-su-gen-t',d.su.gen_t); setP('su.prev',d.su.prev); setP('su.iod',d.su.iod); setV('val-su-comp',d.su.comp); setV('val-su-area',d.su.area); setV('val-su-nat',d.su.nat); setV('val-su-rest',d.su.rest); setV('val-su-agg',d.su.agg); setV('val-su-eas',d.su.eas); setV('val-su-fun',d.su.fun); setV('val-su-walk',d.su.walk); setV('val-su-oth',d.su.oth); }
+      if(d.pos) { setV('val-pos-free',d.pos.free); }
+      if(d.pal) { setV('val-pal-swe',d.pal.swe); setP('pal.red',d.pal.red); setV('val-pal-tig',d.pal.tig); setV('val-pal-ten',d.pal.ten); setV('val-pal-oth',d.pal.oth); }
       
       if(d.msk) {
-        setP('msk.rom',[d.msk.rom]); 
-        setV('val-msk-rom-det',d.msk.romd); 
-        toggleRomDetail();
+        const btn = document.getElementById('pwr-det-btn');
+        if(d.msk.pwrmode) btn.classList.add('active'); else btn.classList.remove('active');
+        togglePwrMode(btn);
+        
         setV('val-pwr-rul',d.msk.rulp||5); document.getElementById('val-pwr-rul').nextElementSibling.innerText=d.msk.rulp||5;
         setV('val-pwr-lul',d.msk.lulp||5); document.getElementById('val-pwr-lul').nextElementSibling.innerText=d.msk.lulp||5;
         setV('val-pwr-rll',d.msk.rllp||5); document.getElementById('val-pwr-rll').nextElementSibling.innerText=d.msk.rllp||5;
         setV('val-pwr-lll',d.msk.lllp||5); document.getElementById('val-pwr-lll').nextElementSibling.innerText=d.msk.lllp||5;
+        
+        setV('val-pwr-rul-t',d.msk.rult); setV('val-pwr-lul-t',d.msk.lult); setV('val-pwr-rll-t',d.msk.rllt); setV('val-pwr-lll-t',d.msk.lllt);
+        
         setV('val-sens',d.msk.sens);
       }
       
       let a=d.amb||{}; 
-      setP('amb.bed',[a.bed]); setV('val-amb-bed-t',a.bed_t); 
-      setP('amb.l2s',[a.l2s]); setV('val-amb-l2s-t',a.l2s_t); 
-      setP('amb.s2s',[a.s2s]); setV('val-amb-s2s-t',a.s2s_t); 
-      setP('amb.sitb',[a.sitb]); setV('val-amb-sitb-t',a.sitb_t); 
-      setP('amb.stdb',[a.stdb]); setV('val-amb-stdb-t',a.stdb_t); 
-      setP('amb.w_aid',[a.w_aid]); 
-      setP('amb.w_ast',[a.w_ast]); 
-      setP('amb.w_stb',[a.w_stb]); 
+      setP('amb.bed',a.bed); setV('val-amb-bed-t',a.bed_t); 
+      setP('amb.l2s',a.l2s); setV('val-amb-l2s-t',a.l2s_t); 
+      setP('amb.s2s',a.s2s); setV('val-amb-s2s-t',a.s2s_t); 
+      setP('amb.sitb',a.sitb); setV('val-amb-sitb-t',a.sitb_t); 
+      setP('amb.stdb',a.stdb); setV('val-amb-stdb-t',a.stdb_t); 
+      setP('amb.w_aid',a.w_aid); 
+      setP('amb.w_ast',a.w_ast); 
+      setP('amb.w_stb',a.w_stb); 
       setV('val-amb-w-t',a.w_t); 
       setV('val-amb-gait',a.gait);
+      
+      bodyParts.forEach(bp => {
+        if(d.rom_type && d.rom_type[bp.id]) {
+          setPills(`[data-uid="${bp.id}_type"]`, d.rom_type[bp.id]);
+        }
+      });
 
       document.querySelectorAll('#joints-container .rom-row').forEach(r => { 
         r.querySelector('.manual-input').value = ""; 
         r.querySelectorAll('.range').forEach(b=>b.classList.remove('selected')); 
+        r.querySelector('.rom-power-select').selectedIndex = 0;
+        
         if(d.roms && d.roms[r.dataset.uid]){ 
           r.querySelector('.manual-input').value = d.roms[r.dataset.uid].m || ""; 
           if(d.roms[r.dataset.uid].r) {
@@ -972,15 +1067,16 @@
               if(b.innerText === d.roms[r.dataset.uid].r) b.classList.add('selected');
             });
           }
+          if(d.roms[r.dataset.uid].p) {
+            r.querySelector('.rom-power-select').value = d.roms[r.dataset.uid].p;
+          }
         } 
       });
       
       document.querySelectorAll('#joints-container .test-row').forEach(r => { 
         r.querySelectorAll('.pill').forEach(p=>p.classList.remove('active')); 
         if(d.tests && d.tests[r.dataset.uid]) {
-          Array.from(r.querySelectorAll('.pill')).forEach(p => {
-            if(p.innerText === d.tests[r.dataset.uid]) p.classList.add('active');
-          }); 
+          setPills(`[data-uid="${r.dataset.uid}"] .pill-group`, d.tests[r.dataset.uid]);
         }
       });
       
@@ -995,7 +1091,7 @@
         const cF = document.getElementById('chk-frt'); cF.checked = !!d.out.fc; setV('val-frt', d.out.fv); toggleOut(cF);
         const cT = document.getElementById('chk-tug'); cT.checked = !!d.out.tc; setV('val-tug', d.out.tv); toggleOut(cT);
         const cE = document.getElementById('chk-ems'); cE.checked = !!d.out.ec; if(d.out.ev) restoreScorePills('[data-out="ems"]', d.out.ev); toggleOut(cE); calcScore(document.querySelector('[data-out="ems"]'));
-        const cM = document.getElementById('chk-mfac'); cM.checked = !!d.out.mc; setPills('#val-mfac', [d.out.mv||""]); toggleOut(cM);
+        const cM = document.getElementById('chk-mfac'); cM.checked = !!d.out.mc; setPills('#val-mfac', d.out.mv||[]); toggleOut(cM);
       }
       
       document.getElementById('history-results').innerHTML = ''; 
@@ -1014,7 +1110,7 @@
       }); 
     }
     if(!act) el.classList.add('active'); 
-    else if(isMulti) el.classList.remove('active'); 
+    else el.classList.remove('active'); 
     saveWork(); 
   };
   
@@ -1032,21 +1128,15 @@
   };
   
   window.sel = (el) => { 
+    const act = el.classList.contains('active');
     el.parentElement.querySelectorAll('.range').forEach(b=>b.classList.remove('selected')); 
-    el.classList.add('selected'); 
+    if(!act) el.classList.add('selected'); 
+    else el.classList.remove('selected');
     saveWork(); 
   };
   
   window.updatePwr = (el) => { 
     el.nextElementSibling.innerText = el.value; 
-  };
-  
-  window.toggleRomDetail = () => { 
-    const grp = document.querySelector('[data-field="msk.rom"]');
-    const det = document.getElementById('val-msk-rom-det'); 
-    if(grp && det) {
-      det.classList.toggle('hidden', !grp.children[1].classList.contains('active')); 
-    }
   };
   
   window.toggleOut = (chk) => { 
@@ -1123,18 +1213,27 @@
     saveWork(); 
     const d = db[todayList[currentTabIdx].caseNum][todayList[currentTabIdx].dbIdx].data;
     
-    let t = `Community Physiotherapy\n\n-------------------------------------------------\nPast Medical History:\n${d.pmh||'-'}\n`;
-    if(d.dx) t += `Diagnosis:\n${d.dx}\n`;
+    let t = `Community Physiotherapy\n\n`;
+    
+    if(d.ref_by || d.ref_rsn || d.ref_date || d.dx) {
+      if(d.ref_by || d.ref_rsn || d.ref_date) {
+        t += `Refer by ${d.ref_by||'_____'} for ${d.ref_rsn||'_____'} on ${d.ref_date||'_____'}\n`;
+      }
+      if(d.dx) t += `Diagnosis: ${d.dx}\n`;
+      t += `\n-------------------------------------------------\n`;
+    }
+    
+    t += `Past Medical History:\n${d.pmh||'-'}\n`;
     
     t += `\n------------------------------------------------------------------------------------------------------\nMedication:\n${d.meds||'-'}\n\n------------------------------------------------------------------------------------------------------\nHistory of Present Illness:\n${d.hpi||'-'}\n`;
     if(d.inv) t += `Investigations:\n${d.inv}\n`;
     
     t += `\n-------------------------------------------------------------------------------\nSocial History:\n`;
     if(d.sh) {
-      if(d.sh.ltot) t += `LTOT: ${d.sh.ltot === 'Yes' ? `Yes (${d.sh.ltot_l||'?'} L/min)` : d.sh.ltot}\n`;
-      if(d.sh.fall) t += `Recent fall (last 1 year): ${d.sh.fall === 'Yes' ? `Yes (${d.sh.fall_t||'?'} times)` : d.sh.fall}\n`;
+      if(d.sh.ltot && d.sh.ltot.length) t += `LTOT: ${d.sh.ltot.includes('Yes') ? `Yes (${d.sh.ltot_l||'?'} L/min)` : d.sh.ltot.join(', ')}\n`;
+      if(d.sh.fall && d.sh.fall.length) t += `Recent fall (last 1 year): ${d.sh.fall.includes('Yes') ? `Yes (${d.sh.fall_t||'?'} times)` : d.sh.fall.join(', ')}\n`;
       ['occ','live','adl','mob','in','out','pre','com'].forEach(k => { 
-        const v = joinVals(d.sh[k], d.sh[k+'_t']); 
+        const v = joinPillsText(d.sh[k], d.sh[k+'_t']); 
         if(v) t+=`${k==='occ'?'Occupation: ':k==='live'?'Lives with ':k==='adl'?'ADL- ':k==='in'?'Indoor: ':k==='out'?'Outdoor: ':k==='pre'?'Premorbid: ':k==='com'?'Community service: ':''}${v}\n`; 
       });
     }
@@ -1154,78 +1253,110 @@
         t += `- Accessibility: ${aStr.trim()}\n`; 
       }
       
-      ['kerb','env','toi','sho','lig','flo','dor','fur','bed','bat','alm'].forEach(k => { 
+      ['env','bat','lig','flo','dor','fur','bed','alm'].forEach(k => { 
         const v = joinPillsText(d.he[k], d.he[k+'_t']); 
-        if(v) t+=`- ${k==='env'?'Indoor environment: ':k==='toi'?'Toilet: ':k==='sho'?'Shower: ':k==='lig'?'Lighting: ':k==='flo'?'Floor: ':k==='dor'?'Door: ':k==='fur'?'Furniture: ':k==='bed'?'Bedroom: ':k==='bat'?'Bathroom: ':k==='alm'?'Personal alarm: ':''}${v}\n`; 
+        if(v) t+=`- ${k==='env'?'Indoor environment: ':k==='bat'?'Bathroom: ':k==='lig'?'Lighting: ':k==='flo'?'Floor: ':k==='dor'?'Door: ':k==='fur'?'Furniture: ':k==='bed'?'Bedroom: ':k==='alm'?'Personal alarm: ':''}${v}\n`; 
       });
     }
     
-    t += `-------------------------------------------------------------------------------\nSeen ${joinVals(d.su?.seen, d.su?.seen_t)||'\n'}General condition: ${joinVals(d.su?.gen, d.su?.gen_t)}\nBlood pressure: ${d.bp||''} mmHg; Pulse: ${d.hr||''} bpm\n\n`;
+    t += `-------------------------------------------------------------------------------\nSeen with ${joinPillsText(d.su?.seen, d.su?.seen_t)||'_____'}\nGeneral condition ${joinPillsText(d.su?.gen, d.su?.gen_t)}\nBlood pressure: ${d.bp||''} mmHg; Pulse: ${d.hr||''} bpm\n\n`;
     
     if(d.fall) t += `* Recent fall history (within 6 months): ${d.fall}\n\n`;
     
     t += `Subjective examination:\n`;
-    if(d.su) { 
+    if(d.su) {
+      if(d.su.prev && d.su.prev.length) t += `Previous treatment received and effect: ${d.su.prev.join(', ')}\n`;
+      if(d.su.iod && d.su.iod.length) t += `Injury on Duty: ${d.su.iod.join(', ')}\n`;
+      
       ['comp','area','nat','rest','agg','eas','fun','walk','oth'].forEach(k => { 
-        if(d.su[k]) t+=`${k==='comp'?'Complain ':k==='area'?'Area: ':k==='nat'?'Nature of symtoms ':k==='rest'?'Resting pain: ':k==='agg'?'Aggravating factors: ':k==='eas'?'Easing factors: ':k==='fun'?'Functional limitation: ':k==='walk'?'Walking tolerances: ':k==='oth'?'Others: ':''}${d.su[k]}\n`; 
+        if(d.su[k]) t+=`${k==='comp'?'Complain: ':k==='area'?'Area: ':k==='nat'?'Nature of symtoms: ':k==='rest'?'Resting pain: ':k==='agg'?'Aggravating factors: ':k==='eas'?'Easing factors: ':k==='fun'?'Functional limitation: ':k==='walk'?'Walking tolerances: ':k==='oth'?'Others: ':''}${d.su[k]}\n`; 
       }); 
     }
     
-    t += `\nPosture:\n`; 
-    if(d.pos) { 
-      if(d.pos.inf) t+=`Inflammatory sign: ${d.pos.inf}\n`; 
-      if(d.pos.swe) t+=`Swelling, redness: ${d.pos.swe}\n`; 
-      if(d.pos.tem) t+=`temperature: ${d.pos.tem}\n`; 
-      if(d.pos.mus) t+=`Muscles wasting: ${d.pos.mus}\n`; 
+    if(d.pos && d.pos.free) {
+      t += `\nPosture:\n${d.pos.free}\n`;
     }
     
     t += `\nPalpation:\n`; 
     if(d.pal) { 
+      if(d.pal.swe) {
+        let sweText = d.pal.swe;
+        if(d.pal.red && d.pal.red.length) sweText += `, redness +ve`;
+        t += `Swelling: ${sweText}\n`;
+      }
       if(d.pal.tig) t+=`Tightness over ${d.pal.tig}\n`; 
       if(d.pal.ten) t+=`Tender over ${d.pal.ten}\n`; 
+      if(d.pal.oth) t+=`Others: ${d.pal.oth}\n`;
     }
-    
-    if(d.msk) { 
-      const rs = (d.msk.rom==="Detail") ? (d.msk.romd ? `Detail: ${d.msk.romd}` : "Detail") : (d.msk.rom||""); 
-      if(rs==="All limbs full") t+=`\nRange of Motion:\nUL and LL : Full and grossly intact with no pain reported\n`; 
-      else if(rs) t+=`\nRange of Motion: ${rs}\n`; 
-    }
-    
-    if(d.msk?.sens) t += `\nSensation:\n${d.msk.sens}\n`;
 
     let specStr = "";
     bodyParts.forEach(bp => {
       let rStr = "";
+      
+      let headerTypes = [];
+      if(d.rom_type && d.rom_type[bp.id]) {
+        if(d.rom_type[bp.id].includes('AROM')) headerTypes.push('Active Range of Movement');
+        if(d.rom_type[bp.id].includes('PROM')) headerTypes.push('Passive Range of Movement');
+      }
+      
+      let hasPower = false;
       bp.mov.forEach(m => { 
         const rm = d.roms?.[`${bp.id}_${m}`]; 
-        if(rm && (rm.m||rm.r)) rStr+=`${m}: ${[rm.m,rm.r].filter(Boolean).join(', ')}\n`; 
+        if(rm && (rm.m||rm.r||rm.p)) {
+          let line = m + ": " + [rm.m,rm.r].filter(Boolean).join(', ');
+          if(rm.p) {
+            line += `${line.includes(': ') && line.split(': ')[1] !== '' ? ' / ' : ''}Power ${rm.p}`;
+            hasPower = true;
+          }
+          rStr += `${line}\n`; 
+        }
       });
+      
+      if(hasPower) headerTypes.push('Power');
+      let finalHeader = headerTypes.length > 0 ? headerTypes.join('/ ') : 'Assessment';
+      
       bp.tests?.forEach(test => { 
         const tv = d.tests?.[`${bp.id}_${test.id}`]; 
-        if(tv) rStr+=`${test.name}: ${tv}\n`; 
+        if(tv && tv.length) rStr+=`${test.name}: ${tv.join(', ')}\n`; 
       });
       if(d.test_others?.[bp.id]) rStr+=`Other tests: ${d.test_others[bp.id]}\n`;
-      if(rStr) specStr += `\n${bp.name} Assessment:\n${rStr}`;
+      
+      if(rStr) specStr += `\n${bp.name} ${finalHeader}:\n${rStr}`;
     });
     
-    t += specStr + `\nMuscle strength (in Oxford scale):\n   UL  LL\nR  ${d.msk.rulp}   ${d.msk.rllp}\nL  ${d.msk.lulp}   ${d.msk.lllp}\n`;
+    t += specStr;
+    
+    if(d.msk) {
+      t += `\nMuscle strength (in Oxford scale):\n       UL       LL\n`;
+      if(d.msk.pwrmode) {
+        let rul = (d.msk.rult || "").padEnd(8, " ");
+        let lul = (d.msk.lult || "").padEnd(8, " ");
+        t += `R  ${rul} ${d.msk.rllt || ""}\nL  ${lul} ${d.msk.lllt || ""}\n`;
+      } else {
+        let rul = (d.msk.rulp || "5").padEnd(8, " ");
+        let lul = (d.msk.lulp || "5").padEnd(8, " ");
+        t += `R  ${rul} ${d.msk.rllp || "5"}\nL  ${lul} ${d.msk.lllp || "5"}\n`;
+      }
+    }
+    
+    if(d.msk?.sens) t += `\nSensation:\n${d.msk.sens}\n`;
     
     let a = d.amb||{};
     let ambP = [];
-    if(joinVals(a.bed, a.bed_t)) ambP.push(`- Bed mobility: ${joinVals(a.bed, a.bed_t)}`);
-    if(joinVals(a.l2s, a.l2s_t)) ambP.push(`- Lying to sitting: ${joinVals(a.l2s, a.l2s_t)}`);
-    if(joinVals(a.s2s, a.s2s_t)) ambP.push(`- Sitting to standing: ${joinVals(a.s2s, a.s2s_t)}`);
-    if(joinVals(a.sitb, a.sitb_t)) ambP.push(`- Sitting balance: ${joinVals(a.sitb, a.sitb_t)}`);
-    if(joinVals(a.stdb, a.stdb_t)) ambP.push(`- Standing balance: ${joinVals(a.stdb, a.stdb_t)}`);
+    if(joinPillsText(a.bed, a.bed_t)) ambP.push(`- Bed mobility: ${joinPillsText(a.bed, a.bed_t)}`);
+    if(joinPillsText(a.l2s, a.l2s_t)) ambP.push(`- Lying to sitting: ${joinPillsText(a.l2s, a.l2s_t)}`);
+    if(joinPillsText(a.s2s, a.s2s_t)) ambP.push(`- Sitting to standing: ${joinPillsText(a.s2s, a.s2s_t)}`);
+    if(joinPillsText(a.sitb, a.sitb_t)) ambP.push(`- Sitting balance: ${joinPillsText(a.sitb, a.sitb_t)}`);
+    if(joinPillsText(a.stdb, a.stdb_t)) ambP.push(`- Standing balance: ${joinPillsText(a.stdb, a.stdb_t)}`);
     
     let wP=[]; 
-    if(a.w_aid) wP.push(a.w_aid==='walks unaided'?a.w_aid:`walks with ${a.w_aid}`); 
-    if(a.w_ast) wP.push(a.w_ast); 
-    if(a.w_stb) wP.push(`stability: ${a.w_stb}`);
+    if(a.w_aid && a.w_aid.length) wP.push(a.w_aid.includes('walks unaided') ? a.w_aid.join(', ') : `walks with ${a.w_aid.join(', ')}`); 
+    if(a.w_ast && a.w_ast.length) wP.push(a.w_ast.join(', ')); 
+    if(a.w_stb && a.w_stb.length) wP.push(`stability: ${a.w_stb.join(', ')}`);
     
     let wS=joinVals(wP.join('; '), a.w_t); 
     if(wS) ambP.push(`- Walking: ${wS}`);
-    if(a.gait) ambP.push(`- Gait description: ${a.gait}`);
+    if(a.gait) ambP.push(`- Gait description:\n${a.gait}`);
     if(ambP.length) t += `\nAmbulation:\n${ambP.join('\n')}\n`;
 
     if(d.out && Object.values(d.out).some(v=>v===true)) {
@@ -1242,7 +1373,8 @@
         t += `Elderly Mobility Scale (EMS): ${s}/20${getRiskText('ems', s)}\n`; 
       }
       if(d.out.mc) { 
-        const m=(d.out.mv||"").match(/Cat\s*(\d)/); 
+        const out_mv = Array.isArray(d.out.mv) ? d.out.mv.join(', ') : d.out.mv;
+        const m=(out_mv||"").match(/Cat\s*(\d)/); 
         t += `Modified Functional Ambulatory Category (MFAC): ${m?m[1]:''}/7\n`; 
       }
     }
@@ -1276,7 +1408,6 @@
     executeCopy(t, ob);
   }
 
-  // Improved copy function for modern mobile browsers
   function executeCopy(text, fallbackTextArea) {
     if (navigator.clipboard && window.isSecureContext) {
       navigator.clipboard.writeText(text).then(showCopySuccess).catch(() => fallbackCopyMethod(fallbackTextArea));
@@ -1294,7 +1425,7 @@
     } catch (err) {
       console.error('Copy failed', err);
     }
-    window.getSelection().removeAllRanges(); // Prevents iOS keyboard from randomly popping up
+    window.getSelection().removeAllRanges(); 
     textArea.blur();
   }
 
@@ -1384,17 +1515,7 @@
     
     if(!f) list.innerHTML = `<div style="text-align:center; color:#94a3b8; padding:20px; font-size:1rem;">No patients on this day.</div>`;
   }
-  
-  function openImport() { 
-    if(currentTabIdx<0) return alert("Select patient tab first."); 
-    document.getElementById('import-text').value=''; 
-    document.getElementById('import-modal').classList.add('open'); 
-  }
-  
-  function parseAndImport() { 
-    alert("Import parser is not enabled in this version. Paste reminders via the ! button instead."); 
-    document.getElementById('import-modal').classList.remove('open'); 
-  }
 </script>
 </body>
 </html>
+
