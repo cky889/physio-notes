@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-  <title>CMS Clinical V25.30</title>
+  <title>CMS Clinical V25.40</title>
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="theme-color" content="#2c3e50" />
@@ -40,7 +40,6 @@
     input, textarea, select { width:100%; padding:12px; border:1px solid #d1d5db; border-radius:8px; font-size:16px; box-sizing:border-box; background:#fff; margin-bottom:12px; appearance:none; font-family:inherit; }
     .inline-input { flex-grow:1; min-width:100px; margin-bottom:0; padding:8px; height:38px; }
     .grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
-    .grid-4 { display:grid; grid-template-columns:1fr 1fr 1fr 1fr; gap:10px; }
 
     .pill-sec { margin-bottom:15px; }
     .pill-label { font-size:0.75rem; font-weight:800; color:#9ca3af; text-transform:uppercase; margin-bottom:6px; letter-spacing:0.5px; }
@@ -112,7 +111,7 @@
 
 <div id="auth-screen">
   <div id="view-login" class="auth-card">
-    <h3>CMS Clinical V25.30</h3>
+    <h3>CMS Clinical V25.40</h3>
     <select id="user-select" class="auth-input"></select>
     <input type="tel" id="user-pin" class="auth-input" placeholder="PIN" maxlength="6" style="-webkit-text-security:disc;">
     <button class="auth-btn" onclick="attemptLogin()">Unlock App</button>
@@ -212,6 +211,7 @@
         <div class="grid-2" style="margin-top:8px;"><input id="val-he-steps" placeholder="Steps"><input id="val-he-handrail" placeholder="Handrail"></div>
       </div>
       <div class="pill-sec"><div class="pill-label">Indoor environment</div><div class="pill-group" data-field="he.env"><div class="pill" onclick="tp(this,true)">tidy and spacious</div><input class="inline-input" id="val-he-env-t" placeholder="Other..."></div></div>
+      <div class="pill-sec"><div class="pill-label">Toilet</div><div class="pill-group" data-field="he.toi"><div class="pill" onclick="tp(this,true)">Seated</div><div class="pill" onclick="tp(this,true)">commode</div><div class="pill" onclick="tp(this,true)">with handrails</div><input class="inline-input" id="val-he-toi-t" placeholder="Other..."></div></div>
       <div class="pill-sec"><div class="pill-label">Bathroom</div><div class="pill-group" data-field="he.bat"><div class="pill" onclick="tp(this,true)">dry and clean</div><div class="pill" onclick="tp(this,true)">with non-slip mat</div><div class="pill" onclick="tp(this,true)">shower</div><div class="pill" onclick="tp(this,true)">with shower chair</div><div class="pill" onclick="tp(this,true)">1 kerb to access</div><div class="pill" onclick="tp(this,true)">bath tub</div><div class="pill" onclick="tp(this,true)">platform</div><input class="inline-input" id="val-he-bat-t" placeholder="Other..."></div></div>
       <div class="pill-sec"><div class="pill-label">Lighting</div><div class="pill-group" data-field="he.lig"><div class="pill" onclick="tp(this,true)">adequate</div><div class="pill" onclick="tp(this,true)">appropriate switches</div><div class="pill" onclick="tp(this,true)">no nighttime light</div><input class="inline-input" id="val-he-lig-t" placeholder="Other..."></div></div>
       <div class="pill-sec"><div class="pill-label">Floor</div><div class="pill-group" data-field="he.flo"><div class="pill" onclick="tp(this,true)">even</div><div class="pill" onclick="tp(this,true)">non-slippery</div><div class="pill" onclick="tp(this,true)">clean</div><input class="inline-input" id="val-he-flo-t" placeholder="Other..."></div></div>
@@ -563,18 +563,36 @@
   }
 
   function resetAllSelectionsUI() {
-    document.querySelectorAll('.pill.active, .rom-btn.range.selected').forEach(x => x.classList.remove('active', 'selected'));
-    ['chk-sts','chk-berg','chk-frt','chk-tug','chk-ems','chk-mfac'].forEach(id => { const e=document.getElementById(id); if(e) e.checked=false; });
-    ['val-sts','val-frt','val-tug'].forEach(id => { const e=document.getElementById(id); if(e) e.value=""; });
-    
-    document.querySelectorAll('input, textarea').forEach(el => {
-      if(el.type !== 'radio' && el.type !== 'checkbox' && el.id !== 'val-case') el.value = "";
+    // 1. CLEAR ALL PILLS
+    document.querySelectorAll('.pill').forEach(x => {
+        x.classList.remove('active');
+        x.classList.remove('selected'); 
     });
     
+    // 2. CLEAR ALL CHECKBOXES
+    ['chk-sts','chk-berg','chk-frt','chk-tug','chk-ems','chk-mfac'].forEach(id => { 
+        const e=document.getElementById(id); 
+        if(e) e.checked=false; 
+    });
+    
+    // 3. CLEAR ALL TEXT INPUTS & TEXTAREAS (excluding case number)
+    document.querySelectorAll('input[type="text"], input:not([type="radio"]):not([type="checkbox"]):not([type="range"]), textarea').forEach(el => {
+      if(el.id !== 'val-case') el.value = "";
+    });
+
+    // 4. RESET POWER SLIDERS TO 5
+    document.querySelectorAll('input[type="range"]').forEach(el => {
+        el.value = 5;
+        if(el.nextElementSibling) el.nextElementSibling.innerText = "5";
+    });
+    
+    // 5. RESET ALL SELECT DROPDOWNS
     document.querySelectorAll('select.rom-power-select').forEach(s => s.selectedIndex = 0);
     
-    document.querySelectorAll('.out-acc .accordion-body').forEach(b => b.classList.remove('show'));
+    // 6. CLOSE ALL ACCORDIONS
+    document.querySelectorAll('.accordion-body').forEach(b => b.classList.remove('show'));
     
+    // 7. RESET OUTCOME SCORES
     document.querySelectorAll('.score-disp').forEach(d => {
       if(d.closest('[data-out="berg"]')) d.innerText = '0/56';
       if(d.closest('[data-out="ems"]')) d.innerText = '0/20';
@@ -717,7 +735,7 @@
     return { 
       reminders:"", ref_by:"", ref_date:"", ref_rsn:"", dx:"", pmh:"", meds:"", hpi:"", inv:"",
       sh:{ltot:[],ltot_l:"",fall:[],fall_t:"",occ:[],occ_t:"",live:[],live_t:"",adl:[],adl_t:"",mob:[],mob_t:"",in:[],in_t:"",out:[],out_t:"",pre:[],pre_t:"",com:[],com_t:""},
-      he:{type:[],type_t:"",acc:[],steps:"",handrail:"",env:[],env_t:"",bat:[],bat_t:"",lig:[],lig_t:"",flo:[],flo_t:"",dor:[],dor_t:"",fur:[],fur_t:"",bed:[],bed_t:"",alm:[],alm_t:""},
+      he:{type:[],type_t:"",acc:[],steps:"",handrail:"",env:[],env_t:"",toi:[],toi_t:"",bat:[],bat_t:"",lig:[],lig_t:"",flo:[],flo_t:"",dor:[],dor_t:"",fur:[],fur_t:"",bed:[],bed_t:"",alm:[],alm_t:""},
       su:{seen:[],seen_t:"",gen:[],gen_t:"",prev:[],iod:[],comp:"",area:"",nat:"",rest:"",agg:"",eas:"",fun:"",walk:"",oth:""},
       pos:{free:""}, 
       pal:{swe:"",red:[],tig:"",ten:"",oth:""}, 
@@ -802,6 +820,10 @@
 
   function promptNewPatient() {
     if(currentTabIdx!==-1) saveWork();
+    
+    // Forcefully wipe the UI completely clean before applying the new patient schema
+    resetAllSelectionsUI(); 
+    
     const tId = "NEW_" + Date.now();
     const d = schemaDefaults();
     
@@ -923,7 +945,7 @@
     d.ltg=getV('val-ltg');
 
     d.sh = { ltot:getP('[data-field="sh.ltot"]'), ltot_l:getV('val-sh-ltot-l'), fall:getP('[data-field="sh.fall"]'), fall_t:getV('val-sh-fall-t'), occ:getP('[data-field="sh.occ"]'), occ_t:getV('val-sh-occ-t'), live:getP('[data-field="sh.live"]'), live_t:getV('val-sh-live-t'), adl:getP('[data-field="sh.adl"]'), adl_t:getV('val-sh-adl-t'), mob:getP('[data-field="sh.mob"]'), mob_t:getV('val-sh-mob-t'), in:getP('[data-field="sh.in"]'), in_t:getV('val-sh-in-t'), out:getP('[data-field="sh.out"]'), out_t:getV('val-sh-out-t'), pre:getP('[data-field="sh.pre"]'), pre_t:getV('val-sh-pre-t'), com:getP('[data-field="sh.com"]'), com_t:getV('val-sh-com-t') };
-    d.he = { type:getPills('[data-field="he.type"]'), type_t:getV('val-he-type-t'), acc:getPills('[data-field="he.acc"]'), steps:getV('val-he-steps'), handrail:getV('val-he-handrail'), env:getPills('[data-field="he.env"]'), env_t:getV('val-he-env-t'), bat:getPills('[data-field="he.bat"]'), bat_t:getV('val-he-bat-t'), lig:getPills('[data-field="he.lig"]'), lig_t:getV('val-he-lig-t'), flo:getPills('[data-field="he.flo"]'), flo_t:getV('val-he-flo-t'), dor:getPills('[data-field="he.dor"]'), dor_t:getV('val-he-dor-t'), fur:getPills('[data-field="he.fur"]'), fur_t:getV('val-he-fur-t'), bed:getPills('[data-field="he.bed"]'), bed_t:getV('val-he-bed-t'), alm:getPills('[data-field="he.alm"]'), alm_t:getV('val-he-alm-t') };
+    d.he = { type:getPills('[data-field="he.type"]'), type_t:getV('val-he-type-t'), acc:getPills('[data-field="he.acc"]'), steps:getV('val-he-steps'), handrail:getV('val-he-handrail'), env:getPills('[data-field="he.env"]'), env_t:getV('val-he-env-t'), toi:getPills('[data-field="he.toi"]'), toi_t:getV('val-he-toi-t'), bat:getPills('[data-field="he.bat"]'), bat_t:getV('val-he-bat-t'), lig:getPills('[data-field="he.lig"]'), lig_t:getV('val-he-lig-t'), flo:getPills('[data-field="he.flo"]'), flo_t:getV('val-he-flo-t'), dor:getPills('[data-field="he.dor"]'), dor_t:getV('val-he-dor-t'), fur:getPills('[data-field="he.fur"]'), fur_t:getV('val-he-fur-t'), bed:getPills('[data-field="he.bed"]'), bed_t:getV('val-he-bed-t'), alm:getPills('[data-field="he.alm"]'), alm_t:getV('val-he-alm-t') };
     d.su = { seen:getP('[data-field="su.seen"]'), seen_t:getV('val-su-seen-t'), gen:getP('[data-field="su.gen"]'), gen_t:getV('val-su-gen-t'), prev:getP('[data-field="su.prev"]'), iod:getP('[data-field="su.iod"]'), comp:getV('val-su-comp'), area:getV('val-su-area'), nat:getV('val-su-nat'), rest:getV('val-su-rest'), agg:getV('val-su-agg'), eas:getV('val-su-eas'), fun:getV('val-su-fun'), walk:getV('val-su-walk'), oth:getV('val-su-oth') };
     d.pos = { free:getV('val-pos-free') };
     d.pal = { swe:getV('val-pal-swe'), red:getP('[data-field="pal.red"]'), tig:getV('val-pal-tig'), ten:getV('val-pal-ten'), oth:getV('val-pal-oth') };
@@ -989,7 +1011,7 @@
     if(currentTabIdx < 0) return;
     isPopulating = true;
     try {
-      resetAllSelectionsUI();
+      resetAllSelectionsUI(); // Now safely wipes UI every time before inserting data
       const it = todayList[currentTabIdx];
       const v = db[it.caseNum][it.dbIdx];
       const d = normalizeRecord(v.data);
@@ -1017,7 +1039,7 @@
       setV('val-ltg', d.ltg);
 
       if(d.sh) { setP('sh.ltot',d.sh.ltot); setV('val-sh-ltot-l',d.sh.ltot_l); setP('sh.fall',d.sh.fall); setV('val-sh-fall-t',d.sh.fall_t); setP('sh.occ',d.sh.occ); setV('val-sh-occ-t',d.sh.occ_t); setP('sh.live',d.sh.live); setV('val-sh-live-t',d.sh.live_t); setP('sh.adl',d.sh.adl); setV('val-sh-adl-t',d.sh.adl_t); setP('sh.mob',d.sh.mob); setV('val-sh-mob-t',d.sh.mob_t); setP('sh.in',d.sh.in); setV('val-sh-in-t',d.sh.in_t); setP('sh.out',d.sh.out); setV('val-sh-out-t',d.sh.out_t); setP('sh.pre',d.sh.pre); setV('val-sh-pre-t',d.sh.pre_t); setP('sh.com',d.sh.com); setV('val-sh-com-t',d.sh.com_t); }
-      if(d.he) { setP('he.type',d.he.type); setV('val-he-type-t',d.he.type_t); setP('he.acc',d.he.acc); setV('val-he-steps',d.he.steps); setV('val-he-handrail',d.he.handrail); setP('he.env',d.he.env); setV('val-he-env-t',d.he.env_t); setP('he.bat',d.he.bat); setV('val-he-bat-t',d.he.bat_t); setP('he.lig',d.he.lig); setV('val-he-lig-t',d.he.lig_t); setP('he.flo',d.he.flo); setV('val-he-flo-t',d.he.flo_t); setP('he.dor',d.he.dor); setV('val-he-dor-t',d.he.dor_t); setP('he.fur',d.he.fur); setV('val-he-fur-t',d.he.fur_t); setP('he.bed',d.he.bed); setV('val-he-bed-t',d.he.bed_t); setP('he.alm',d.he.alm); setV('val-he-alm-t',d.he.alm_t); }
+      if(d.he) { setP('he.type',d.he.type); setV('val-he-type-t',d.he.type_t); setP('he.acc',d.he.acc); setV('val-he-steps',d.he.steps); setV('val-he-handrail',d.he.handrail); setP('he.env',d.he.env); setV('val-he-env-t',d.he.env_t); setP('he.toi',d.he.toi); setV('val-he-toi-t',d.he.toi_t); setP('he.bat',d.he.bat); setV('val-he-bat-t',d.he.bat_t); setP('he.lig',d.he.lig); setV('val-he-lig-t',d.he.lig_t); setP('he.flo',d.he.flo); setV('val-he-flo-t',d.he.flo_t); setP('he.dor',d.he.dor); setV('val-he-dor-t',d.he.dor_t); setP('he.fur',d.he.fur); setV('val-he-fur-t',d.he.fur_t); setP('he.bed',d.he.bed); setV('val-he-bed-t',d.he.bed_t); setP('he.alm',d.he.alm); setV('val-he-alm-t',d.he.alm_t); }
       if(d.su) { setP('su.seen',d.su.seen); setV('val-su-seen-t',d.su.seen_t); setP('su.gen',d.su.gen); setV('val-su-gen-t',d.su.gen_t); setP('su.prev',d.su.prev); setP('su.iod',d.su.iod); setV('val-su-comp',d.su.comp); setV('val-su-area',d.su.area); setV('val-su-nat',d.su.nat); setV('val-su-rest',d.su.rest); setV('val-su-agg',d.su.agg); setV('val-su-eas',d.su.eas); setV('val-su-fun',d.su.fun); setV('val-su-walk',d.su.walk); setV('val-su-oth',d.su.oth); }
       if(d.pos) { setV('val-pos-free',d.pos.free); }
       if(d.pal) { setV('val-pal-swe',d.pal.swe); setP('pal.red',d.pal.red); setV('val-pal-tig',d.pal.tig); setV('val-pal-ten',d.pal.ten); setV('val-pal-oth',d.pal.oth); }
@@ -1056,10 +1078,6 @@
       });
 
       document.querySelectorAll('#joints-container .rom-row').forEach(r => { 
-        r.querySelector('.manual-input').value = ""; 
-        r.querySelectorAll('.range').forEach(b=>b.classList.remove('selected')); 
-        r.querySelector('.rom-power-select').selectedIndex = 0;
-        
         if(d.roms && d.roms[r.dataset.uid]){ 
           r.querySelector('.manual-input').value = d.roms[r.dataset.uid].m || ""; 
           if(d.roms[r.dataset.uid].r) {
@@ -1074,7 +1092,6 @@
       });
       
       document.querySelectorAll('#joints-container .test-row').forEach(r => { 
-        r.querySelectorAll('.pill').forEach(p=>p.classList.remove('active')); 
         if(d.tests && d.tests[r.dataset.uid]) {
           setPills(`[data-uid="${r.dataset.uid}"] .pill-group`, d.tests[r.dataset.uid]);
         }
@@ -1128,7 +1145,7 @@
   };
   
   window.sel = (el) => { 
-    const act = el.classList.contains('active');
+    const act = el.classList.contains('selected');
     el.parentElement.querySelectorAll('.range').forEach(b=>b.classList.remove('selected')); 
     if(!act) el.classList.add('selected'); 
     else el.classList.remove('selected');
@@ -1253,9 +1270,9 @@
         t += `- Accessibility: ${aStr.trim()}\n`; 
       }
       
-      ['env','bat','lig','flo','dor','fur','bed','alm'].forEach(k => { 
+      ['env','toi','bat','lig','flo','dor','fur','bed','alm'].forEach(k => { 
         const v = joinPillsText(d.he[k], d.he[k+'_t']); 
-        if(v) t+=`- ${k==='env'?'Indoor environment: ':k==='bat'?'Bathroom: ':k==='lig'?'Lighting: ':k==='flo'?'Floor: ':k==='dor'?'Door: ':k==='fur'?'Furniture: ':k==='bed'?'Bedroom: ':k==='alm'?'Personal alarm: ':''}${v}\n`; 
+        if(v) t+=`- ${k==='env'?'Indoor environment: ':k==='toi'?'Toilet: ':k==='bat'?'Bathroom: ':k==='lig'?'Lighting: ':k==='flo'?'Floor: ':k==='dor'?'Door: ':k==='fur'?'Furniture: ':k==='bed'?'Bedroom: ':k==='alm'?'Personal alarm: ':''}${v}\n`; 
       });
     }
     
@@ -1518,4 +1535,3 @@
 </script>
 </body>
 </html>
-
