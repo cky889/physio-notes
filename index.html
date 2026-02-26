@@ -2,24 +2,31 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <!-- viewport-fit=cover allows safe-area-inset to work -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   <title>CPT Mobile Platform</title>
   <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <!-- default style prevents extreme overlap in some iOS versions -->
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
   <meta name="theme-color" content="#2c3e50" />
-  <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/2966/2966327.png">
-  <style>
-    :root { --main:#2c3e50; --acc:#2980b9; --bg:#f3f4f6; --warn:#f59e0b; --sticky:#fef9c3; --sticky2:#fde047; }
-    body { font-family:-apple-system, sans-serif; background:var(--bg); margin:0; padding-bottom:10px; color:#1f2937; -webkit-tap-highlight-color:transparent; }
+  
+  <!-- Embedded Solid PNG for iOS Home Screen Icon (iOS strictly requires PNG, no SVG/transparent) -->
+  <link rel="apple-touch-icon" href="image/png;base64,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" />
 
-    #auth-screen { position:fixed; inset:0; background:var(--main); z-index:3000; display:flex; flex-direction:column; align-items:center; justify-content:center; color:#fff; }
+  <style>
+    /* ADDED margin-top and padding-top properties to push whole app below Dynamic Island */
+    body { font-family:-apple-system, sans-serif; background:var(--bg); margin:0; margin-top: env(safe-area-inset-top); padding-top: env(safe-area-inset-top); padding-bottom:calc(10px + env(safe-area-inset-bottom)); color:#1f2937; -webkit-tap-highlight-color:transparent; }
+
+    #auth-screen { position:fixed; inset:0; background:var(--main); z-index:3000; display:flex; flex-direction:column; align-items:center; justify-content:center; color:#fff; padding-top: env(safe-area-inset-top); }
     .auth-card { background:#fff; color:#333; width:85%; max-width:320px; padding:25px; border-radius:16px; text-align:center; box-shadow:0 10px 25px rgba(0,0,0,0.3); }
     .auth-input { width:100%; padding:14px; margin:8px 0; border:2px solid #e5e7eb; border-radius:8px; font-size:1.1rem; text-align:center; background:#fff; appearance:none; }
     .auth-btn { width:100%; padding:16px; background:var(--acc); color:#fff; border:none; border-radius:10px; font-weight:800; font-size:1.1rem; margin-top:10px; cursor:pointer; }
     .auth-btn.sec { background:#fff; color:var(--acc); border:2px solid var(--acc); margin-top:12px; }
     .hidden { display:none !important; }
 
+    /* Sticky header adjustment */
     header { background:var(--main); color:#fff; padding:12px; position:sticky; top:0; z-index:100; box-shadow:0 2px 10px rgba(0,0,0,0.1); }
+    
     .top-row { display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; font-size:0.9rem; }
     .user-badge { font-size:1.4rem; font-weight:900; background:rgba(255,255,255,0.2); padding:4px 12px; border-radius:8px; }
     .date-header { display:flex; align-items:center; justify-content:center; font-size:1.25rem; font-weight:900; margin-bottom:10px; letter-spacing:0.5px; }
@@ -79,8 +86,8 @@
     .generate-btn { width:100%; background:#3b82f6; color:#fff; padding:18px; border-radius:25px; border:none; font-size:1.1rem; font-weight:900; cursor:pointer; margin:20px 0 10px 0; box-shadow:0 4px 6px rgba(59,130,246,0.3); transition:background 0.25s; }
     .output-box { width:100%; height:250px; background:#fff; border:1px solid #d1d5db; border-radius:12px; padding:16px; font-family:monospace; font-size:0.8rem; line-height:1.4; color:#1f2937; resize:vertical; box-sizing:border-box; white-space:pre-wrap; }
 
-    .modal { position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:4000; display:none; align-items:center; justify-content:center; padding:10px; }
-    .modal.open { display:flex; }
+    .modal { position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:4000; display:none; align-items:center; justify-content:center; padding:10px; padding-top:calc(10px + env(safe-area-inset-top)); padding-bottom:calc(10px + env(safe-area-inset-bottom)); }
+    
     .modal-card { background:#fff; width:100%; max-width:520px; border-radius:12px; padding:15px; box-shadow:0 20px 50px rgba(0,0,0,0.3); max-height:95vh; overflow-y:auto; display:flex; flex-direction:column; }
 
     .cal-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; }
@@ -832,19 +839,16 @@
 
   function promptNewPatient() {
     if(currentTabIdx!==-1) saveWork();
-    
-    // Completely unassign current tab so switchTab doesn't accidentally save an empty UI to the DB!
     currentTabIdx = -1; 
     resetAllSelectionsUI(); 
     
     const tId = "NEW_" + Date.now();
     const d = schemaDefaults();
     
-    db[tId] = [{ date: activeDateStr, time:"14:00-15:00", data: d }]; 
+    db[tId] = [{ date: activeDateStr, time:"14:00-15:00",  d }]; 
     saveDB(); 
     loadDB();
     
-    // Now cleanly switch to the new tab where populateUI will safely load the defaults
     switchTab(todayList.length - 1);
     document.getElementById('val-case').focus();
   }
@@ -1363,15 +1367,15 @@
     t += specStr;
     
     if(d.msk) {
-      t += `\nMuscle strength (in Oxford scale):\n       UL       LL\n`;
+      t += `\nMuscle strength (in Oxford scale):\n     UL       LL\n`;
       if(d.msk.pwrmode) {
         let rul = (d.msk.rult || "").padEnd(8, " ");
         let lul = (d.msk.lult || "").padEnd(8, " ");
-        t += `R  ${rul} ${d.msk.rllt || ""}\nL  ${lul} ${d.msk.lllt || ""}\n`;
+        t += `R    ${rul} ${d.msk.rllt || ""}\nL    ${lul} ${d.msk.lllt || ""}\n`;
       } else {
         let rul = (d.msk.rulp || "5").padEnd(8, " ");
         let lul = (d.msk.lulp || "5").padEnd(8, " ");
-        t += `R  ${rul} ${d.msk.rllp || "5"}\nL  ${lul} ${d.msk.lllp || "5"}\n`;
+        t += `R    ${rul} ${d.msk.rllp || "5"}\nL    ${lul} ${d.msk.lllp || "5"}\n`;
       }
     }
     
@@ -1554,4 +1558,3 @@
 </script>
 </body>
 </html>
-
