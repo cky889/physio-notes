@@ -292,9 +292,9 @@
 
     <div class="card">
       <div class="head-sec">Problems & Goals</div>
-      <textarea id="val-prob" style="height:60px;" placeholder="Problems..."></textarea>
-      <textarea id="val-stg" style="height:60px;" placeholder="Short term goals..."></textarea>
-      <textarea id="val-ltg" style="height:60px;" placeholder="Long term goals..."></textarea>
+      <textarea id="val-prob" style="height:95px;" placeholder="Problems..."></textarea>
+      <textarea id="val-stg" style="height:95px;" placeholder="Short term goals..."></textarea>
+      <textarea id="val-ltg" style="height:80px;" placeholder="Long term goals..."></textarea>
     </div>
 
     <div class="card">
@@ -670,7 +670,10 @@
       fall:"", bp:"", hr:"",
       msk:{rom:"",romd:"",rulp:5,lulp:5,rllp:5,lllp:5,sens:""},
       amb:{bed:"",bed_t:"",l2s:"",l2s_t:"",s2s:"",s2s_t:"",sitb:"",sitb_t:"",stdb:"",stdb_t:"",w_aid:"",w_ast:"",w_stb:"",w_t:"",gait:""},
-      prob:"", stg:"", ltg:"", roms:{}, out:{}, ex:[], exf:"", tests:{}, test_others:{}
+      prob:"- Upper limbs and lower limbs muscles weakness\n- Reduced mobility\n- Impaired balance\n- Decreased muscle strength", 
+      stg:"- Muscles strengthening\n- Self pain management\n- Pain relief\n- Functional mobility improvement", 
+      ltg:"- Optimize function\n- Fall prevention\n- Functional independency and tolerance improvement", 
+      roms:{}, out:{}, ex:[], exf:"", tests:{}, test_others:{}
     };
   }
 
@@ -748,11 +751,7 @@
     const tId = "NEW_" + Date.now();
     const d = schemaDefaults();
     
-    d.prob = "- Upper limbs and lower limbs muscles weakness\n- Reduced mobility"; 
-    d.stg = "- Muscles strengthening\n- Self pain management"; 
-    d.ltg = "- Optimize function\n- Fall prevention";
-    
-    db[tId] = [{ date: activeDateStr, time:"14:00-15:00",  d }]; 
+    db[tId] = [{ date: activeDateStr, time:"14:00-15:00", data: d }]; 
     saveDB(); 
     loadDB();
     
@@ -1269,7 +1268,7 @@
       if(d.exf) t+=`\n${d.exf}\n`; 
     }
 
-    t += `\nPatient safety guide given \nVerbal consent obtained for hands-on assessment / treatment\nClinical findings and treatment plan explained to patient, patient showed understanding and agreed \nMachine test / skin sensation test done\nWarning / Instruction given and contraindication checked \nPost treatment uneventful`;
+    t += `\nPatient safety guide given\nVerbal consent obtained for hands-on assessment / treatment\nClinical findings and treatment plan explained to patient, patient showed understanding and agreed\nMachine test / skin sensation test done\nWarning / Instruction given and contraindication checked\nFall risk increasing drugs checked: Nil\nPost treatment uneventful\n\nHA GO installation: No (reason: Patient or carer don't know how to use)\nExercise prescription in HA GO: No (reason: Patient or carer don't know how to use)`;
 
     const ob = document.getElementById('output-box'); 
     ob.value = t; 
