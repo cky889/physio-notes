@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-  <title>CMS Clinical V25.40</title>
+  <title>CPT Mobile Platform</title>
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="theme-color" content="#2c3e50" />
@@ -111,14 +111,33 @@
 
 <div id="auth-screen">
   <div id="view-login" class="auth-card">
-    <h3>CMS Clinical V25.40</h3>
+    
+    <!-- Beautiful TMH CPT App Icon SVG -->
+    <div style="display:flex; justify-content:center; margin-bottom:15px;">
+      <svg width="85" height="85" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#3b82f6"/>
+            <stop offset="100%" stop-color="#1e3a8a"/>
+          </linearGradient>
+        </defs>
+        <rect width="120" height="120" rx="28" fill="url(#bgGrad)" />
+        <circle cx="60" cy="36" r="10" fill="#fff" />
+        <path d="M 60 48 L 60 72 M 60 50 Q 45 52 40 42 M 60 50 Q 75 52 80 42 M 60 72 L 48 92 M 60 72 L 72 92" fill="none" stroke="#fff" stroke-width="8" stroke-linecap="round" />
+        <rect x="35" y="96" width="50" height="18" rx="6" fill="#fff" />
+        <text x="60" y="109" font-family="system-ui, -apple-system, sans-serif" font-weight="900" font-size="12" fill="#1e3a8a" text-anchor="middle" letter-spacing="1">TMH</text>
+      </svg>
+    </div>
+
+    <h2 style="margin:0 0 20px 0; color:#1e293b; font-size:1.4rem;">CPT Mobile Platform</h2>
+    
     <select id="user-select" class="auth-input"></select>
     <input type="tel" id="user-pin" class="auth-input" placeholder="PIN" maxlength="6" style="-webkit-text-security:disc;">
     <button class="auth-btn" onclick="attemptLogin()">Unlock App</button>
     <button class="auth-btn sec" onclick="toggleAuth('register')">Create Profile</button>
   </div>
   <div id="view-register" class="auth-card hidden">
-    <h3>Create Profile</h3>
+    <h2 style="margin:0 0 20px 0; color:#1e293b;">Create Profile</h2>
     <input type="text" id="reg-name" class="auth-input" placeholder="Your Name">
     <input type="tel" id="reg-pin" class="auth-input" placeholder="Create PIN (4 digits)" maxlength="6">
     <button class="auth-btn" style="background:#10b981;" onclick="registerUser()">Start App</button>
@@ -563,36 +582,29 @@
   }
 
   function resetAllSelectionsUI() {
-    // 1. CLEAR ALL PILLS
     document.querySelectorAll('.pill').forEach(x => {
         x.classList.remove('active');
         x.classList.remove('selected'); 
     });
     
-    // 2. CLEAR ALL CHECKBOXES
     ['chk-sts','chk-berg','chk-frt','chk-tug','chk-ems','chk-mfac'].forEach(id => { 
         const e=document.getElementById(id); 
         if(e) e.checked=false; 
     });
     
-    // 3. CLEAR ALL TEXT INPUTS & TEXTAREAS (excluding case number)
     document.querySelectorAll('input[type="text"], input:not([type="radio"]):not([type="checkbox"]):not([type="range"]), textarea').forEach(el => {
       if(el.id !== 'val-case') el.value = "";
     });
 
-    // 4. RESET POWER SLIDERS TO 5
     document.querySelectorAll('input[type="range"]').forEach(el => {
         el.value = 5;
         if(el.nextElementSibling) el.nextElementSibling.innerText = "5";
     });
     
-    // 5. RESET ALL SELECT DROPDOWNS
     document.querySelectorAll('select.rom-power-select').forEach(s => s.selectedIndex = 0);
     
-    // 6. CLOSE ALL ACCORDIONS
     document.querySelectorAll('.accordion-body').forEach(b => b.classList.remove('show'));
     
-    // 7. RESET OUTCOME SCORES
     document.querySelectorAll('.score-disp').forEach(d => {
       if(d.closest('[data-out="berg"]')) d.innerText = '0/56';
       if(d.closest('[data-out="ems"]')) d.innerText = '0/20';
@@ -821,7 +833,8 @@
   function promptNewPatient() {
     if(currentTabIdx!==-1) saveWork();
     
-    // Forcefully wipe the UI completely clean before applying the new patient schema
+    // Completely unassign current tab so switchTab doesn't accidentally save an empty UI to the DB!
+    currentTabIdx = -1; 
     resetAllSelectionsUI(); 
     
     const tId = "NEW_" + Date.now();
@@ -831,8 +844,8 @@
     saveDB(); 
     loadDB();
     
-    currentTabIdx = todayList.length - 1; 
-    switchTab(currentTabIdx);
+    // Now cleanly switch to the new tab where populateUI will safely load the defaults
+    switchTab(todayList.length - 1);
     document.getElementById('val-case').focus();
   }
 
@@ -1011,7 +1024,7 @@
     if(currentTabIdx < 0) return;
     isPopulating = true;
     try {
-      resetAllSelectionsUI(); // Now safely wipes UI every time before inserting data
+      resetAllSelectionsUI(); 
       const it = todayList[currentTabIdx];
       const v = db[it.caseNum][it.dbIdx];
       const d = normalizeRecord(v.data);
@@ -1228,9 +1241,15 @@
 
   function generateNote() {
     saveWork(); 
-    const d = db[todayList[currentTabIdx].caseNum][todayList[currentTabIdx].dbIdx].data;
+    const currentCase = todayList[currentTabIdx].caseNum;
+    const caseDisplay = currentCase.startsWith('NEW_') ? "" : currentCase;
+    const d = db[currentCase][todayList[currentTabIdx].dbIdx].data;
     
-    let t = `Community Physiotherapy\n\n`;
+    let t = "";
+    if(caseDisplay) {
+        t += `${caseDisplay}\n`;
+    }
+    t += `Community Physiotherapy Home Visit\n\n`;
     
     if(d.ref_by || d.ref_rsn || d.ref_date || d.dx) {
       if(d.ref_by || d.ref_rsn || d.ref_date) {
@@ -1535,3 +1554,4 @@
 </script>
 </body>
 </html>
+
